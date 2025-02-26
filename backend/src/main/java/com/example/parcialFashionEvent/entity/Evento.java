@@ -19,11 +19,19 @@ public class Evento {
     @Column(nullable = false, unique = true)
     private String nombre;
 
+    @Column(nullable = false, unique = true)
+    private String tipo;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyy")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
-    private double precio;
+    @Column(nullable = false)
+    private int CantParticipantes;
+    
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", nullable = false)
+    private Empresa empresa;
 
     // Tabla de invitados al evento
     @ManyToMany()
@@ -45,12 +53,11 @@ public class Evento {
         this.invitados.remove(usuario);
     }
 
-    // Tabla de modelos participantes en el evento
     @ManyToMany()
     @JoinTable(
-            name = "evento_modelo",
+            name = "evento_Invitado",
             joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "modelo_id")
+            inverseJoinColumns = @JoinColumn(name = "Invitado_id")
     )
     private List<Usuario> participantes = new ArrayList<>();
 

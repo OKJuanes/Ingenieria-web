@@ -6,6 +6,7 @@ Thumbs.db
 
 # Archivos de entorno
 .env
+/.env
 
 # Dependencias y compilación
 /target/

@@ -1,0 +1,120 @@
+/* src/assets/styles/HomeUsuario.css */
+.home-usuario-container {
+    min-height: 100vh;
+    background: linear-gradient(to right, #8e2de2, #4a00e0);
+    padding: 20px;
+    padding-top: 80px; /* Margen superior para evitar superposición con la Navbar */
+  }
+  
+  .home-usuario-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    color: white;
+  }
+  
+  .home-usuario-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .filtro-etiquetas {
+    margin-bottom: 20px;
+  }
+  
+  .filtro-etiquetas h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .filtro-etiquetas-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .filtro-etiquetas-botones button {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .filtro-etiquetas-botones button.active {
+    background-color: #6b21a8;
+    color: white;
+  }
+  
+  .filtro-etiquetas-botones button.inactive {
+    background-color: white;
+    color: #6b21a8;
+  }
+  
+  .filtro-etiquetas-botones button.inactive:hover {
+    background-color: #f3e8ff;
+  }
+  
+  .lista-eventos {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #4b5563; /* Color de texto para el contenido dentro de la lista */
+  }
+  
+  .lista-eventos h3 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #6b21a8;
+    margin-bottom: 20px;
+  }
+  
+  .evento-item {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .evento-item:hover {
+    background-color: #f9fafb;
+  }
+  
+  .evento-item h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #6b21a8;
+    margin-bottom: 8px;
+  }
+  
+  .evento-item p {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 4px;
+  }
+  
+  .evento-item strong {
+    font-weight: 600;
+  }
+  
+  .lista-invitados {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-top: 8px;
+  }
+  
+  .lista-invitados li {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  
+  .mensaje-sin-eventos {
+    font-size: 1rem;
+    color: #6b21a8;
+    text-align: center;
+  }

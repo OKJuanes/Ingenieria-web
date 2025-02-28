@@ -1,41 +1,59 @@
-/*import { StrictMode } from 'react'*/
-import { createRoot } from 'react-dom/client'
-import 'bootstrap/dist/css/bootstrap.min.css'
+// src/main.tsx
+import { createRoot } from 'react-dom/client';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import EventosList from "./screens/Eventos.tsx";
-import Profile from "./screens/Profile.tsx";
-import Home from "./screens/Home.tsx";
-import Login from "./screens/Login.tsx";
-import Register from "./screens/Register.tsx";
-import EventoView from "./screens/EventoView.tsx";
-import NuevoEvento from "./screens/NuevoEvento.tsx";
+// Importa las páginas
+import Login from './pages/Login';
+import HomeUsuario from './pages/HomeUsuario'; // Página para usuarios comunes
+import HomeAdmin from './pages/HomeAdmin'; // Página para administradores
+import Eventos from './pages/Eventos';
+import Profile from './pages/Profile';
+import Register from './pages/Register';
+import EventoView from './pages/EventoView';
+import NuevoEvento from './pages/NuevoEvento';
 
+// Configura la URL de la API
 export const API_URL = import.meta.env.VITE_API_URL;
 
+// Configura el enrutador
 const router = createBrowserRouter([
-    {
-        path: "/", element: <Home />,
-
-    },
-    //Se añaden aca afuera si se quiere que queden fuera del root
-    {path: "/login", element: <Login />,},
-    {path: "/register", element: <Register />,},
-    {path: "/eventos", element: <EventosList />,},
-    {path: "/eventos/:id", element: <EventoView />,},
-    {path: "/eventos/nuevo-evento", element: <NuevoEvento />,},
-    {path: "/perfil", element: <Profile />,}
+  {
+    path: '/login',
+    element: <Login />, // La ruta principal ahora es la página de Login
+  },
+  {
+    path: '/home-usuario',
+    element: <HomeUsuario />, // Página para usuarios comunes
+  },
+  {
+    path: '/home-admin',
+    element: <HomeAdmin />, // Página para administradores
+  },
+  {
+    path: '/eventos',
+    element: <Eventos />,
+  },
+  {
+    path: '/eventos/:id',
+    element: <EventoView />,
+  },
+  {
+    path: '/eventos/nuevo-evento',
+    element: <NuevoEvento />,
+  },
+  {
+    path: '/perfil',
+    element: <Profile />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
+  },
 ]);
 
+// Renderiza la aplicación
 createRoot(document.getElementById('root')!).render(
-    /*
-  <StrictMode>
-    <App />
-  </StrictMode>,
-  */
-    <RouterProvider router={router}/>
-)
+  <RouterProvider router={router} />
+);

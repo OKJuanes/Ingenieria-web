@@ -1,0 +1,49 @@
+# Proyecto de Ingeniería Web
+
+Este proyecto es desarrollado para la materia de Ingeniería Web.
+
+## Desarrolladores
+
+- Juan Esteban Castaño Ocampo
+- Nicolas Echeverri Fernandez
+
+## Descripción
+
+Este proyecto incluye una aplicación backend desarrollada con Spring Boot y una aplicación frontend desarrollada con React, TypeScript y Vite.
+
+### Backend
+
+El backend está configurado para manejar la seguridad y autenticación de usuarios, así como la gestión de eventos. Utiliza Spring Boot y varias dependencias para facilitar el desarrollo.
+
+### Frontend
+
+El frontend está configurado con React y TypeScript, utilizando Vite para la construcción y desarrollo rápido. También incluye configuraciones de ESLint para mantener la calidad del código.
+
+## Estructura del Proyecto
+
+- **backend/**: Contiene el código fuente del backend.
+- **frontend/**: Contiene el código fuente del frontend.
+
+## Requisitos
+
+- Java 17
+- Node.js
+- Maven
+
+## Instalación
+
+### Backend
+
+1. Navega al directorio `backend`.
+2. Ejecuta `mvn clean install` para construir el proyecto.
+3. Ejecuta `mvn spring-boot:run` para iniciar el servidor.
+
+### Frontend
+
+1. Navega al directorio `frontend`.
+2. Ejecuta `npm install` para instalar las dependencias.
+3. Ejecuta `npm run dev` para iniciar el servidor de desarrollo.
+
+## Licencia
+
+Este proyecto es desarrollado como parte de la materia de Ingeniería Web y no tiene una licencia específica.

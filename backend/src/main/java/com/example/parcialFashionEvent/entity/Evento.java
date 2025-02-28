@@ -33,7 +33,6 @@ public class Evento {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
-    // Tabla de invitados al evento
     @ManyToMany()
     @JoinTable(
             name = "evento_usuario",
@@ -72,4 +71,22 @@ public class Evento {
         this.participantes.remove(usuario);
     }
 
+    @ManyToMany()
+    @JoinTable(
+            name = "evento_Externo",
+            joinColumns = @JoinColumn(name = "evento_id"),
+            inverseJoinColumns = @JoinColumn(name = "InvitadoExterno_id")
+    )
+    private List<InvitadoExterno> invitadosExternos = new ArrayList<>();;
+
+    public List<String> getInvitadosExternos() {
+        List<String> Nombres = this.invitadosExternos.stream().map(InvitadoExterno::getNombre).toList();
+        return Nombres;
+    }
+    public void addInvitadosExternos(InvitadoExterno usuario){
+        this.invitadosExternos.add(usuario);
+    }
+    public void removeInvitadosExternos(InvitadoExterno usuario){
+        this.invitadosExternos.remove(usuario);
+    }
 }

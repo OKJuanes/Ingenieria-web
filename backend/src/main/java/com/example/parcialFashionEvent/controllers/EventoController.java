@@ -17,19 +17,6 @@ public class EventoController {
     @Autowired
     private EventoService eventoService;
 
-    // Ver todos los eventos
-    @GetMapping
-    public ResponseEntity<List<Evento>> getEventos() {
-        List<Evento> eventos = eventoService.getAllEventos();
-        return ResponseEntity.ok(eventos);
-    }
-
-    // Ver un evento por su id
-    @GetMapping("/{id}")
-    public Evento getEventoById(@PathVariable Long id) {
-        return eventoService.getEventoById(id);
-    }
-
     // Comprar un ticket para un evento con el usuario actual
     @PutMapping("/{id}/comprar-ticket")
     public String addInvitado(@PathVariable Long id) {

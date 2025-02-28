@@ -1,0 +1,45 @@
+# Archivos de sistema
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno
+.env
+
+# Dependencias y compilación
+/target/
+/bin/
+/out/
+/build/
+
+# Configuración de herramientas
+/.idea/
+/.vscode/
+/*.iml
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Archivos de Java y compilados
+*.class
+*.jar
+*.war
+*.ear
+
+# Configuración de IntelliJ
+/.classpath
+/.project
+/.settings/
+
+# Logs y caché
+/logs/
+/*.log
+*.cache
+hs_err_pid*
+
+# Configuración de test y cobertura
+/test-output/
+/coverage/

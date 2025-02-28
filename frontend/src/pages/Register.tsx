@@ -1,12 +1,10 @@
-
 import { useState } from 'react';
-import {Link, useNavigate} from "react-router-dom";
-
+import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../main.tsx';
-import Navbar from "../components/Navbar.tsx";
+import Navbar from "../components/common/Navbar.tsx";
+import '../assets/styles/Register.css'; // Importa el archivo CSS para los estilos
 
 function Register() {
-    const [modelo, setModelo] = useState(false);
     const [correo, setCorreo] = useState('');
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
@@ -22,7 +20,6 @@ function Register() {
 
         // Crear el cuerpo del POST
         const requestBody = {
-            modelo: modelo,
             correo: correo,
             nombre: nombre,
             apellido: apellido,
@@ -45,7 +42,7 @@ function Register() {
                 const { token } = await response.json();
                 setSuccessMessage(`Registro exitoso!`);
                 setErrorMessage('');
-                // Aquí podrías almacenar un token JWT o redirigir a otra página
+                // Almacenar el token JWT y redirigir a la página de eventos
                 localStorage.setItem('authToken', token);
                 navigate('/eventos');
             } else {
@@ -63,97 +60,73 @@ function Register() {
     };
 
     return (
-        <div className={"main-container"}>
+        <div className="main-container">
             <Navbar />
-            <div className={"welcome"}>
-                <div className={"auth-container"}>
+            <div className="welcome">
+                <div className="auth-container">
                     <h2>Regístrate</h2>
                     <form onSubmit={handleSubmit}>
-                        <div className={"mb-3 modelo-check"}>
-                            <label>¿Eres modelo?</label>
-                            <input
-                                className={"form-check-input"}
-                                type="checkbox"
-                                checked={modelo}
-                                onChange={(e) => setModelo(e.target.checked)}
-                            />
-                        </div>
                         <div className="mb-3">
-                            <span className="form-label" id="inputGroup-sizing-default">Nombre</span>
+                            <span className="form-label">Nombre</span>
                             <input
                                 type="text"
                                 className="form-control"
-                                aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default"
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <span className="form-label" id="inputGroup-sizing-default">Apellido</span>
+                            <span className="form-label">Apellido</span>
                             <input
                                 type="text"
                                 className="form-control"
-                                aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default"
                                 value={apellido}
                                 onChange={(e) => setApellido(e.target.value)}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <span className="form-label" id="inputGroup-sizing-default">Correo</span>
+                            <span className="form-label">Correo</span>
                             <input
                                 type="email"
                                 className="form-control"
-                                aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default"
                                 value={correo}
                                 onChange={(e) => setCorreo(e.target.value)}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <span className="form-label" id="inputGroup-sizing-default">Usuario</span>
+                            <span className="form-label">Usuario</span>
                             <input
                                 type="text"
                                 className="form-control"
-                                aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
                         </div>
                         <div className="mb-3">
-                            <span className="form-label" id="inputGroup-sizing-default">Contraseña</span>
+                            <span className="form-label">Contraseña</span>
                             <input
                                 type="password"
                                 className="form-control"
-                                aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                         </div>
-                        <button type="submit" className={"btn btn-primary"}>Registrarse</button>
-                        <div style={{margin: '10px 0'}}>
+                        <button type="submit" className="btn btn-primary">Registrarse</button>
+                        <div className="login-link">
                             <p>
-                                ¿Ya estas registrado?{' '}
-                                <Link
-                                    to="/login"
-                                    style={{textDecoration: "none"}}
-                                >
-                                    Inicia sesión
-                                </Link>
+                                ¿Ya estás registrado?{' '}
+                                <Link to="/Login">Inicia sesión</Link>
                             </p>
                         </div>
                     </form>
 
-                    {errorMessage && <p style={{color: 'red'}}>{errorMessage}</p>}
-                    {successMessage && <p style={{color: 'green'}}>{successMessage}</p>}
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
+                    {successMessage && <p className="success-message">{successMessage}</p>}
                 </div>
             </div>
         </div>

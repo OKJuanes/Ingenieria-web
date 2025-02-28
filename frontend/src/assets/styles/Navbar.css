@@ -1,0 +1,73 @@
+/* src/assets/styles/Navbar.css */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #6b21a8, #4a00e0, #6b21a8, #4a00e0, #6b21a8); /* Gradiente más largo */
+    background-size: 400% 400%; /* Aumentamos el tamaño del gradiente */
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    animation: wave 8s ease infinite; /* Animación más lenta para que sea más visible */
+  }
+  
+  /* Animación de onda más pronunciada */
+  @keyframes wave {
+    0% {
+      background-position: 0% 50%; /* Inicio del gradiente */
+    }
+    50% {
+      background-position: 100% 50%; /* Mitad del gradiente */
+    }
+    100% {
+      background-position: 0% 50%; /* Vuelve al inicio */
+    }
+  }
+  
+  /* Estilos para el logo */
+  .navbar-logo a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .navbar-logo a:hover {
+    opacity: 0.8;
+  }
+  
+  /* Contenedor de los botones */
+  .navbar-buttons {
+    display: flex;
+    gap: 20px;
+  }
+  
+  /* Estilos para los botones */
+  .navbar-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Efecto hover en los botones */
+  .navbar-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Efecto al hacer clic en los botones */
+  .navbar-button:active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }

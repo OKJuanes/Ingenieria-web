@@ -21,8 +21,5 @@ public class InvitadoExterno {
     private String correo;
 
     @Column(nullable = false)
-    private String empresa;
-
-    @Column(nullable = false)
     private String telefono;
 }

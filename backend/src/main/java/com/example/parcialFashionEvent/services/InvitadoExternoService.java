@@ -47,7 +47,6 @@ public class InvitadoExternoService {
         invitadoExterno.setNombre(request.getNombre());
         invitadoExterno.setApellido(request.getApellido());
         invitadoExterno.setCorreo(request.getCorreo());
-        invitadoExterno.setEmpresa(request.getEmpresa());
         invitadoExterno.setTelefono(request.getTelefono());
         saveInvitadoExterno(invitadoExterno);
 

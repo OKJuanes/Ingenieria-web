@@ -36,7 +36,6 @@ public class EventoService {
 
         evento.setNombre(request.getNombre());
         evento.setFecha(request.getFecha());
-        evento.setPrecio(request.getPrecio());
         saveEvento(evento);
 
         return evento;

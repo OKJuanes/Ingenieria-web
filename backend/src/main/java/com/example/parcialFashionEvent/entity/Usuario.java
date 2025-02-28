@@ -36,8 +36,6 @@ public class Usuario implements UserDetails {
 
     @OneToOne(mappedBy = "usuario")
     @JsonManagedReference
-    private Portafolio portafolio;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return rol.getAuthorities();

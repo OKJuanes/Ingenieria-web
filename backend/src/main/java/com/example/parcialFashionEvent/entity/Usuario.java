@@ -33,7 +33,7 @@ public class Usuario implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     Role rol;
-
+    
     @OneToOne(mappedBy = "usuario")
     @JsonManagedReference
     @Override

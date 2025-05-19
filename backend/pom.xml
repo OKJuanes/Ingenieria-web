@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>parcialFashionEvent</artifactId>
+	<artifactId>ProyectoWeb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>parcialFashionEvent</name>
+	<name>ProyectoWeb</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -76,6 +76,11 @@
 		<dependency>
 			<groupId>io.github.cdimascio</groupId>
 			<artifactId>dotenv-java</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>me.paulschwarz</groupId>
+			<artifactId>spring-dotenv</artifactId>
 			<version>3.0.0</version>
 		</dependency>
 		<!-- Dependencia para la API de JJWT -->

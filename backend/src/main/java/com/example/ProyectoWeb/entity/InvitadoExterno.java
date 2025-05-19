@@ -22,4 +22,7 @@ public class InvitadoExterno {
 
     @Column(nullable = false)
     private String telefono;
+
+    @Column(nullable = false)
+    private String empresa;
 }

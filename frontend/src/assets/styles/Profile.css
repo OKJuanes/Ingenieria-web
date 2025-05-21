@@ -1,0 +1,6 @@
+/* src/assets/styles/Profile.css */
+/* Puedes añadir estilos específicos para la información del perfil si lo deseas */
+/* Por ejemplo, un padding extra para el div de info del usuario */
+.bg-white.rounded-lg.shadow-md.p-6.mb-8 {
+    padding: 2.5rem;
+}

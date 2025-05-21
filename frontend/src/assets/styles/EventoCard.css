@@ -1,0 +1,16 @@
+/* src/assets/styles/EventoCard.css */
+.evento-card {
+    border: 1px solid #e2e8f0; /* border-gray-200 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* shadow-md */
+    transition: transform 0.2s ease-in-out;
+}
+
+.evento-card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-ver-detalles,
+.btn-registrar,
+.btn-desregistrar {
+    white-space: nowrap; /* Evita que el texto del botón se rompa */
+}

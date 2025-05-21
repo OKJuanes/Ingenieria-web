@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../main.tsx';
 import Navbar from "../components/common/Navbar.tsx";
 import '../assets/styles/Register.css'; // Importa el archivo CSS para los estilos
+import { register } from '../services/authService'; // Importar la función register del servicio
 
 function Register() {
     const [correo, setCorreo] = useState('');
@@ -15,47 +16,20 @@ function Register() {
 
     const navigate = useNavigate();
 
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    const handleSubmit = async (e: React.FormEvent) => { // Usar React.FormEvent
         e.preventDefault();
-
-        // Crear el cuerpo del POST
-        const requestBody = {
-            correo: correo,
-            nombre: nombre,
-            apellido: apellido,
-            username: username,
-            password: password
-        };
+        setErrorMessage(''); // Limpiar mensajes de error previos
+        setSuccessMessage(''); // Limpiar mensajes de éxito previos
 
         try {
-            // Realizar el POST al backend
-            const response = await fetch(`${API_URL}/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (response.ok) {
-                // Si la respuesta es exitosa (por ejemplo, 200), manejar el éxito
-                const { token } = await response.json();
-                setSuccessMessage(`Registro exitoso!`);
-                setErrorMessage('');
-                // Almacenar el token JWT y redirigir a la página de eventos
-                localStorage.setItem('authToken', token);
-                navigate('/eventos');
-            } else {
-                // Si hay algún error, manejar el error
-                const errorData = await response.json();
-                setErrorMessage(errorData.message || 'Error en el registro');
-                setSuccessMessage('');
-            }
-        } catch (error) {
-            // Manejo de errores en la conexión
-            setErrorMessage('Error de conexión. Por favor, intenta más tarde.');
-            console.log(error);
-            setSuccessMessage('');
+            const userData = await register(correo, nombre, apellido, username, password); // Llamar a la función de registro
+            setSuccessMessage(`¡Registro exitoso para ${userData.username}!`);
+            
+            // Redirigir directamente al home de usuario o a la página de eventos
+            navigate('/eventos'); // O donde desees que vaya el usuario después del registro
+        } catch (error: any) {
+            setErrorMessage(error.message || 'Error en el registro. Por favor, intenta de nuevo.');
+            console.error('Error de registro:', error);
         }
     };
 

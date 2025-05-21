@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../main.tsx';
 import '../assets/styles/Login.css'; // Ruta corregida
+import { login } from '../services/authService'; // Importar la función login del servicio de autenticación
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -11,50 +12,27 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent) => { // Usar React.FormEvent para mejor tipado
     e.preventDefault();
-
-    // Crear el cuerpo del POST
-    const requestBody = {
-      username: username,
-      password: password,
-    };
+    setErrorMessage(''); // Limpiar mensajes de error previos
 
     try {
-      // Realizar el POST al backend
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        throw new Error('Credenciales incorrectas');
-      }
-
-      // Si la respuesta es exitosa, manejar el éxito
-      const { token, role } = await response.json();
-      setErrorMessage('');
-
-      // Almacenar el token en localStorage
-      localStorage.setItem('authToken', token);
+      const userData = await login(username, password); // Llamar a la función de login del servicio
 
       // Redirigir según el rol
-      if (role === 'admin') {
-        navigate('/home-admin'); // Redirige al administrador
-      } else if (role === 'user') {
-        navigate('/home-usuario'); // Redirige al usuario común
+      if (userData.role === 'admin') {
+        navigate('/home-admin');
+      } else if (userData.role === 'user') {
+        navigate('/home-usuario');
       } else {
-        throw new Error('Rol no válido');
+        throw new Error('Rol de usuario no reconocido.');
       }
-    } catch (error) {
-      // Manejo de errores en la conexión
-      setErrorMessage('Usuario o contraseña incorrectos.');
-      console.error(error);
+    } catch (error: any) { // Usar any para el error o tipar si conoces la estructura
+      setErrorMessage(error.message || 'Error al iniciar sesión. Inténtalo de nuevo.');
+      console.error('Error de login:', error);
     }
   };
+
 
   return (
     <div className="login-container">

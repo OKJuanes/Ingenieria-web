@@ -1,0 +1,14 @@
+/* src/assets/styles/EventoView.css */
+.evento-detail-card {
+    max-width: 800px;
+    margin-top: 2rem;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes para los botones dentro de la tarjeta de detalles */
+.evento-detail-card button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+}

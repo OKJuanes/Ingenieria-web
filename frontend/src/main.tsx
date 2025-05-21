@@ -3,11 +3,13 @@ import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 // Importa las páginas
+import HomeAdmin from './pages/HomeAdmin';// Página para administradores
 import Login from './pages/Login';
 import HomeUsuario from './pages/HomeUsuario'; // Página para usuarios comunes
-import HomeAdmin from './pages/HomeAdmin'; // Página para administradores
+ 
 import Eventos from './pages/Eventos';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
@@ -19,6 +21,10 @@ export const API_URL = import.meta.env.VITE_API_URL;
 
 // Configura el enrutador
 const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Navigate to="/login" replace />,
+  },
   {
     path: '/login',
     element: <Login />, // La ruta principal ahora es la página de Login
@@ -51,6 +57,7 @@ const router = createBrowserRouter([
     path: '/register',
     element: <Register />,
   },
+  
 ]);
 
 // Renderiza la aplicación

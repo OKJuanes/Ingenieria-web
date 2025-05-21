@@ -13,4 +13,14 @@ public interface IEventoRepository extends JpaRepository<Evento, Long> {
     @Query(value = "SELECT e.* FROM evento e JOIN evento_usuario eu ON e.id = eu.evento_id WHERE eu.usuario_id = :userId", nativeQuery = true)
     List<Evento> getEventosByUsuario(@Param("userId") Long id);
 
+    @Query(value = "SELECT * FROM evento WHERE fecha > NOW()", nativeQuery = true)
+    List<Evento> findEventosActivos();
+
+    @Query(value = "SELECT e.id, e.nombre, COUNT(ei.invitado_id) AS cantidad_participantes " +
+            "FROM evento e " +
+            "LEFT JOIN evento_Invitado ei ON e.id = ei.evento_id " +
+            "WHERE e.fecha > NOW() " +
+            "GROUP BY e.id, e.nombre", nativeQuery = true)
+    List<Object[]> findCantidadParticipantesEventosActivos();
+
 }

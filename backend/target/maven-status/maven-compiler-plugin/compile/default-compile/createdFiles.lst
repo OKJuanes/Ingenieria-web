@@ -1,6 +1,8 @@
 com\example\ProyectoWeb\repositories\IEventoRepository.class
 com\example\ProyectoWeb\auth\RegisterRequest$RegisterRequestBuilder.class
+com\example\ProyectoWeb\controllers\EmpresaController.class
 com\example\ProyectoWeb\entity\UsuarioInfo.class
+com\example\ProyectoWeb\services\EmpresaService.class
 com\example\ProyectoWeb\auth\LoginRequest$LoginRequestBuilder.class
 com\example\ProyectoWeb\entity\Hito.class
 com\example\ProyectoWeb\config\JwtService.class
@@ -12,6 +14,7 @@ com\example\ProyectoWeb\entity\Usuario$UsuarioBuilder.class
 com\example\ProyectoWeb\entity\Usuario.class
 com\example\ProyectoWeb\auth\AuthResponse.class
 com\example\ProyectoWeb\repositories\IInvitadoExternoRepository.class
+com\example\ProyectoWeb\repositories\IEmpresaRepository.class
 com\example\ProyectoWeb\controllers\AsignarRolRequest$AsignarRolRequestBuilder.class
 com\example\ProyectoWeb\controllers\OrganizadorController.class
 com\example\ProyectoWeb\config\SecurityConfig.class

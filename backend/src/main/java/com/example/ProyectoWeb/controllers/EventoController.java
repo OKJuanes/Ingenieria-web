@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import com.example.ProyectoWeb.entity.Evento;
 import com.example.ProyectoWeb.services.EventoService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/eventos")
@@ -78,5 +81,24 @@ public class EventoController {
         } catch (RuntimeException e) {
             return e.getMessage();
         }
+    }
+
+    @GetMapping("/activos")
+    public List<Evento> getEventosActivos() {
+        return eventoService.getEventosActivos();
+    }
+
+    @GetMapping("/activos/participantes")
+    public List<Map<String, Object>> getCantidadParticipantesEventosActivos() {
+        List<Object[]> results = eventoService.getCantidadParticipantesEventosActivos();
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Object[] row : results) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", row[0]);
+            map.put("nombre", row[1]);
+            map.put("cantidad_participantes", row[2]);
+            response.add(map);
+        }
+        return response;
     }
 }

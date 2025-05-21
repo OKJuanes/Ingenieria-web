@@ -40,6 +40,10 @@ public class EventoService {
         return eventoRepository.findCantidadParticipantesEventosActivos();
     }
 
+    public Evento getEventoMasProximo() {
+    return eventoRepository.findEventoMasProximo();
+    }
+
     public Evento updateEventoById(Evento request, Long eventoId){
         Evento evento = eventoRepository.findById(eventoId).get();
 

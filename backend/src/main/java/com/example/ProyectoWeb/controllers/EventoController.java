@@ -101,4 +101,9 @@ public class EventoController {
         }
         return response;
     }
+
+    @GetMapping("/proximo")
+    public Evento getEventoMasProximo() {
+        return eventoService.getEventoMasProximo();
+}
 }

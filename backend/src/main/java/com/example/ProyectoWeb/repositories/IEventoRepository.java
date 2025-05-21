@@ -16,6 +16,9 @@ public interface IEventoRepository extends JpaRepository<Evento, Long> {
     @Query(value = "SELECT * FROM evento WHERE fecha > NOW()", nativeQuery = true)
     List<Evento> findEventosActivos();
 
+    @Query(value = "SELECT * FROM evento WHERE fecha > NOW() ORDER BY fecha ASC LIMIT 1", nativeQuery = true)
+    Evento findEventoMasProximo();
+
     @Query(value = "SELECT e.id, e.nombre, COUNT(ei.invitado_id) AS cantidad_participantes " +
             "FROM evento e " +
             "LEFT JOIN evento_Invitado ei ON e.id = ei.evento_id " +

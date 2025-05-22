@@ -33,7 +33,6 @@ public class EventoController {
         }
     }
 
-    // Inscribirse a un evento como modelo
     @PutMapping("/{id}/inscribirse")
     public ResponseEntity<?> addParticipante(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

@@ -111,4 +111,9 @@ public class EventoService {
             throw new RuntimeException("Usuario no encontrado en el evento");
         }
     }
+
+    public List<String> getParticipantesDeEvento(Long eventoId) {
+        Evento evento = getEventoById(eventoId);
+        return evento.getParticipantes();
+    }
 }

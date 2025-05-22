@@ -31,10 +31,13 @@ public class Evento {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
+    @Column(length = 500)
+    private String descripcion;
+
     // Invitados (para uso futuro)
     @ManyToMany
     @JoinTable(
-            name = "evento_usuario",
+            name = "evento_Invitado",
             joinColumns = @JoinColumn(name = "evento_id"),
             inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
@@ -53,9 +56,9 @@ public class Evento {
     // Participantes (usuarios inscritos)
     @ManyToMany
     @JoinTable(
-            name = "evento_invitado",
+            name = "evento_usuario", // <-- Aquí el nombre correcto de la tabla intermedia
             joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "Invitado_id")
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private List<Usuario> participantes = new ArrayList<>();
 

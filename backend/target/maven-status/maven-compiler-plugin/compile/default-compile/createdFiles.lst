@@ -2,6 +2,7 @@ com\example\ProyectoWeb\repositories\IEventoRepository.class
 com\example\ProyectoWeb\auth\RegisterRequest$RegisterRequestBuilder.class
 com\example\ProyectoWeb\entity\TipoEvento.class
 com\example\ProyectoWeb\controllers\EmpresaController.class
+com\example\ProyectoWeb\controllers\HitoController.class
 com\example\ProyectoWeb\entity\UsuarioInfo.class
 com\example\ProyectoWeb\services\EmpresaService.class
 com\example\ProyectoWeb\auth\LoginRequest$LoginRequestBuilder.class
@@ -10,7 +11,6 @@ com\example\ProyectoWeb\config\JwtService.class
 com\example\ProyectoWeb\ParcialFashionEventApplication.class
 com\example\ProyectoWeb\auth\AuthService.class
 com\example\ProyectoWeb\entity\Role.class
-com\example\ProyectoWeb\config\GlobalExceptionHandler.class
 com\example\ProyectoWeb\services\UsuarioService.class
 com\example\ProyectoWeb\entity\Usuario$UsuarioBuilder.class
 com\example\ProyectoWeb\entity\Usuario.class
@@ -36,6 +36,7 @@ com\example\ProyectoWeb\controllers\AdminController.class
 com\example\ProyectoWeb\entity\InvitadoExterno.class
 com\example\ProyectoWeb\entity\Evento.class
 com\example\ProyectoWeb\config\ApplicationConfig.class
+com\example\ProyectoWeb\controllers\HitoController$HitoRequest.class
 com\example\ProyectoWeb\entity\Permission.class
 com\example\ProyectoWeb\auth\AuthResponse$AuthResponseBuilder.class
 com\example\ProyectoWeb\repositories\IUsuarioRepository.class

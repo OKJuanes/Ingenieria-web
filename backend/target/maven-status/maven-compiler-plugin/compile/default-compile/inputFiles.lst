@@ -5,13 +5,13 @@ D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\Logi
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\RegisterRequest.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\ApplicationConfig.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\CorsConfig.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\GlobalExceptionHandler.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtAuthFilter.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtService.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\SecurityConfig.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\AdminController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\EmpresaController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\EventoController.java
+D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\HitoController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\OrganizadorController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\UsuarioController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Empresa.java

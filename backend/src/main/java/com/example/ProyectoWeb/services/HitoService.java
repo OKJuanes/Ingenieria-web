@@ -5,16 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ProyectoWeb.entity.Hito;
+import com.example.ProyectoWeb.entity.Evento;
+import com.example.ProyectoWeb.entity.Usuario;
 import com.example.ProyectoWeb.repositories.IHitoRepository;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class HitoService {
 
-    @Autowired
-    private IHitoRepository hitoRepository;
+    private final IHitoRepository hitoRepository;
+    private final UsuarioService usuarioService;
+    private final EventoService eventoService;
 
     public void saveHito(Hito hito) {
         // Guarda el hito en la base de datos
@@ -51,5 +55,25 @@ public class HitoService {
                 .orElseThrow(() -> new RuntimeException("Hito no encontrado"));
         hitoRepository.delete(hito);
         return "Hito eliminado";
+    }
+
+    public Hito crearHitoParaParticipante(Long eventoId, Long userId, String titulo, String descripcion, String categoria) {
+        Evento evento = eventoService.getEventoById(eventoId);
+        Usuario usuario = usuarioService.getUserById(userId);
+
+        // Verifica que el usuario participó en el evento
+        if (!evento.getParticipantes().contains(usuario.getUsername())) {
+            throw new RuntimeException("El usuario no participó en este evento");
+        }
+
+        Hito hito = new Hito();
+        hito.setTitulo(titulo);
+        hito.setDescripcion(descripcion);
+        hito.setCategoria(categoria);
+        hito.setFechaRegistro(new Date());
+        hito.setBeneficiario(usuario);
+        hito.setEventoRelacionado(evento);
+
+        return hitoRepository.save(hito);
     }
 }

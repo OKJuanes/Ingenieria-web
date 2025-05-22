@@ -1,74 +1,62 @@
 // src/pages/Profile.tsx
 import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../components/common/Navbar';
-import EventoCard from '../components/eventos/EventoCard'; // Reutilizamos EventoCard
+import EventoCard from '../components/eventos/EventoCard';
 import { getUserData, isAuthenticated } from '../services/authService';
-import { getEventosByUserId, Evento, unregisterUserFromEvent } from '../services/eventoService';
-import { useNavigate, Navigate } from 'react-router-dom'; // Importa Navigate
+import { getRegisteredEventsForCurrentUser, Evento, unregisterUserFromEvent } from '../services/eventoService';
+import { useNavigate, Navigate } from 'react-router-dom';
 
-import '../assets/styles/Profile.css'; // Asegúrate de tener este CSS
+import '../assets/styles/Profile.css';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const userData = getUserData(); // Obtener los datos del usuario del localStorage
-  
+
   const [userEventos, setUserEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // === REDIRECCIÓN TEMPRANA SI NO ESTÁ AUTENTICADO ===
   // Esto asegura que la página no se renderice si el usuario no está logueado.
-  // ProtectedRoute ya debería manejar esto, pero esta es una capa adicional.
+  // `ProtectedRoute` ya debería manejar esto, pero esta es una capa adicional.
   if (!isAuthenticated()) {
-    // console.log("Usuario no autenticado en Profile. Redirigiendo a /login.");
     return <Navigate to="/login" replace />;
   }
 
-  // Si llegamos a este punto, el usuario está autenticado.
-  // Ahora podemos asumir que userData debería existir.
-  // Si userData es null o no tiene username aquí, hay un problema en authService.ts.
-  const userId = userData?.username; // Usamos el username como ID del usuario mock
+  // Si llegamos a este punto, el usuario está autenticado y userData debería existir.
+  const username = userData?.username; // Se usa para mostrar, no para la llamada a la API
 
   // Efecto para obtener los eventos a los que el usuario está registrado
   const fetchUserEventos = useCallback(async () => {
-    // Si userId no existe (por ejemplo, si userData es null o no tiene username),
-    // no podemos buscar eventos. Mostrar un error o mensaje.
-    if (!userId) {
-      // console.error("Profile Component: userId es nulo. No se cargarán eventos del usuario.");
-      setLoading(false); // Detener el estado de carga
-      setError('No se pudo obtener la información de tu usuario para cargar los eventos.');
-      return;
-    }
-
     setLoading(true);
     setError(null);
     try {
-      // console.log(`Profile Component: Cargando eventos para el usuario: ${userId}`);
-      const eventos = await getEventosByUserId(userId);
+      // getRegisteredEventsForCurrentUser no necesita un ID de usuario,
+      // ya que el backend lo obtendrá del token JWT.
+      const eventos = await getRegisteredEventsForCurrentUser();
       setUserEventos(eventos);
     } catch (err: any) {
       setError(err.message || 'Error al cargar tus eventos registrados.');
       console.error("Profile Component - Error al cargar eventos del usuario:", err);
+      // Opcional: si hay un error de autenticación (ej. token expirado), redirigir a login
+      if (err.message.includes('No authentication token found')) {
+        navigate('/login');
+      }
     } finally {
       setLoading(false);
     }
-  }, [userId]); // Este useCallback depende de userId
+  }, [navigate]); // Dependencia de navigate
 
   // useEffect para llamar a fetchUserEventos cuando el componente se monta
-  // o cuando userId cambia (aunque userId no debería cambiar si el usuario está logueado)
   useEffect(() => {
-    fetchUserEventos(); // Llama a la función asíncrona
-  }, [fetchUserEventos]); // Dependencia del useCallback para que solo se ejecute cuando cambie
+    fetchUserEventos();
+  }, [fetchUserEventos]);
 
   // Función para manejar la desinscripción de un evento
   const handleUnregisterClick = async (eventId: number) => {
-    if (!userId) {
-        alert('Error: No se pudo identificar tu usuario para la desinscripción.');
-        return;
-    }
     try {
-      // console.log(`Profile Component: Desregistrando a ${userId} del evento ${eventId}`);
-      await unregisterUserFromEvent(eventId, userId);
+      // unregisterUserFromEvent ya no necesita pasar userId
+      await unregisterUserFromEvent(eventId);
       alert('¡Te has desinscrito del evento exitosamente!');
       // Después de la desinscripción, volvemos a cargar la lista de eventos del usuario
       fetchUserEventos();
@@ -103,9 +91,7 @@ const Profile: React.FC = () => {
             <p className="text-red-300 text-2xl mb-4">Error: No se pudo cargar la información de tu perfil.</p>
             <button
                 onClick={() => {
-                    // Limpiar datos por si acaso y redirigir a login para un reintento
-                    // console.log("Profile Component: userData nulo inesperado. Limpiando y redirigiendo a login.");
-                    localStorage.clear(); // Limpia todo el localStorage si hay datos corruptos
+                    localStorage.clear(); // Limpia datos por si acaso
                     navigate('/login');
                 }}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-300"
@@ -128,10 +114,6 @@ const Profile: React.FC = () => {
           <h3 className="text-2xl font-semibold text-gray-800 mb-4">Información del Usuario</h3>
           <p className="text-gray-700 mb-2"><span className="font-bold">Usuario:</span> {userData.username}</p>
           <p className="text-gray-700"><span className="font-bold">Rol:</span> {userData.role === 'admin' ? 'Administrador' : 'Usuario Regular'}</p>
-          {/* Aquí podrías añadir más información del usuario si tu mockUsers o backend la proveyera */}
-          {/* Por ejemplo, desde tu mockUsers, podrías añadir email, nombre, apellido: */}
-          {/* <p className="text-gray-700 mb-2"><span className="font-bold">Correo:</span> {userData.email}</p> */}
-          {/* <p className="text-gray-700 mb-2"><span className="font-bold">Nombre Completo:</span> {userData.nombre} {userData.apellido}</p> */}
         </div>
 
         {/* Mis Eventos Registrados */}

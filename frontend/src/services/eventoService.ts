@@ -1,266 +1,197 @@
 // src/services/eventoService.ts
-import { mockUsers } from './authService';
-// Define la interfaz para la estructura de un evento
+import { API_URL } from '../main';
+import { getToken } from './authService';
+
+// Interfaz Evento (asegúrate de que coincida con la estructura que tu backend devuelve/espera)
 export interface Evento {
-    id: number;
-    nombre: string;
-    tipo: string;
-    fecha: string;
-    descripcion: string;
-    cantidadParticipantes?: number;
-    empresaPatrocinadora?: string;
-    invitadosExternos?: string[];
-    invitados?: string[];
-    // Añade aquí cualquier otro campo que tu backend vaya a devolver para un evento
+  id: number;
+  nombre: string;
+  tipo: string;
+  fecha: string; // Considera usar Date si tu backend devuelve un formato ISO. Para el formulario, string está bien.
+  descripcion: string;
+  cantidadParticipantes?: number;
+  empresaPatrocinadora?: string;
+  invitadosExternos?: string[]; // Nombres o identificadores de invitados externos (string)
+  invitados?: string[]; // Estos deberían ser los IDs de los usuarios de tu BD, ej. string[] de UUIDs o number[]
+}
+
+// Función auxiliar para obtener los headers con el token de autenticación
+const getAuthHeaders = () => {
+  const token = getToken();
+  if (!token) {
+    // Si no hay token, el usuario no está autenticado, puedes redirigir o lanzar un error
+    // En un entorno de producción, esto podría ser un error más grave.
+    console.error('No authentication token found. Please log in.');
+    throw new Error('No authentication token found. Please log in.');
   }
-  
-  // ==========================================================
-  // MOCKS TEMPORALES PARA DATOS DE EVENTOS SIN BACKEND
-  // ¡RECUERDA ELIMINAR O REVERTIR ESTO CUANDO CONECTES EL BACKEND REAL!
-  // ==========================================================
-  
-  const mockEventos: Evento[] = [
-    {
-      id: 1,
-      nombre: 'Hackathon Innovación 2024',
-      tipo: 'Hackathon',
-      fecha: '2024-06-20',
-      descripcion: 'Desarrolla soluciones creativas para problemas del mundo real en 48 horas.',
-      cantidadParticipantes: 250,
-      empresaPatrocinadora: 'TecnoCorp',
-      invitadosExternos: ['Dra. Ana García (Experta en IA)', 'Ing. Luis Pérez (Desarrollador Senior)'],
-      invitados: ["user", "admin"], // Estos podrían ser IDs o nombres de usuarios internos
-    },
-    {
-      id: 2,
-      nombre: 'Conferencia de Ciberseguridad',
-      tipo: 'Conferencia',
-      fecha: '2024-07-10',
-      descripcion: 'Aprende las últimas tendencias en seguridad informática y protección de datos.',
-      cantidadParticipantes: 180,
-      empresaPatrocinadora: 'SecureData',
-      invitadosExternos: ['Dr. Carlos Soto (Consultor de Seguridad)', 'Lic. Marta Ríos (Auditora Forense)'],
-      invitados: ["user", "admin"],
-    },
-    {
-      id: 3,
-      nombre: 'Bootcamp Fullstack JavaScript',
-      tipo: 'Bootcamp',
-      fecha: '2024-08-01',
-      descripcion: 'Intensivo de 3 meses para dominar el desarrollo frontend y backend con JavaScript.',
-      cantidadParticipantes: 80,
-      empresaPatrocinadora: 'CodeMaster',
-      invitadosExternos: [],
-      invitados: ["user", "admin"],
-    },
-    {
-      id: 4,
-      nombre: 'Taller de Diseño UX/UI',
-      tipo: 'Taller',
-      fecha: '2024-09-15',
-      descripcion: 'Diseña interfaces de usuario intuitivas y experiencias de usuario atractivas.',
-      cantidadParticipantes: 50,
-      empresaPatrocinadora: 'CreativeLabs',
-      invitadosExternos: ['Diseñadora Clara Luna'],
-      invitados: ["user", "admin"],
-    },
-  ];
-  // === NUEVAS FUNCIONES PARA HOMEADMIN ===
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
+};
 
-// Función para obtener un resumen de estadísticas de eventos
+/**
+ * Obtiene estadísticas generales de eventos.
+ * @returns Promise con un objeto de estadísticas.
+ */
 export const getEventStats = async (): Promise<{ eventosActivos: number; totalParticipantes: number; proximoEvento: string }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const eventosActivos = mockEventos.length;
-      const totalParticipantes = mockEventos.reduce((sum, evento) => sum + (evento.cantidadParticipantes || 0), 0);
-
-      // Encontrar el próximo evento (basado en la fecha y que no haya pasado)
-      const now = new Date();
-      const eventosFuturos = mockEventos.filter(evento => new Date(evento.fecha) > now);
-      
-      eventosFuturos.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
-
-      const proximoEvento = eventosFuturos.length > 0
-        ? `${eventosFuturos[0].nombre} - ${eventosFuturos[0].fecha}`
-        : 'No hay próximos eventos registrados';
-
-      resolve({
-        eventosActivos,
-        totalParticipantes,
-        proximoEvento,
-      });
-    }, 800); // Simula un retardo de red
+  const response = await fetch(`${API_URL}/api/events/stats`, {
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al cargar las estadísticas de eventos');
+  }
+  return response.json();
 };
 
-// Función para obtener una lista de eventos recientes (ej. los últimos 5 por fecha)
-export const getRecentEvents = async (limit: number = 5): Promise<Evento[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Ordena los eventos por fecha de forma descendente y toma los 'limit' más recientes
-      const sortedEvents = [...mockEventos].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-      const recentEvents = sortedEvents.slice(0, limit);
-      resolve(recentEvents);
-    }, 700);
+/**
+ * Obtiene una lista de eventos recientes.
+ * @param limit El número máximo de eventos a devolver.
+ * @returns Promise con un array de objetos Evento.
+ */
+export const getRecentEvents = async (limit: number = 3): Promise<Evento[]> => {
+  const response = await fetch(`${API_URL}/api/events/recent/${limit}`, {
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al cargar los eventos recientes');
+  }
+  return response.json();
 };
-  // Función para obtener todos los eventos
-  export const getEventos = async (): Promise<Evento[]> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(mockEventos);
-      }, 500); // Simula un retardo de red
-    });
-  };
-  
-  // Función para obtener un evento por su ID
-  export const getEventoById = async (id: number): Promise<Evento | undefined> => {
-  console.log("eventoService.ts: Intentando buscar evento con ID:", id); // Añade este log
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const foundEvent = mockEventos.find(evento => evento.id === id);
-      console.log("eventoService.ts: Evento encontrado:", foundEvent); // Añade este log
-      resolve(foundEvent);
-    }, 300);
+
+/**
+ * Obtiene todos los eventos disponibles.
+ * @returns Promise con un array de objetos Evento.
+ */
+export const getEventos = async (): Promise<Evento[]> => {
+  const response = await fetch(`${API_URL}/api/events`, {
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al cargar todos los eventos');
+  }
+  return response.json();
 };
-  
-  // Función para simular el registro de un usuario a un evento
-  export const registerUserToEvent = async (eventId: number, userId: string): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const eventIndex = mockEventos.findIndex(e => e.id === eventId);
-        if (eventIndex > -1) {
-          const event = mockEventos[eventIndex];
-          // Simula la adición del usuario
-          if (!event.invitados) {
-              event.invitados = [];
-          }
-          if (!event.invitados.includes(userId)) {
-              event.invitados.push(userId);
-              if (event.cantidadParticipantes !== undefined) {
-                  event.cantidadParticipantes += 1;
-              } else {
-                  event.cantidadParticipantes = 1;
-              }
-              // console.log(`Usuario ${userId} registrado en evento ${eventId}`);
-              resolve(true); // Éxito
-          } else {
-              reject(new Error('Ya estás registrado en este evento (MOCK)'));
-          }
-        } else {
-          reject(new Error('Evento no encontrado (MOCK)'));
-        }
-      }, 600);
-    });
-  };
-  
-  // Función para simular la desinscripción de un usuario de un evento
-  export const unregisterUserFromEvent = async (eventId: number, userId: string): Promise<boolean> => {
-      return new Promise((resolve, reject) => {
-          setTimeout(() => {
-              const eventIndex = mockEventos.findIndex(e => e.id === eventId);
-              if (eventIndex > -1) {
-                  const event = mockEventos[eventIndex];
-                  if (event.invitados) {
-                      const initialLength = event.invitados.length;
-                      event.invitados = event.invitados.filter(inv => inv !== userId);
-                      if (event.invitados.length < initialLength) {
-                          if (event.cantidadParticipantes !== undefined && event.cantidadParticipantes > 0) {
-                              event.cantidadParticipantes -= 1;
-                          }
-                          // console.log(`Usuario ${userId} desregistrado del evento ${eventId}`);
-                          resolve(true); // Éxito
-                      } else {
-                          reject(new Error('No estabas registrado en este evento (MOCK)'));
-                      }
-                  } else {
-                      reject(new Error('No estabas registrado en este evento (MOCK)'));
-                  }
-              } else {
-                  reject(new Error('Evento no encontrado (MOCK)'));
-              }
-          }, 600);
-      });
-  };
-  
-  // Función para obtener eventos en los que el usuario está registrado (para el perfil)
-  export const getEventosByUserId = async (userId: string): Promise<Evento[]> => {
-      return new Promise((resolve) => {
-          setTimeout(() => {
-              const userEventos = mockEventos.filter(evento => 
-                  evento.invitados && evento.invitados.includes(userId)
-              );
-              resolve(userEventos);
-          }, 400);
-      });
-  
-  };
-  export const createEvent = async (newEvent: Evento): Promise<Evento> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Generar un ID único simple para el mock
-      const newId = Math.max(...mockEventos.map(e => e.id)) + 1;
-      const eventToSave = { ...newEvent, id: newId };
-      mockEventos.push(eventToSave);
-      // console.log("Evento creado (MOCK):", eventToSave);
-      resolve(eventToSave);
-    }, 1000);
+
+/**
+ * Obtiene un evento por su ID.
+ * @param id El ID del evento.
+ * @returns Promise con el objeto Evento o undefined si no se encuentra.
+ */
+export const getEventoById = async (id: number): Promise<Evento | undefined> => {
+  const response = await fetch(`${API_URL}/api/events/${id}`, {
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    if (response.status === 404) {
+      return undefined; // Evento no encontrado
+    }
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al cargar el evento con ID ${id}`);
+  }
+  return response.json();
 };
-  // Función para actualizar un evento existente (MOCK TEMPORAL)
+
+/**
+ * Crea un nuevo evento.
+ * @param newEvent El objeto Evento a crear (sin ID si el backend lo genera).
+ * @returns Promise con el objeto Evento creado (incluyendo el ID).
+ */
+export const createEvent = async (newEvent: Omit<Evento, 'id'>): Promise<Evento> => {
+  const response = await fetch(`${API_URL}/api/events`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(newEvent),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al crear el evento');
+  }
+  return response.json();
+};
+
+/**
+ * Actualiza un evento existente.
+ * @param updatedEvent El objeto Evento actualizado (con ID).
+ * @returns Promise con el objeto Evento actualizado.
+ */
 export const updateEvent = async (updatedEvent: Evento): Promise<Evento> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = mockEventos.findIndex(e => e.id === updatedEvent.id);
-      if (index !== -1) {
-        // Actualizar el evento manteniendo la referencia para las inscripciones
-        mockEventos[index] = { ...updatedEvent, invitados: mockEventos[index].invitados }; // Conservar invitados
-        // console.log("Evento actualizado (MOCK):", mockEventos[index]);
-        resolve(mockEventos[index]);
-      } else {
-        reject(new Error('Evento no encontrado para actualizar (MOCK)'));
-      }
-    }, 1000);
+  const response = await fetch(`${API_URL}/api/events/${updatedEvent.id}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(updatedEvent),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al actualizar el evento con ID ${updatedEvent.id}`);
+  }
+  return response.json();
 };
+
+/**
+ * Registra al usuario autenticado en un evento.
+ * @param eventId El ID del evento al que registrarse.
+ * @returns Promise<void>
+ */
+export const registerUserToEvent = async (eventId: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/api/events/${eventId}/register`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    // Asumimos que el backend identifica al usuario por el token JWT
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al registrarse en el evento ${eventId}`);
+  }
+};
+
+/**
+ * Desinscribe al usuario autenticado de un evento.
+ * @param eventId El ID del evento del que desinscribirse.
+ * @returns Promise<void>
+ */
+export const unregisterUserFromEvent = async (eventId: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/api/events/${eventId}/unregister`, {
+    method: 'DELETE', // DELETE es más RESTful para desinscripción, pero tu backend podría usar POST
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al desinscribirse del evento ${eventId}`);
+  }
+};
+
+/**
+ * Obtiene los eventos a los que el usuario autenticado está registrado.
+ * @returns Promise con un array de objetos Evento.
+ */
+export const getRegisteredEventsForCurrentUser = async (): Promise<Evento[]> => {
+  // Asumimos que el backend tiene una ruta para obtener los eventos del usuario actual
+  const response = await fetch(`${API_URL}/api/users/me/events`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al cargar tus eventos registrados.');
+  }
+  return response.json();
+};
+
+/**
+ * Genera un reporte CSV de eventos y participantes.
+ * @returns Promise con el contenido del reporte CSV como una cadena de texto.
+ */
 export const generateEventsReportCsv = async (): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      let csvContent = "Evento,Tipo,Fecha,Participantes Registrados,Invitados Externos,Empresa Patrocinadora,Descripción\n";
-
-      mockEventos.forEach(event => {
-        // Obtener nombres de usuarios registrados
-        // Buscar el usuario por username (ya que 'invitados' contiene usernames)
-        const registeredParticipants = event.invitados
-          ?.map(usernameId => { // Cambiado 'userId' a 'usernameId' para mayor claridad
-            const user = mockUsers.find(u => u.username === usernameId);
-            return user ? user.username : `ID:${usernameId} (Desconocido)`;
-          })
-          .join('; ') || 'N/A';
-
-        // Formatear invitados externos
-        const externalGuests = event.invitadosExternos?.join('; ') || 'N/A';
-
-        // Escapar comas y nuevas líneas en la descripción si existen
-        const escapedDescription = event.descripcion ? `"${event.descripcion.replace(/"/g, '""')}"` : '';
-
-        const row = [
-          `"${event.nombre.replace(/"/g, '""')}"`,
-          event.tipo,
-          event.fecha,
-          `"${registeredParticipants}"`,
-          `"${externalGuests}"`,
-          event.empresaPatrocinadora || 'N/A',
-          escapedDescription
-        ].join(',');
-
-        csvContent += row + '\n';
-      });
-
-      console.log("CSV Report Generated:\n", csvContent);
-      resolve(csvContent);
-    }, 1500);
+  const response = await fetch(`${API_URL}/api/reports/events-participants-csv`, {
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al generar el reporte CSV');
+  }
+  return response.text(); // El backend debe devolver el contenido CSV directamente como texto plano
 };
-  

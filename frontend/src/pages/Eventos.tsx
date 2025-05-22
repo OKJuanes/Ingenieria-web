@@ -1,21 +1,21 @@
-// src/pages/Eventos.tsx
+// src/pages/Eventos.tsx (ajustado para Opción 1)
 import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../components/common/Navbar';
 import EventoCard from '../components/eventos/EventoCard';
+// Asegúrate que registerUserToEvent y unregisterUserFromEvent no esperan userId aquí si el backend lo saca del token
 import { getEventos, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
-import { getUserData, isAuthenticated } from '../services/authService'; // Para obtener el ID del usuario logueado
+import { getUserData, isAuthenticated } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
 const Eventos: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [registeredEventIds, setRegisteredEventIds] = useState<Set<number>>(new Set()); // Para saber a qué eventos está registrado el usuario
+  const [registeredEventIds, setRegisteredEventIds] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
-  const currentUser = getUserData(); // Obtener los datos del usuario actual
-  const userId = currentUser ? currentUser.username : ''; // Usar el username como ID del usuario mock
+  const currentUser = getUserData();
+  const userId = currentUser ? currentUser.username : ''; // Este userId es para la lógica del frontend (e.invitados.includes)
 
-  // Función para cargar los eventos
   const fetchEventos = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -23,8 +23,8 @@ const Eventos: React.FC = () => {
       const fetchedEventos = await getEventos();
       setEventos(fetchedEventos);
 
-      // Si el usuario está logueado, determinar a qué eventos está registrado
       if (isAuthenticated() && userId) {
+        // Asumiendo que `e.invitados` contiene los `username`s de los usuarios registrados
         const registered = fetchedEventos
           .filter(e => e.invitados?.includes(userId))
           .map(e => e.id);
@@ -36,11 +36,11 @@ const Eventos: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [userId]); // Dependencia del userId
+  }, [userId]);
 
   useEffect(() => {
-    fetchEventos(); // Cargar eventos al montar el componente
-  }, [fetchEventos]); // Ejecutar cuando fetchEventos cambie (primera carga)
+    fetchEventos();
+  }, [fetchEventos]);
 
   const handleRegisterClick = async (eventId: number) => {
     if (!isAuthenticated()) {
@@ -48,16 +48,13 @@ const Eventos: React.FC = () => {
       navigate('/login');
       return;
     }
-    if (!userId) {
-        alert('No se pudo identificar tu usuario para el registro.');
-        return;
-    }
+    // No es necesario verificar userId aquí si el backend lo obtiene del token
     try {
-      await registerUserToEvent(eventId, userId);
+      // Llama sin userId si el backend lo infiere del token
+      await registerUserToEvent(eventId); 
       alert('¡Te has registrado exitosamente!');
-      // Actualizar el estado para reflejar el registro
       setRegisteredEventIds(prev => new Set(prev).add(eventId));
-      // Opcional: Vuelve a cargar todos los eventos para actualizar la cantidad de participantes si es necesario
+      // Recargar para obtener la lista actualizada de participantes
       fetchEventos(); 
     } catch (err: any) {
       alert(`Error al registrarte: ${err.message}`);
@@ -70,20 +67,17 @@ const Eventos: React.FC = () => {
       navigate('/login');
       return;
     }
-    if (!userId) {
-        alert('No se pudo identificar tu usuario para la desinscripción.');
-        return;
-    }
+    // No es necesario verificar userId aquí si el backend lo obtiene del token
     try {
-      await unregisterUserFromEvent(eventId, userId);
+      // Llama sin userId si el backend lo infiere del token
+      await unregisterUserFromEvent(eventId);
       alert('¡Te has desinscrito del evento!');
-      // Actualizar el estado para reflejar la desinscripción
       setRegisteredEventIds(prev => {
           const newSet = new Set(prev);
           newSet.delete(eventId);
           return newSet;
       });
-      // Opcional: Vuelve a cargar todos los eventos
+      // Recargar para obtener la lista actualizada de participantes
       fetchEventos();
     } catch (err: any) {
       alert(`Error al desinscribirte: ${err.message}`);

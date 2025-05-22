@@ -1,102 +1,135 @@
-// src/services/hitoService.ts
+// src/services/hitosService.ts
+import { API_URL } from '../main';
+import { getToken } from './authService';
 
+// ¡Interfaz Hito actualizada con eventoId y completado!
 export interface Hito {
   id: number;
-  eventoId: number; // El ID del evento al que pertenece este hito
   nombre: string;
-  descripcion?: string;
-  fecha: string; // Fecha del hito
-  completado: boolean;
+  descripcion: string;
+  fecha: string; // O Date si tu backend lo maneja así
+  eventoId: number; // ID del evento al que pertenece el hito
+  completado: boolean; // Estado del hito (ej. completado o pendiente)
 }
 
-// Mock de datos para hitos
-let mockHitos: Hito[] = [
-  {
-    id: 1,
-    eventoId: 1, // Hito para Hackathon Innovación 2024
-    nombre: 'Cierre de Inscripciones',
-    fecha: '2024-06-15',
-    completado: false,
-  },
-  {
-    id: 2,
-    eventoId: 1,
-    nombre: 'Confirmación de Ponentes Principales',
-    fecha: '2024-06-01',
-    completado: true,
-  },
-  {
-    id: 3,
-    eventoId: 3, // Hito para Bootcamp Fullstack JavaScript
-    nombre: 'Inicio de Sesiones',
-    fecha: '2024-08-01',
-    completado: false,
-  },
-];
-
-// Funciones CRUD para hitos (Mocks)
-
-export const getHitosByEventoId = async (eventoId: number): Promise<Hito[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const hitosDelEvento = mockHitos.filter(hito => hito.eventoId === eventoId);
-      resolve(hitosDelEvento);
-    }, 500);
-  });
+// Función auxiliar para obtener los headers con el token de autenticación
+const getAuthHeaders = () => {
+  const token = getToken();
+  if (!token) {
+    console.error('No authentication token found. Please log in.');
+    throw new Error('No authentication token found. Please log in.');
+  }
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
 };
 
+/**
+ * Obtiene todos los hitos (considerando la nueva estructura).
+ * NOTA: Esta función es genérica. Si solo necesitas hitos por evento,
+ * es mejor usar `getHitosByEventoId` o que el backend ofrezca una ruta '/api/milestones' sin filtro.
+ * Por ahora, se mantendrá la lógica de AdminHitos.tsx que los filtra por evento.
+ * No obstante, si tu backend tiene una ruta para obtener *todos* los hitos sin filtrar por evento,
+ * esta función debería apuntar a esa ruta (`${API_URL}/api/milestones`).
+ */
+export const getHitos = async (): Promise<Hito[]> => {
+  // Esta función se utiliza principalmente en AdminHitos.tsx para obtener TODOS los hitos.
+  // Si tu backend tiene una ruta global para todos los hitos, úsala aquí.
+  // Ejemplo: const response = await fetch(`${API_URL}/api/milestones`, { headers: getAuthHeaders() });
+  // Por ahora, como AdminHitos.tsx lo maneja evento por evento,
+  // esta función podría no ser estrictamente necesaria o requeriría un endpoint diferente.
+  // Se deja como referencia si necesitas un endpoint global de hitos.
+  console.warn("getHitos from hitosService.ts: This function might not be used directly or requires a global API endpoint for all milestones.");
+  // Devolver un array vacío o lanzar un error si no hay un endpoint global
+  return []; // O podrías llamar a getEventos y luego a getHitosByEventoId para cada uno, pero eso ya lo hace AdminHitos.
+};
+
+
+/**
+ * Obtiene un hito por su ID.
+ * @param id El ID del hito.
+ * @returns Promise con el objeto Hito o undefined si no se encuentra.
+ */
 export const getHitoById = async (id: number): Promise<Hito | undefined> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockHitos.find(hito => hito.id === id));
-    }, 300);
+  const response = await fetch(`${API_URL}/api/milestones/${id}`, {
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    if (response.status === 404) {
+      return undefined; // Hito no encontrado
+    }
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al cargar el hito con ID ${id}`);
+  }
+  return response.json();
 };
 
-export const createHito = async (newHito: Hito): Promise<Hito> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newId = Math.max(...mockHitos.map(h => h.id)) + 1;
-      const hitoToSave = { ...newHito, id: newId };
-      mockHitos.push(hitoToSave);
-      // console.log("Hito creado (MOCK):", hitoToSave);
-      resolve(hitoToSave);
-    }, 800);
+
+/**
+ * Obtiene todos los hitos asociados a un evento específico.
+ * @param eventId El ID del evento.
+ * @returns Promise con un array de objetos Hito.
+ */
+export const getHitosByEventoId = async (eventId: number): Promise<Hito[]> => {
+  const response = await fetch(`${API_URL}/api/events/${eventId}/milestones`, {
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al cargar los hitos del evento ${eventId}`);
+  }
+  return response.json();
 };
 
+/**
+ * Crea un nuevo hito.
+ * @param newHito El objeto Hito a crear (sin ID si el backend lo genera).
+ * @returns Promise con el objeto Hito creado (incluyendo el ID).
+ */
+export const createHito = async (newHito: Omit<Hito, 'id'>): Promise<Hito> => {
+  const response = await fetch(`${API_URL}/api/milestones`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(newHito),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al crear el hito');
+  }
+  return response.json();
+};
+
+/**
+ * Actualiza un hito existente.
+ * @param updatedHito El objeto Hito actualizado (con ID).
+ * @returns Promise con el objeto Hito actualizado.
+ */
 export const updateHito = async (updatedHito: Hito): Promise<Hito> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = mockHitos.findIndex(h => h.id === updatedHito.id);
-      if (index !== -1) {
-        mockHitos[index] = { ...updatedHito };
-        // console.log("Hito actualizado (MOCK):", mockHitos[index]);
-        resolve(mockHitos[index]);
-      } else {
-        reject(new Error('Hito no encontrado para actualizar (MOCK)'));
-      }
-    }, 800);
+  const response = await fetch(`${API_URL}/api/milestones/${updatedHito.id}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(updatedHito),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al actualizar el hito con ID ${updatedHito.id}`);
+  }
+  return response.json();
 };
 
-export const deleteHito = async (id: number): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const initialLength = mockHitos.length;
-      mockHitos = mockHitos.filter(hito => hito.id !== id);
-      if (mockHitos.length < initialLength) {
-        // console.log("Hito eliminado (MOCK):", id);
-        resolve(true);
-      } else {
-        reject(new Error('Hito no encontrado para eliminar (MOCK)'));
-      }
-    }, 500);
+/**
+ * Elimina un hito por su ID.
+ * @param id El ID del hito a eliminar.
+ * @returns Promise<void>
+ */
+export const deleteHito = async (id: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/api/milestones/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || `Error al eliminar el hito con ID ${id}`);
+  }
 };
-
-// Función adicional para obtener todos los eventos para el select en el formulario de hito
-// Podrías importar getEventos desde eventoService o duplicarlo si prefieres que hitoService sea autocontenido
-// Para simplicidad, importaremos getEventos de eventoService
-import { getEventos } from './eventoService';
-export { getEventos }; // Exporta getEventos para usarlo en el formulario de hitos

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Hito, createHito, getHitoById, updateHito } from '../../services/hitoService';
 import { Evento, getEventos } from '../../services/eventoService'; // Para obtener la lista de eventos
-import '../../assets/styles/HitoForm.css'; // Asegúrate de crear este CSS
+import '../../assets/styles/HitoForm.css';
 
 interface HitoFormProps {
   hitoId?: number; // Opcional: ID del hito a editar
@@ -16,24 +16,22 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
   const [hitoData, setHitoData] = useState<Hito>({
     id: 0,
-    eventoId: eventoIdParent || 0, // Si viene de un evento, ya preselecciona el ID
+    eventoId: eventoIdParent || 0,
     nombre: '',
     descripcion: '',
     fecha: '',
     completado: false,
   });
-  const [eventos, setEventos] = useState<Evento[]>([]); // Para el select de eventos
+  const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Cargar eventos para el selector
   useEffect(() => {
     const fetchEventos = async () => {
       try {
         const fetchedEventos = await getEventos();
         setEventos(fetchedEventos);
-        // Si es un nuevo hito y no se predefinió el eventoId, selecciona el primero por defecto si hay
         if (!isEditing && !eventoIdParent && fetchedEventos.length > 0) {
             setHitoData(prev => ({ ...prev, eventoId: fetchedEventos[0].id }));
         }
@@ -44,7 +42,6 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
     fetchEventos();
   }, [isEditing, eventoIdParent]);
 
-  // Cargar datos del hito si estamos editando
   useEffect(() => {
     if (isEditing) {
       const fetchHito = async () => {
@@ -82,7 +79,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
     setSuccess(null);
 
     try {
-      if (!hitoData.eventoId) { // Asegura que se haya seleccionado un evento
+      if (!hitoData.eventoId) {
           throw new Error("Por favor, selecciona un evento al que asociar el hito.");
       }
       if (isEditing) {
@@ -91,16 +88,16 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
       } else {
         await createHito(hitoData);
         setSuccess('Hito creado exitosamente.');
-        setHitoData({ // Resetear formulario para nuevo hito
+        setHitoData({
           id: 0,
-          eventoId: hitoData.eventoId, // Mantener el evento seleccionado
+          eventoId: hitoData.eventoId,
           nombre: '',
           descripcion: '',
           fecha: '',
           completado: false,
         });
       }
-      setTimeout(() => onSave(), 1500); // Llamar a onSave para cerrar/actualizar
+      setTimeout(() => onSave(), 1500);
     } catch (err: any) {
       setError(err.message || 'Error al guardar el hito.');
       console.error("Error saving hito:", err);
@@ -126,7 +123,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
-            disabled={!!eventoIdParent && isEditing} // Deshabilitar si se pasó un eventoIdParent (ej. desde EventoView) y estamos editando
+            disabled={!!eventoIdParent && isEditing}
           >
             <option value="">Selecciona un evento</option>
             {eventos.map(evento => (

@@ -4,10 +4,10 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import { getEventoById, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
 import { isAuthenticated, getUserData } from '../services/authService';
-import '../assets/styles/EventoView.css'; // Asegúrate de tener este CSS
+import '../assets/styles/EventoView.css';
 
 const EventoView: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Obtiene el ID de la URL
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [evento, setEvento] = useState<Evento | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -15,7 +15,8 @@ const EventoView: React.FC = () => {
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   
   const currentUser = getUserData();
-  const userId = currentUser ? currentUser.username : '';
+  // currentUserId es el ID del usuario logueado. Si tu backend usa usernames en 'invitados', cambia a currentUser.username
+  const currentUserId = currentUser ? currentUser.id : ''; 
 
   useEffect(() => {
     const fetchEvento = async () => {
@@ -29,8 +30,10 @@ const EventoView: React.FC = () => {
         const fetchedEvento = await getEventoById(eventoId);
         if (fetchedEvento) {
           setEvento(fetchedEvento);
-          // Verificar si el usuario actual está registrado en este evento
-          if (userId && fetchedEvento.invitados?.includes(userId)) {
+          // *** ESTA LÍNEA ES CLAVE ***
+          // Asume que fetchedEvento.invitados contiene los IDs de los usuarios registrados (strings o numbers).
+          // Si tu backend devuelve usernames en invitados, entonces usa fetchedEvento.invitados?.includes(currentUser.username)
+          if (currentUserId && fetchedEvento.invitados?.includes(currentUserId)) {
               setIsRegistered(true);
           } else {
               setIsRegistered(false);
@@ -41,13 +44,16 @@ const EventoView: React.FC = () => {
       } catch (err: any) {
         setError(err.message || 'Error al cargar el evento.');
         console.error("Error fetching single evento:", err);
+        if (err.message.includes('No authentication token found')) {
+          navigate('/login'); // Redirigir si el token es inválido/expirado
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchEvento();
-  }, [id, userId]); // Dependencias: id del evento y userId
+  }, [id, currentUserId, navigate]); // Dependencias para re-ejecutar el efecto
 
   const handleRegisterClick = async () => {
     if (!isAuthenticated()) {
@@ -55,16 +61,19 @@ const EventoView: React.FC = () => {
       navigate('/login');
       return;
     }
-    if (!userId || !evento?.id) {
-        alert('No se pudo identificar tu usuario o el evento.');
-        return;
+    if (!evento?.id) {
+      alert('No se pudo identificar el evento.');
+      return;
     }
     try {
-      await registerUserToEvent(evento.id, userId);
+      await registerUserToEvent(evento.id);
       alert('¡Te has registrado exitosamente!');
       setIsRegistered(true);
-      // Opcional: Actualizar el número de participantes localmente o volver a cargar
-      setEvento(prevEvento => prevEvento ? { ...prevEvento, cantidadParticipantes: (prevEvento.cantidadParticipantes || 0) + 1, invitados: [...(prevEvento.invitados || []), userId] } : null);
+      setEvento(prevEvento => prevEvento ? { 
+        ...prevEvento, 
+        cantidadParticipantes: (prevEvento.cantidadParticipantes || 0) + 1, 
+        invitados: [...(prevEvento.invitados || []), currentUserId] // Añadir el ID del usuario al array local
+      } : null);
 
     } catch (err: any) {
       alert(`Error al registrarte: ${err.message}`);
@@ -77,22 +86,24 @@ const EventoView: React.FC = () => {
       navigate('/login');
       return;
     }
-    if (!userId || !evento?.id) {
-        alert('No se pudo identificar tu usuario o el evento.');
-        return;
+    if (!evento?.id) {
+      alert('No se pudo identificar el evento.');
+      return;
     }
     try {
-      await unregisterUserFromEvent(evento.id, userId);
+      await unregisterUserFromEvent(evento.id);
       alert('¡Te has desinscrito del evento!');
       setIsRegistered(false);
-      // Opcional: Actualizar el número de participantes localmente o volver a cargar
-      setEvento(prevEvento => prevEvento ? { ...prevEvento, cantidadParticipantes: Math.max(0, (prevEvento.cantidadParticipantes || 0) - 1), invitados: (prevEvento.invitados || []).filter(inv => inv !== userId) } : null);
+      setEvento(prevEvento => prevEvento ? { 
+        ...prevEvento, 
+        cantidadParticipantes: Math.max(0, (prevEvento.cantidadParticipantes || 0) - 1), 
+        invitados: (prevEvento.invitados || []).filter(inv => inv !== currentUserId) // Eliminar el ID del usuario del array local
+      } : null);
 
     } catch (err: any) {
       alert(`Error al desinscribirte: ${err.message}`);
     }
   };
-
 
   if (loading) {
     return (
@@ -168,8 +179,8 @@ const EventoView: React.FC = () => {
                 <i className="fas fa-user-check mr-2 text-indigo-600"></i>Usuarios Registrados:
               </p>
               <ul className="list-disc list-inside text-gray-600">
-                {evento.invitados.map((invitado, index) => (
-                  <li key={index}>{invitado}</li>
+                {evento.invitados.map((invitadoId, index) => (
+                  <li key={index}>{invitadoId}</li> // Esto mostrará el ID, si quieres el username, tu backend debe enviarlo o hacer otra llamada.
                 ))}
               </ul>
             </div>
@@ -181,14 +192,14 @@ const EventoView: React.FC = () => {
               isRegistered ? (
                 <button
                   onClick={handleUnregisterClick}
-                  
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
                 >
                   Desinscribirme del Evento
                 </button>
               ) : (
                 <button
                   onClick={handleRegisterClick}
-                  
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
                 >
                   Registrarme en el Evento
                 </button>
@@ -201,7 +212,7 @@ const EventoView: React.FC = () => {
             )}
             <button
               onClick={() => navigate('/eventos')}
-              
+              className="mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-300"
             >
               Volver a Eventos
             </button>

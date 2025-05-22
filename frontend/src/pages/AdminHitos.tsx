@@ -1,18 +1,19 @@
 // src/pages/AdminHitos.tsx
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
-import { Hito, getHitosByEventoId, deleteHito, getEventos } from '../services/hitoService'; // También importamos getEventos
-import HitoForm from '../components/hitos/HitoForm'; // El formulario que acabamos de crear
-import { Evento } from '../services/eventoService'; // Necesitamos la interfaz Evento
-import '../assets/styles/AdminHitos.css'; // Asegúrate de crear este CSS
+// Corregida la importación de getEventos desde eventoService
+import { Hito, getHitosByEventoId, deleteHito } from '../services/hitoService'; 
+import { Evento, getEventos } from '../services/eventoService'; // ¡Importación corregida!
+import HitoForm from '../components/hitos/HitoForm';
+import '../assets/styles/AdminHitos.css';
 
 const AdminHitos: React.FC = () => {
   const [hitos, setHitos] = useState<Hito[]>([]);
-  const [eventos, setEventos] = useState<Evento[]>([]); // Para el filtro por evento
+  const [eventos, setEventos] = useState<Evento[]>([]);
   const [selectedEventoId, setSelectedEventoId] = useState<number | 'all'>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false); // Para mostrar/ocultar el formulario
+  const [showForm, setShowForm] = useState(false);
   const [editingHitoId, setEditingHitoId] = useState<number | undefined>(undefined);
 
   const fetchHitos = async () => {
@@ -24,12 +25,11 @@ const AdminHitos: React.FC = () => {
 
       let fetchedHitos: Hito[] = [];
       if (selectedEventoId === 'all') {
-        
-        // Mejor opción sería:
+        // Obtenemos los hitos de CADA evento.
+        // Esto es necesario si tu backend no tiene un endpoint para 'todos' los hitos.
         const allHitosPromises = allEvents.map(event => getHitosByEventoId(event.id));
         const nestedHitos = await Promise.all(allHitosPromises);
         fetchedHitos = nestedHitos.flat();
-
       } else {
         fetchedHitos = await getHitosByEventoId(selectedEventoId as number);
       }
@@ -44,7 +44,7 @@ const AdminHitos: React.FC = () => {
 
   useEffect(() => {
     fetchHitos();
-  }, [selectedEventoId]); // Recargar hitos cuando cambie el filtro de evento
+  }, [selectedEventoId]);
 
   const handleEdit = (hitoId: number) => {
     setEditingHitoId(hitoId);
@@ -74,7 +74,6 @@ const AdminHitos: React.FC = () => {
     setEditingHitoId(undefined);
   };
 
-  // Función de utilidad para obtener el nombre del evento por su ID
   const getEventName = (eventoId: number) => {
     const event = eventos.find(e => e.id === eventoId);
     return event ? event.nombre : 'Evento Desconocido';
@@ -88,13 +87,12 @@ const AdminHitos: React.FC = () => {
 
         <div className="flex justify-between items-center mb-6">
           <button
-            onClick={() => { setShowForm(true); setEditingHitoId(undefined); }} // Botón para crear nuevo hito
+            onClick={() => { setShowForm(true); setEditingHitoId(undefined); }}
             className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
           >
             <i className="fas fa-plus"></i> Crear Nuevo Hito
           </button>
 
-          {/* Selector de Eventos para filtrar hitos */}
           <select
             value={selectedEventoId}
             onChange={(e) => setSelectedEventoId(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
@@ -178,13 +176,13 @@ const AdminHitos: React.FC = () => {
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <button
                         onClick={() => handleEdit(hito.id)}
-                        
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-xs mr-2"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => handleDelete(hito.id)}
-                        
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
                       >
                         Eliminar
                       </button>

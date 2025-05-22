@@ -19,7 +19,7 @@ public class Evento {
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String tipo;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyy")

@@ -34,7 +34,6 @@ public class EventoController {
 
     // Inscribirse a un evento como modelo
     @PutMapping("/{id}/inscribirse")
-    @PreAuthorize("hasRole('MODELO')")
     public String addParticipante(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return eventoService.addParticipante(username, id);
@@ -55,7 +54,7 @@ public class EventoController {
     }
 
     // Eliminar un evento
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/eliminar-evento")
     @PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
     public String deleteEvento(@PathVariable Long id) {
         return eventoService.deleteEvento(id);
@@ -74,7 +73,7 @@ public class EventoController {
 
     // Eliminar un participante de un evento
     @DeleteMapping("/{id}/eliminar-participante")
-    @PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
+    //@PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
     public String removeParticipante(@RequestParam String username, @PathVariable Long id) {
         try {
             return eventoService.removeParticipante(username, id);

@@ -22,7 +22,8 @@ public class EventoController {
     private EventoService eventoService;
 
     // Comprar un ticket para un evento con el usuario actual
-    @PutMapping("/{id}/comprar-ticket")
+    @PutMapping("/{id}/añadir-invitado")
+    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write')")
     public String addInvitado(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
@@ -34,9 +35,13 @@ public class EventoController {
 
     // Inscribirse a un evento como modelo
     @PutMapping("/{id}/inscribirse")
-    public String addParticipante(@PathVariable Long id) {
+    public ResponseEntity<?> addParticipante(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return eventoService.addParticipante(username, id);
+        try {
+            return ResponseEntity.ok(eventoService.addParticipante(username, id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // Crear un nuevo evento

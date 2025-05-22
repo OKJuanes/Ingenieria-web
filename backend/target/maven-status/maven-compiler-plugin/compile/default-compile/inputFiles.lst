@@ -5,6 +5,7 @@ D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\Logi
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\RegisterRequest.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\ApplicationConfig.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\CorsConfig.java
+D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\GlobalExceptionHandler.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtAuthFilter.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtService.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\SecurityConfig.java
@@ -19,6 +20,7 @@ D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Hi
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\InvitadoExterno.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Permission.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Role.java
+D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\TipoEvento.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Usuario.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\UsuarioInfo.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\ParcialFashionEventApplication.java

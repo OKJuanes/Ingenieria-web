@@ -19,8 +19,9 @@ public class Evento {
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    @Column(nullable = false, unique = false)
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoEvento tipo;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyy")
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,7 +53,7 @@ public class Evento {
     // Participantes (usuarios inscritos)
     @ManyToMany
     @JoinTable(
-            name = "evento_Invitado",
+            name = "evento_invitado",
             joinColumns = @JoinColumn(name = "evento_id"),
             inverseJoinColumns = @JoinColumn(name = "Invitado_id")
     )

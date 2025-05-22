@@ -31,7 +31,7 @@ public enum Role {
                     Permission.ORGANIZADOR_DELETE
             )
     ),
-    MODELO(Collections.emptySet()),
+    USUARIO(Collections.emptySet()),
     INVITADO(Collections.emptySet());
 
     @Getter

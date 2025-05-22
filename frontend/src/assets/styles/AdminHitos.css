@@ -1,0 +1,37 @@
+/* src/assets/styles/AdminHitos.css */
+
+.admin-hitos-container {
+    /* Puedes añadir estilos específicos para el contenedor de la página si lo necesitas */
+    padding-top: 80px; /* Para dejar espacio a la Navbar fija */
+    min-height: 100vh; /* Asegura que ocupe al menos toda la altura de la ventana */
+}
+
+/* Estilos para la tabla (si Tailwind no cubre todo o necesitas ajustes) */
+/*
+.admin-hitos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-hitos-table th,
+.admin-hitos-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0; // border-gray-200
+}
+
+.admin-hitos-table th {
+    background-color: #f8fafc; // bg-gray-100
+    color: #4a5568; // text-gray-600
+    font-size: 0.75rem; // text-xs
+    font-weight: 600; // font-semibold
+    text-transform: uppercase; // uppercase
+    letter-spacing: 0.05em; // tracking-wider
+}
+
+.admin-hitos-table tbody tr:hover {
+    background-color: #f7fafc; // hover:bg-gray-50
+}
+*/
+
+/* Puedes añadir más estilos aquí si necesitas personalizar algo más allá de Tailwind */

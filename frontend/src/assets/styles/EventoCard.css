@@ -12,5 +12,5 @@
 .btn-ver-detalles,
 .btn-registrar,
 .btn-desregistrar {
-    white-space: nowrap; /* Evita que el texto del botón se rompa */
+    color: white !important; 
 }

@@ -9,12 +9,13 @@ import { Navigate } from 'react-router-dom';
 import HomeAdmin from './pages/HomeAdmin';// Página para administradores
 import Login from './pages/Login';
 import HomeUsuario from './pages/HomeUsuario'; // Página para usuarios comunes
- 
+import AdminHitos from './pages/AdminHitos';
 import Eventos from './pages/Eventos';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
 import EventoView from './pages/EventoView';
 import NuevoEvento from './pages/NuevoEvento';
+
 
 // Configura la URL de la API
 export const API_URL = import.meta.env.VITE_API_URL;
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: '/home-admin',
     element: <HomeAdmin />, // Página para administradores
+  },
+  {
+    path: '/admin/hitos', // <-- ¡NUEVA RUTA PARA GESTIÓN DE HITOS!
+    element: <AdminHitos />,
   },
   {
     path: '/eventos',

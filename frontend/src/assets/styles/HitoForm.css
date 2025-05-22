@@ -1,0 +1,42 @@
+/* src/assets/styles/HitoForm.css */
+
+.hito-form-container {
+    /* Puedes añadir estilos específicos para el contenedor del formulario */
+    /* Ya usamos clases de Tailwind como bg-white, p-6, rounded-lg, shadow-md, max-w-xl, mx-auto, my-4 */
+    /* Si necesitas algo más específico, puedes añadirlo aquí */
+}
+
+/* Estilos para las etiquetas del formulario (ya cubiertas por Tailwind `block`, `text-gray-700`, `text-sm`, `font-bold`, `mb-2`) */
+/*
+.hito-form-container label {
+    // Si necesitas un estilo global para etiquetas dentro de este formulario
+}
+*/
+
+/* Estilos para los campos de entrada y select (ya cubiertas por Tailwind `shadow`, `appearance-none`, `border`, `rounded`, `w-full`, `py-2`, `px-3`, `text-gray-700`, `leading-tight`, `focus:outline-none`, `focus:shadow-outline`) */
+/*
+.hito-form-container input[type="text"],
+.hito-form-container input[type="date"],
+.hito-form-container textarea,
+.hito-form-container select {
+    // Si necesitas un estilo global para inputs
+}
+*/
+
+/* Estilos para los mensajes de error/éxito */
+/* Ya usamos clases de Tailwind como bg-red-200, text-red-800, p-3, rounded, mb-4 */
+/*
+.hito-form-container .error-message {
+    // Si necesitas un estilo global para mensajes de error
+}
+.hito-form-container .success-message {
+    // Si necesitas un estilo global para mensajes de éxito
+}
+*/
+
+/* Estilos para los botones (ya cubiertos por Tailwind `bg-violet-700`, `hover:bg-violet-800`, `text-white`, `font-bold`, `py-2`, `px-4`, `rounded`, `focus:outline-none`, `focus:shadow-outline`) */
+/*
+.hito-form-container button {
+    // Si necesitas un estilo global para botones
+}
+*/

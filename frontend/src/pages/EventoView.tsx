@@ -181,14 +181,14 @@ const EventoView: React.FC = () => {
               isRegistered ? (
                 <button
                   onClick={handleUnregisterClick}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 transform hover:scale-105"
+                  
                 >
                   Desinscribirme del Evento
                 </button>
               ) : (
                 <button
                   onClick={handleRegisterClick}
-                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 transform hover:scale-105"
+                  
                 >
                   Registrarme en el Evento
                 </button>
@@ -201,7 +201,7 @@ const EventoView: React.FC = () => {
             )}
             <button
               onClick={() => navigate('/eventos')}
-              className="mt-4 ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 transform hover:scale-105"
+              
             >
               Volver a Eventos
             </button>

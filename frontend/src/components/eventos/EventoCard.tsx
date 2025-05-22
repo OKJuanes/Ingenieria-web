@@ -1,17 +1,18 @@
 // src/components/eventos/EventoCard.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Evento } from '../../services/eventoService'; // Importa la interfaz Evento
-import '../../assets/styles/EventoCard.css'; // Asegúrate de tener este CSS
+import { Evento } from '../../services/eventoService';
+import '../../assets/styles/EventoCard.css';
 
 interface EventoCardProps {
   evento: Evento;
-  onRegisterClick?: (eventId: number) => void; // Opcional: para el botón de registro
-  onUnregisterClick?: (eventId: number) => void; // Opcional: para el botón de desinscripción
-  isRegistered?: boolean; // Opcional: para saber si el usuario ya está registrado
+  onRegisterClick?: (eventId: number) => void;
+  onUnregisterClick?: (eventId: number) => void;
+  isRegistered?: boolean;
+  isAdmin?: boolean; // <-- ¡NUEVO PROP!
 }
 
-const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnregisterClick, isRegistered }) => {
+const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnregisterClick, isRegistered, isAdmin }) => {
   return (
     <div className="evento-card bg-white rounded-lg shadow-md p-4 flex flex-col justify-between">
       <div>
@@ -32,27 +33,41 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
         )}
       </div>
       <div className="mt-4 flex flex-wrap justify-between items-center gap-2">
-        <Link 
-          to={`/eventos/${evento.id}`} 
-          className="btn-ver-detalles bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+        <Link
+          to={`/eventos/${evento.id}`}
+          
         >
           Ver Detalles
         </Link>
+
+        {/* Botón de REGISTRARSE */}
         {onRegisterClick && !isRegistered && (
           <button
             onClick={() => onRegisterClick(evento.id)}
-            className="btn-registrar bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            
           >
             Registrarse
           </button>
         )}
+
+        {/* Botón de DESINSCRIBIRSE */}
         {onUnregisterClick && isRegistered && (
           <button
             onClick={() => onUnregisterClick(evento.id)}
-            className="btn-desregistrar bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            
           >
             Desinscribirse
           </button>
+        )}
+
+        {/* Botón de EDITAR (visible solo para administradores) */}
+        {isAdmin && (
+          <Link
+            to={`/editar-evento/${evento.id}`} // Enlace a la nueva ruta de edición
+            
+          >
+            Editar
+          </Link>
         )}
       </div>
     </div>

@@ -145,7 +145,7 @@ export interface UserData {
   // ==========================================================
   
   // Simula una base de datos de usuarios para el mock
-  const mockUsers = [
+  export const mockUsers = [
     { username: 'admin', password: 'adminpass', role: 'admin', correo: 'admin@example.com', nombre: 'Admin', apellido: 'User' },
     { username: 'user', password: 'userpass', role: 'user', correo: 'user@example.com', nombre: 'Regular', apellido: 'User' },
   ];

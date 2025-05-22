@@ -1,5 +1,5 @@
 // src/services/eventoService.ts
-
+import { mockUsers } from './authService';
 // Define la interfaz para la estructura de un evento
 export interface Evento {
     id: number;
@@ -29,7 +29,7 @@ export interface Evento {
       cantidadParticipantes: 250,
       empresaPatrocinadora: 'TecnoCorp',
       invitadosExternos: ['Dra. Ana García (Experta en IA)', 'Ing. Luis Pérez (Desarrollador Senior)'],
-      invitados: ['Usuario A', 'Usuario B'], // Estos podrían ser IDs o nombres de usuarios internos
+      invitados: ["user", "admin"], // Estos podrían ser IDs o nombres de usuarios internos
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ export interface Evento {
       cantidadParticipantes: 180,
       empresaPatrocinadora: 'SecureData',
       invitadosExternos: ['Dr. Carlos Soto (Consultor de Seguridad)', 'Lic. Marta Ríos (Auditora Forense)'],
-      invitados: [],
+      invitados: ["user", "admin"],
     },
     {
       id: 3,
@@ -51,7 +51,7 @@ export interface Evento {
       cantidadParticipantes: 80,
       empresaPatrocinadora: 'CodeMaster',
       invitadosExternos: [],
-      invitados: [],
+      invitados: ["user", "admin"],
     },
     {
       id: 4,
@@ -62,10 +62,48 @@ export interface Evento {
       cantidadParticipantes: 50,
       empresaPatrocinadora: 'CreativeLabs',
       invitadosExternos: ['Diseñadora Clara Luna'],
-      invitados: [],
+      invitados: ["user", "admin"],
     },
   ];
-  
+  // === NUEVAS FUNCIONES PARA HOMEADMIN ===
+
+// Función para obtener un resumen de estadísticas de eventos
+export const getEventStats = async (): Promise<{ eventosActivos: number; totalParticipantes: number; proximoEvento: string }> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const eventosActivos = mockEventos.length;
+      const totalParticipantes = mockEventos.reduce((sum, evento) => sum + (evento.cantidadParticipantes || 0), 0);
+
+      // Encontrar el próximo evento (basado en la fecha y que no haya pasado)
+      const now = new Date();
+      const eventosFuturos = mockEventos.filter(evento => new Date(evento.fecha) > now);
+      
+      eventosFuturos.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+
+      const proximoEvento = eventosFuturos.length > 0
+        ? `${eventosFuturos[0].nombre} - ${eventosFuturos[0].fecha}`
+        : 'No hay próximos eventos registrados';
+
+      resolve({
+        eventosActivos,
+        totalParticipantes,
+        proximoEvento,
+      });
+    }, 800); // Simula un retardo de red
+  });
+};
+
+// Función para obtener una lista de eventos recientes (ej. los últimos 5 por fecha)
+export const getRecentEvents = async (limit: number = 5): Promise<Evento[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Ordena los eventos por fecha de forma descendente y toma los 'limit' más recientes
+      const sortedEvents = [...mockEventos].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+      const recentEvents = sortedEvents.slice(0, limit);
+      resolve(recentEvents);
+    }, 700);
+  });
+};
   // Función para obtener todos los eventos
   export const getEventos = async (): Promise<Evento[]> => {
     return new Promise((resolve) => {
@@ -77,13 +115,15 @@ export interface Evento {
   
   // Función para obtener un evento por su ID
   export const getEventoById = async (id: number): Promise<Evento | undefined> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const evento = mockEventos.find(e => e.id === id);
-        resolve(evento);
-      }, 300); // Simula un retardo de red más corto
-    });
-  };
+  console.log("eventoService.ts: Intentando buscar evento con ID:", id); // Añade este log
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const foundEvent = mockEventos.find(evento => evento.id === id);
+      console.log("eventoService.ts: Evento encontrado:", foundEvent); // Añade este log
+      resolve(foundEvent);
+    }, 300);
+  });
+};
   
   // Función para simular el registro de un usuario a un evento
   export const registerUserToEvent = async (eventId: number, userId: string): Promise<boolean> => {
@@ -154,4 +194,73 @@ export interface Evento {
               resolve(userEventos);
           }, 400);
       });
+  
   };
+  export const createEvent = async (newEvent: Evento): Promise<Evento> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // Generar un ID único simple para el mock
+      const newId = Math.max(...mockEventos.map(e => e.id)) + 1;
+      const eventToSave = { ...newEvent, id: newId };
+      mockEventos.push(eventToSave);
+      // console.log("Evento creado (MOCK):", eventToSave);
+      resolve(eventToSave);
+    }, 1000);
+  });
+};
+  // Función para actualizar un evento existente (MOCK TEMPORAL)
+export const updateEvent = async (updatedEvent: Evento): Promise<Evento> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = mockEventos.findIndex(e => e.id === updatedEvent.id);
+      if (index !== -1) {
+        // Actualizar el evento manteniendo la referencia para las inscripciones
+        mockEventos[index] = { ...updatedEvent, invitados: mockEventos[index].invitados }; // Conservar invitados
+        // console.log("Evento actualizado (MOCK):", mockEventos[index]);
+        resolve(mockEventos[index]);
+      } else {
+        reject(new Error('Evento no encontrado para actualizar (MOCK)'));
+      }
+    }, 1000);
+  });
+};
+export const generateEventsReportCsv = async (): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let csvContent = "Evento,Tipo,Fecha,Participantes Registrados,Invitados Externos,Empresa Patrocinadora,Descripción\n";
+
+      mockEventos.forEach(event => {
+        // Obtener nombres de usuarios registrados
+        // Buscar el usuario por username (ya que 'invitados' contiene usernames)
+        const registeredParticipants = event.invitados
+          ?.map(usernameId => { // Cambiado 'userId' a 'usernameId' para mayor claridad
+            const user = mockUsers.find(u => u.username === usernameId);
+            return user ? user.username : `ID:${usernameId} (Desconocido)`;
+          })
+          .join('; ') || 'N/A';
+
+        // Formatear invitados externos
+        const externalGuests = event.invitadosExternos?.join('; ') || 'N/A';
+
+        // Escapar comas y nuevas líneas en la descripción si existen
+        const escapedDescription = event.descripcion ? `"${event.descripcion.replace(/"/g, '""')}"` : '';
+
+        const row = [
+          `"${event.nombre.replace(/"/g, '""')}"`,
+          event.tipo,
+          event.fecha,
+          `"${registeredParticipants}"`,
+          `"${externalGuests}"`,
+          event.empresaPatrocinadora || 'N/A',
+          escapedDescription
+        ].join(',');
+
+        csvContent += row + '\n';
+      });
+
+      console.log("CSV Report Generated:\n", csvContent);
+      resolve(csvContent);
+    }, 1500);
+  });
+};
+  

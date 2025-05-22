@@ -32,6 +32,18 @@ public class EventoService {
         return eventoRepository.findAll();
     }
 
+    public List<Evento> getEventosActivos() {
+        return eventoRepository.findEventosActivos();
+    }
+
+    public List<Object[]> getCantidadParticipantesEventosActivos() {
+        return eventoRepository.findCantidadParticipantesEventosActivos();
+    }
+
+    public Evento getEventoMasProximo() {
+    return eventoRepository.findEventoMasProximo();
+    }
+
     public Evento updateEventoById(Evento request, Long eventoId){
         Evento evento = eventoRepository.findById(eventoId).get();
 
@@ -98,5 +110,10 @@ public class EventoService {
         } else {
             throw new RuntimeException("Usuario no encontrado en el evento");
         }
+    }
+
+    public List<String> getParticipantesDeEvento(Long eventoId) {
+        Evento evento = getEventoById(eventoId);
+        return evento.getParticipantes();
     }
 }

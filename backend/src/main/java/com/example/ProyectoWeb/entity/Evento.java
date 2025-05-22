@@ -19,31 +19,32 @@ public class Evento {
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoEvento tipo;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyy")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
-    @Column(nullable = false)
-    private int CantParticipantes;
-    
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
-    @ManyToMany()
+    @Column(length = 500)
+    private String descripcion;
+
+    // Invitados (para uso futuro)
+    @ManyToMany
     @JoinTable(
-            name = "evento_usuario",
+            name = "evento_Invitado",
             joinColumns = @JoinColumn(name = "evento_id"),
             inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
-    private List<Usuario> invitados = new ArrayList<>();;
+    private List<Usuario> invitados = new ArrayList<>();
 
     public List<String> getInvitados() {
-        List<String> usernames = this.invitados.stream().map(Usuario::getUsername).toList();
-        return usernames;
+        return this.invitados.stream().map(Usuario::getUsername).toList();
     }
     public void addInvitado(Usuario usuario){
         this.invitados.add(usuario);
@@ -52,17 +53,17 @@ public class Evento {
         this.invitados.remove(usuario);
     }
 
-    @ManyToMany()
+    // Participantes (usuarios inscritos)
+    @ManyToMany
     @JoinTable(
-            name = "evento_Invitado",
+            name = "evento_usuario", // <-- Aquí el nombre correcto de la tabla intermedia
             joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "Invitado_id")
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private List<Usuario> participantes = new ArrayList<>();
 
     public List<String> getParticipantes() {
-        List<String> usernames = this.participantes.stream().map(Usuario::getUsername).toList();
-        return usernames;
+        return this.participantes.stream().map(Usuario::getUsername).toList();
     }
     public void addParticipante(Usuario usuario){
         this.participantes.add(usuario);
@@ -71,22 +72,28 @@ public class Evento {
         this.participantes.remove(usuario);
     }
 
-    @ManyToMany()
+    // Invitados externos (para uso futuro)
+    @ManyToMany
     @JoinTable(
             name = "evento_Externo",
             joinColumns = @JoinColumn(name = "evento_id"),
             inverseJoinColumns = @JoinColumn(name = "InvitadoExterno_id")
     )
-    private List<InvitadoExterno> invitadosExternos = new ArrayList<>();;
+    private List<InvitadoExterno> invitadosExternos = new ArrayList<>();
 
     public List<String> getInvitadosExternos() {
-        List<String> Nombres = this.invitadosExternos.stream().map(InvitadoExterno::getNombre).toList();
-        return Nombres;
+        return this.invitadosExternos.stream().map(InvitadoExterno::getNombre).toList();
     }
     public void addInvitadosExternos(InvitadoExterno usuario){
         this.invitadosExternos.add(usuario);
     }
     public void removeInvitadosExternos(InvitadoExterno usuario){
         this.invitadosExternos.remove(usuario);
+    }
+
+    // Cantidad de participantes calculada dinámicamente
+    @Transient
+    public int getCantidadParticipantes() {
+        return this.participantes.size();
     }
 }

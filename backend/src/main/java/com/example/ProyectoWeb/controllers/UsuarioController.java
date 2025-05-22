@@ -34,7 +34,7 @@ public class UsuarioController {
         return ResponseEntity.ok(eventos);
     }
     // Editar perfil
-    @PutMapping("/perfil")
+    @PutMapping("/perfil/Editar")
     public Usuario updateUserProfile(@RequestBody Usuario request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName(); // Obtener el username del usuario autenticado
         Long id = usuarioService.getUserByUsername(username).getId();
@@ -42,7 +42,7 @@ public class UsuarioController {
     }
 
     // Eliminar perfil
-    @DeleteMapping("/perfil")
+    @DeleteMapping("/perfil/Eliminar")
     public String deleteUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName(); // Obtener el username del usuario autenticado
         return usuarioService.deleteUser(usuarioService.getUserByUsername(username).getId());

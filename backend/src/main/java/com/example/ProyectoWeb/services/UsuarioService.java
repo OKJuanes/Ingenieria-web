@@ -34,6 +34,11 @@ public class UsuarioService implements UserDetailsService {
         System.out.println("Usuario guardado con éxito");
     }
 
+    public Usuario getUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+    }
+
     public UsuarioInfo getUserInfoById(Long userId) {
         Usuario user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));

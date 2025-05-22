@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import com.example.ProyectoWeb.entity.Evento;
 import com.example.ProyectoWeb.services.EventoService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/eventos")
@@ -19,7 +22,8 @@ public class EventoController {
     private EventoService eventoService;
 
     // Comprar un ticket para un evento con el usuario actual
-    @PutMapping("/{id}/comprar-ticket")
+    @PutMapping("/{id}/añadir-invitado")
+    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write')")
     public String addInvitado(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
@@ -29,12 +33,14 @@ public class EventoController {
         }
     }
 
-    // Inscribirse a un evento como modelo
     @PutMapping("/{id}/inscribirse")
-    @PreAuthorize("hasRole('MODELO')")
-    public String addParticipante(@PathVariable Long id) {
+    public ResponseEntity<?> addParticipante(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return eventoService.addParticipante(username, id);
+        try {
+            return ResponseEntity.ok(eventoService.addParticipante(username, id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // Crear un nuevo evento
@@ -52,7 +58,7 @@ public class EventoController {
     }
 
     // Eliminar un evento
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/eliminar-evento")
     @PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
     public String deleteEvento(@PathVariable Long id) {
         return eventoService.deleteEvento(id);
@@ -71,7 +77,7 @@ public class EventoController {
 
     // Eliminar un participante de un evento
     @DeleteMapping("/{id}/eliminar-participante")
-    @PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
+    //@PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
     public String removeParticipante(@RequestParam String username, @PathVariable Long id) {
         try {
             return eventoService.removeParticipante(username, id);
@@ -79,4 +85,28 @@ public class EventoController {
             return e.getMessage();
         }
     }
+
+    @GetMapping("/activos")
+    public List<Evento> getEventosActivos() {
+        return eventoService.getEventosActivos();
+    }
+
+    @GetMapping("/activos/participantes")
+    public List<Map<String, Object>> getCantidadParticipantesEventosActivos() {
+        List<Object[]> results = eventoService.getCantidadParticipantesEventosActivos();
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Object[] row : results) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", row[0]);
+            map.put("nombre", row[1]);
+            map.put("cantidad_participantes", row[2]);
+            response.add(map);
+        }
+        return response;
+    }
+
+    @GetMapping("/proximo")
+    public Evento getEventoMasProximo() {
+        return eventoService.getEventoMasProximo();
+}
 }

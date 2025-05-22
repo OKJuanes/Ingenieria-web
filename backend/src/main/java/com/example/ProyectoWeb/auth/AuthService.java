@@ -32,25 +32,14 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         Usuario user;
-        if (request.isModelo()){
             user = Usuario.builder()
                     .correo(request.getCorreo())
                     .nombre(request.getNombre())
                     .apellido(request.getApellido())
                     .username(request.getUsername())
                     .password(request.getPassword())
-                    .rol(Role.MODELO)
+                    .rol(Role.USUARIO)
                     .build();
-        } else {
-            user = Usuario.builder()
-                    .correo(request.getCorreo())
-                    .nombre(request.getNombre())
-                    .apellido(request.getApellido())
-                    .username(request.getUsername())
-                    .password(request.getPassword())
-                    .rol(Role.INVITADO)
-                    .build();
-        }
         usuarioService.saveUser(user);
 
         return AuthResponse.builder()

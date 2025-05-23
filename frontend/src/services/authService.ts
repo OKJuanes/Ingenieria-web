@@ -1,5 +1,6 @@
 // src/services/authService.ts
 import { API_URL } from '../main';
+import { jwtDecode } from 'jwt-decode';
 
 // Define una interfaz para los datos del usuario.
 // ¡AHORA INCLUYE EL 'id'!
@@ -7,16 +8,23 @@ export interface UserData {
   id: string; // Asume que el ID es un string (ej. UUID). Si es un número, cambia a 'number'.
   username: string;
   role: 'admin' | 'user';
-  // Puedes añadir más campos aquí si tu backend los va a devolver,
-  // como nombre completo, email, etc.
 }
 
 const TOKEN_KEY = 'authToken';
 const USER_DATA_KEY = 'userData';
 
-// Función para obtener el token del localStorage
+export const setAuthToken = (token: string): void => {
+  localStorage.setItem(TOKEN_KEY, token);
+};
+
+// Obtener el token
 export const getToken = (): string | null => {
   return localStorage.getItem(TOKEN_KEY);
+};
+
+// Eliminar el token (logout)
+export const clearAuthToken = (): void => {
+  localStorage.removeItem(TOKEN_KEY);
 };
 
 // Función para obtener los datos del usuario del localStorage
@@ -66,6 +74,14 @@ export const isAdmin = (): boolean => {
 // FUNCIONES DE AUTENTICACIÓN CON BACKEND REAL
 // ==========================================================
 
+interface JwtPayload {
+  sub: string;
+  role?: string;
+  id?: string | number;
+  exp: number;
+  // otros campos que pueda tener tu JWT
+}
+
 /**
  * Realiza una solicitud de inicio de sesión al backend.
  * @param usernameInput El nombre de usuario.
@@ -87,15 +103,25 @@ export const login = async (usernameInput: string, passwordInput: string): Promi
     throw new Error(errorData.message || 'Credenciales incorrectas');
   }
 
-  // ¡AHORA RECUPERA EL 'id' DE LA RESPUESTA DEL BACKEND!
-  const { token, role, username, id } = await response.json(); 
-  if (!id) {
-    throw new Error('Backend did not return user ID on login. Check your backend response for /auth/login.');
+  // Solo recupera el token de la respuesta
+  const { token } = await response.json();
+  if (!token) {
+    throw new Error('Backend did not return token.');
   }
 
-  // Almacenar el token y los datos del usuario en localStorage
-  setAuthData(token, (role as 'admin' | 'user') || 'user', username, id); // ¡PASANDO EL ID!
-  return { id, username, role: (role as 'admin' | 'user') || 'user' };
+  // Decodifica el token para extraer los datos
+  const decoded = jwtDecode<JwtPayload>(token);
+  
+  // Extrae los datos del token
+  const id = decoded.id?.toString() || '';
+  const role = (decoded.role as 'admin' | 'user') || 'user';
+  const username = decoded.sub || usernameInput;
+
+  // Almacena el token y los datos en localStorage
+  setAuthData(token, role, username, id);
+  
+  // Retorna los datos del usuario
+  return { id, username, role };
 };
 
 /**
@@ -117,18 +143,31 @@ export const register = async (correo: string, nombre: string, apellido: string,
     body: JSON.stringify({ correo, nombre, apellido, username: usernameInput, password: passwordInput }),
   });
 
+  // Lee el cuerpo de la respuesta UNA SOLA VEZ
+  const data = await response.json();
+
+  // Verifica si la respuesta es exitosa
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Error en el registro');
+    throw new Error(data.message || 'Error en el registro');
   }
 
-  // ¡AHORA RECUPERA EL 'id' DE LA RESPUESTA DEL BACKEND!
-  const { token, role, username, id } = await response.json();
-  if (!id) {
-    throw new Error('Backend did not return user ID on registration. Check your backend response for /auth/register.');
+  // Extrae el token del objeto data ya parseado
+  const { token } = data;
+  if (!token) {
+    throw new Error('Backend did not return token on registration.');
   }
 
-  // Almacena el token y los datos del usuario recién registrado
-  setAuthData(token, (role as 'admin' | 'user') || 'user', username, id); // ¡PASANDO EL ID!
-  return { id, username, role: (role as 'admin' | 'user') || 'user' };
+  // Decodifica el token para extraer los datos
+  const decoded = jwtDecode<JwtPayload>(token);
+  
+  // Extrae los datos del token
+  const id = decoded.id?.toString() || '';
+  const role = (decoded.role as 'admin' | 'user') || 'usuario';
+  const username = decoded.sub || usernameInput;
+
+  // Almacena el token y los datos en localStorage
+  setAuthData(token, role as any, username, id);
+  
+  // Retorna los datos del usuario
+  return { id, username, role: role as any };
 };

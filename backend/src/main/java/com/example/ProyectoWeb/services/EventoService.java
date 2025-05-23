@@ -49,9 +49,11 @@ public class EventoService {
 
         evento.setNombre(request.getNombre());
         evento.setFecha(request.getFecha());
-        saveEvento(evento);
-
-        return evento;
+        evento.setEmpresa(request.getEmpresa()); // Añadir esta línea
+        evento.setTipo(request.getTipo()); // Asegúrate de también actualizar el tipo
+        evento.setDescripcion(request.getDescripcion()); // Y la descripción si aplica
+        
+        return eventoRepository.save(evento); // Guardar directamente aquí
     }
 
     public String deleteEvento(Long eventoId) {

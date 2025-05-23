@@ -23,7 +23,18 @@ public class JwtService {
     private static final String SECRET_KEY = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
     public String getToken(UserDetails user) {
-        return getToken(new HashMap<>(), user);
+        Map<String, Object> claims = new HashMap<>();
+        // Asegúrate de que 'user' es de tipo Usuario (tu entidad)
+        if (user instanceof com.example.ProyectoWeb.entity.Usuario usuario) {
+            String role = usuario.getRol().name().toLowerCase();
+            // Mapeo de nombres de rol
+            if (role.equals("usuario")) {
+                role = "user";
+            }
+            claims.put("role", role);
+            claims.put("id", usuario.getId());
+        }
+        return getToken(claims, user);
     }
 
     private String getToken(Map<String,Object> extractClaims, UserDetails user) {

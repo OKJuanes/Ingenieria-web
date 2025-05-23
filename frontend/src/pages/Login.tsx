@@ -17,15 +17,19 @@ function Login() {
     setErrorMessage(''); // Limpiar mensajes de error previos
 
     try {
-      const userData = await login(username, password); // Llamar a la función de login del servicio
+      const userData = await login(username, password);
+      console.log("Login exitoso, datos recibidos:", userData);
+      console.log("Rol del usuario:", userData.role);
 
       // Redirigir según el rol
       if (userData.role === 'admin') {
+        console.log("Redirigiendo a panel admin...");
         navigate('/home-admin');
       } else if (userData.role === 'user') {
+        console.log("Redirigiendo a panel usuario...");
         navigate('/home-usuario');
       } else {
-        throw new Error('Rol de usuario no reconocido.');
+        throw new Error(`Rol de usuario no reconocido: ${userData.role}`);
       }
     } catch (error: any) { // Usar any para el error o tipar si conoces la estructura
       setErrorMessage(error.message || 'Error al iniciar sesión. Inténtalo de nuevo.');

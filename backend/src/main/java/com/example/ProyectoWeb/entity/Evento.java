@@ -27,9 +27,8 @@ public class Evento {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
-    @ManyToOne
-    @JoinColumn(name = "empresa_id", nullable = false)
-    private Empresa empresa;
+    @Column(nullable = false, unique = false)
+    private String empresa;
 
     @Column(length = 500)
     private String descripcion;

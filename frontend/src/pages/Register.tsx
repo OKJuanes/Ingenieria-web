@@ -25,8 +25,10 @@ function Register() {
             const userData = await register(correo, nombre, apellido, username, password); // Llamar a la función de registro
             setSuccessMessage(`¡Registro exitoso para ${userData.username}!`);
             
-            // Redirigir directamente al home de usuario o a la página de eventos
-            navigate('/eventos'); // O donde desees que vaya el usuario después del registro
+            console.log("Registro exitoso:", userData);
+        
+            navigate('/login'); 
+
         } catch (error: any) {
             setErrorMessage(error.message || 'Error en el registro. Por favor, intenta de nuevo.');
             console.error('Error de registro:', error);

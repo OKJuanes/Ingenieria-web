@@ -16,7 +16,7 @@ const EventoView: React.FC = () => {
   
   const currentUser = getUserData();
   // currentUserId es el ID del usuario logueado. Si tu backend usa usernames en 'invitados', cambia a currentUser.username
-  const currentUserId = currentUser ? currentUser.id : ''; 
+  const currentUsername = currentUser ? currentUser.username : ''; 
 
   useEffect(() => {
     const fetchEvento = async () => {
@@ -33,7 +33,7 @@ const EventoView: React.FC = () => {
           // *** ESTA LÍNEA ES CLAVE ***
           // Asume que fetchedEvento.invitados contiene los IDs de los usuarios registrados (strings o numbers).
           // Si tu backend devuelve usernames en invitados, entonces usa fetchedEvento.invitados?.includes(currentUser.username)
-          if (currentUserId && fetchedEvento.invitados?.includes(currentUserId)) {
+          if (currentUsername && fetchedEvento.participantes?.includes(currentUsername)) {
               setIsRegistered(true);
           } else {
               setIsRegistered(false);
@@ -53,7 +53,7 @@ const EventoView: React.FC = () => {
     };
 
     fetchEvento();
-  }, [id, currentUserId, navigate]); // Dependencias para re-ejecutar el efecto
+  }, [id, currentUsername, navigate]); // Dependencias para re-ejecutar el efecto
 
   const handleRegisterClick = async () => {
     if (!isAuthenticated()) {
@@ -72,7 +72,7 @@ const EventoView: React.FC = () => {
       setEvento(prevEvento => prevEvento ? { 
         ...prevEvento, 
         cantidadParticipantes: (prevEvento.cantidadParticipantes || 0) + 1, 
-        invitados: [...(prevEvento.invitados || []), currentUserId] // Añadir el ID del usuario al array local
+        participantes: [...(prevEvento.participantes || []), currentUsername]
       } : null);
 
     } catch (err: any) {
@@ -97,7 +97,7 @@ const EventoView: React.FC = () => {
       setEvento(prevEvento => prevEvento ? { 
         ...prevEvento, 
         cantidadParticipantes: Math.max(0, (prevEvento.cantidadParticipantes || 0) - 1), 
-        invitados: (prevEvento.invitados || []).filter(inv => inv !== currentUserId) // Eliminar el ID del usuario del array local
+        participantes: (prevEvento.participantes || []).filter(p => p !== currentUsername)
       } : null);
 
     } catch (err: any) {
@@ -153,10 +153,10 @@ const EventoView: React.FC = () => {
               <span className="font-semibold">Participantes:</span> {evento.cantidadParticipantes}
             </p>
           )}
-          {evento.empresaPatrocinadora && (
+          {evento.empresa && (
             <p className="text-gray-700 mb-2">
               <i className="fas fa-handshake mr-2 text-indigo-600"></i>
-              <span className="font-semibold">Patrocinador:</span> {evento.empresaPatrocinadora}
+              <span className="font-semibold">Patrocinador:</span> {evento.empresa}
             </p>
           )}
 
@@ -173,14 +173,14 @@ const EventoView: React.FC = () => {
             </div>
           )}
           
-          {evento.invitados && evento.invitados.length > 0 && (
+          {evento.participantes && evento.participantes.length > 0 && (
             <div className="mb-4">
               <p className="text-gray-700 font-semibold mb-1">
                 <i className="fas fa-user-check mr-2 text-indigo-600"></i>Usuarios Registrados:
               </p>
               <ul className="list-disc list-inside text-gray-600">
-                {evento.invitados.map((invitadoId, index) => (
-                  <li key={index}>{invitadoId}</li> // Esto mostrará el ID, si quieres el username, tu backend debe enviarlo o hacer otra llamada.
+                {evento.participantes.map((username, index) => (
+                  <li key={index}>{username}</li>
                 ))}
               </ul>
             </div>

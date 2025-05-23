@@ -22,12 +22,14 @@ export const formatDateForFrontend = (dateStr: string): string => {
 export interface Evento {
   id: number;
   nombre: string;
-  tipo: string;
-  fecha: string; // Considera usar Date si tu backend devuelve un formato ISO. Para el formulario, string está bien.
   descripcion: string;
-  empresa: string;
-  invitadosExternos?: string[]; // Nombres o identificadores de invitados externos (string)
-  invitados?: string[]; // Estos deberían ser los IDs de los usuarios de tu BD, ej. string[] de UUIDs o number[]
+  fecha: string;
+  tipo: string;
+  participantes?: string[]; // <- Añadir esta propiedad si no existe
+  invitados?: string[];
+  invitadosExternos?: string[];
+  empresa?: string;
+  cantidadParticipantes?: number;
 }
 
 // Función auxiliar para obtener los headers con el token de autenticación
@@ -92,22 +94,17 @@ export const getEventos = async (): Promise<Evento[]> => {
  * @param id El ID del evento.
  * @returns Promise con el objeto Evento o undefined si no se encuentra.
  */
-export const getEventoById = async (id: number): Promise<Evento | undefined> => {
+export const getEventoById = async (id: number): Promise<Evento> => {
   const response = await fetch(`${API_URL}/api/v1/eventos/${id}`, {
     headers: getAuthHeaders(),
   });
+  
   if (!response.ok) {
-    if (response.status === 404) {
-      return undefined; // Evento no encontrado
-    }
-    const errorData = await response.json();
-    throw new Error(errorData.message || `Error al cargar el evento con ID ${id}`);
+    const errorData = await response.json().catch(() => ({ message: 'Error al obtener evento' }));
+    throw new Error(errorData.message || `Error al obtener evento con ID ${id}`);
   }
-  const event = await response.json();
-  return {
-    ...event,
-    fecha: formatDateForFrontend(event.fecha)
-  };
+  
+  return response.json();
 };
 
 /**
@@ -176,29 +173,25 @@ export const updateEvent = async (updatedEvent: Evento): Promise<Evento> => {
  * @returns Promise<void>
  */
 export const registerUserToEvent = async (eventId: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/api/events/${eventId}/register`, {
-    method: 'POST',
+  const response = await fetch(`${API_URL}/api/v1/eventos/${eventId}/inscribirse`, {
+    method: 'PUT',
     headers: getAuthHeaders(),
-    // Asumimos que el backend identifica al usuario por el token JWT
   });
+  
   if (!response.ok) {
-    const errorData = await response.json();
+    const errorData = await response.json().catch(() => ({ message: 'Error al registrarse en el evento' }));
     throw new Error(errorData.message || `Error al registrarse en el evento ${eventId}`);
   }
 };
 
-/**
- * Desinscribe al usuario autenticado de un evento.
- * @param eventId El ID del evento del que desinscribirse.
- * @returns Promise<void>
- */
 export const unregisterUserFromEvent = async (eventId: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/api/events/${eventId}/unregister`, {
-    method: 'DELETE', // DELETE es más RESTful para desinscripción, pero tu backend podría usar POST
+  const response = await fetch(`${API_URL}/api/v1/eventos/${eventId}/eliminar-participante`, {
+    method: 'DELETE',
     headers: getAuthHeaders(),
   });
+  
   if (!response.ok) {
-    const errorData = await response.json();
+    const errorData = await response.json().catch(() => ({ message: 'Error al desinscribirse del evento' }));
     throw new Error(errorData.message || `Error al desinscribirse del evento ${eventId}`);
   }
 };

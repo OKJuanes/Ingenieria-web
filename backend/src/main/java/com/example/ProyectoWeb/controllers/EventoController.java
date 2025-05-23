@@ -33,13 +33,15 @@ public class EventoController {
         }
     }
 
+    // Para registrarse a un evento
     @PutMapping("/{id}/inscribirse")
     public ResponseEntity<?> addParticipante(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            return ResponseEntity.ok(eventoService.addParticipante(username, id));
+            String result = eventoService.addParticipante(username, id);
+            return ResponseEntity.ok().body(Map.of("message", result));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -77,12 +79,13 @@ public class EventoController {
 
     // Eliminar un participante de un evento
     @DeleteMapping("/{id}/eliminar-participante")
-    //@PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
-    public String removeParticipante(@RequestParam String username, @PathVariable Long id) {
+    public ResponseEntity<?> removeParticipante(@PathVariable Long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            return eventoService.removeParticipante(username, id);
+            String result = eventoService.removeParticipante(username, id);
+            return ResponseEntity.ok().body(Map.of("message", result));
         } catch (RuntimeException e) {
-            return e.getMessage();
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -108,5 +111,10 @@ public class EventoController {
     @GetMapping("/proximo")
     public Evento getEventoMasProximo() {
         return eventoService.getEventoMasProximo();
-}
+    }
+
+    @GetMapping("/{id}")
+    public Evento getEventoById(@PathVariable Long id) {
+        return eventoService.getEventoById(id);
+    }
 }

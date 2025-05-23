@@ -21,15 +21,16 @@ function Login() {
       console.log("Login exitoso, datos recibidos:", userData);
       console.log("Rol del usuario:", userData.role);
 
-      // Redirigir según el rol
-      if (userData.role === 'admin') {
+      // Modificación aquí: compara en minúsculas o usa una condición más flexible
+      const roleLower = userData.role?.toLowerCase();
+      
+      if (roleLower === 'admin') {
         console.log("Redirigiendo a panel admin...");
         navigate('/home-admin');
-      } else if (userData.role === 'user') {
+      } else {
+        // Asume que cualquier otro rol es un usuario normal
         console.log("Redirigiendo a panel usuario...");
         navigate('/home-usuario');
-      } else {
-        throw new Error(`Rol de usuario no reconocido: ${userData.role}`);
       }
     } catch (error: any) { // Usar any para el error o tipar si conoces la estructura
       setErrorMessage(error.message || 'Error al iniciar sesión. Inténtalo de nuevo.');

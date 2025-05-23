@@ -45,7 +45,7 @@ public class EventoController {
 
     // Crear un nuevo evento
     @PostMapping("/nuevo-evento")
-    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write')")
+    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write') or hasRole('admin') or hasRole('ADMIN')")
     public Evento postEvento(@RequestBody Evento evento) {
         return eventoService.saveEvento(evento);
     }

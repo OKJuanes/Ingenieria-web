@@ -26,11 +26,6 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
         {evento.descripcion && (
           <p className="text-gray-700 text-sm mb-2">{evento.descripcion.substring(0, 100)}...</p>
         )}
-        {evento.cantidadParticipantes !== undefined && (
-            <p className="text-gray-600 text-sm mb-1">
-                <i className="fas fa-users mr-2"></i>Participantes: {evento.cantidadParticipantes}
-            </p>
-        )}
       </div>
       <div className="mt-4 flex flex-wrap justify-between items-center gap-2">
         <Link

@@ -1,8 +1,8 @@
 // src/pages/HomeAdmin.tsx
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/common/Navbar';
-import { getEventStats, getRecentEvents, Evento, generateEventsReportCsv  } from '../services/eventoService'; // Importa las nuevas funciones y la interfaz Evento
-import { useNavigate } from 'react-router-dom'; // Para la navegación
+import { getEventStats, getRecentEvents, Evento, generateEventsReportCsv, getEventos } from '../services/eventoService'; // Importa las nuevas funciones y la interfaz Evento
+import { Link, useNavigate } from 'react-router-dom'; // Para la navegación
 import EventoCard from '../components/eventos/EventoCard'; // Para mostrar eventos recientes
 import '../assets/styles/HomeAdmin.css'; // Tu archivo de estilos para HomeAdmin
 
@@ -14,10 +14,13 @@ const HomeAdmin: React.FC = () => {
     proximoEvento: 'Cargando...',
   });
   const [recentEvents, setRecentEvents] = useState<Evento[]>([]);
+  const [eventos, setEventos] = useState<Evento[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingRecent, setLoadingRecent] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [errorStats, setErrorStats] = useState<string | null>(null);
   const [errorRecent, setErrorRecent] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Efecto para cargar las estadísticas
   useEffect(() => {
@@ -55,6 +58,25 @@ const HomeAdmin: React.FC = () => {
     };
 
     fetchRecentEvents();
+  }, []);
+
+  // Efecto para cargar todos los eventos (para la tabla de gestión)
+  useEffect(() => {
+    const fetchEventos = async () => {
+      try {
+        setLoading(true);
+        const fetchedEventos = await getEventos();
+        console.log("Eventos cargados (admin):", fetchedEventos);
+        setEventos(fetchedEventos);
+      } catch (err: any) {
+        console.error("Error al cargar eventos:", err);
+        setError(err.message || 'Error al cargar los eventos.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventos();
   }, []);
 
   // Manejadores de los botones de acción
@@ -165,6 +187,76 @@ const HomeAdmin: React.FC = () => {
                 />
               ))}
             </div>
+          )}
+        </div>
+
+        {/* Nueva sección: Gestión de Eventos */}
+        <div className="admin-eventos mt-8 bg-white bg-opacity-10 p-6 rounded-lg shadow-lg">
+          <h3 className="text-xl font-semibold mb-4 text-white">Gestión de Eventos</h3>
+          {loading ? (
+            <p className="text-white text-center p-4">Cargando eventos...</p>
+          ) : error ? (
+            <p className="text-red-300 text-center p-4">Error: {error}</p>
+          ) : eventos.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="eventos-table w-full">
+                <thead>
+                  <tr className="bg-purple-800 text-white">
+                    <th className="py-3 px-4 text-left w-[5%]">ID</th>
+                    <th className="py-3 px-4 text-left w-[25%]">Nombre</th>
+                    <th className="py-3 px-4 text-left w-[15%]">Fecha</th>
+                    <th className="py-3 px-4 text-left w-[15%]">Tipo</th>
+                    <th className="py-3 px-4 text-left w-[35%]">Descripción</th> {/* Nueva columna */}
+                    <th className="py-3 px-4 text-center w-[25%]">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventos.map((evento) => (
+                    <tr key={evento.id} className="border-t border-gray-700 hover:bg-purple-900 hover:bg-opacity-20 transition">
+                      <td className="py-3 px-4 text-white">{evento.id}</td>
+                      <td className="py-3 px-4 text-white">{evento.nombre}</td>
+                      <td className="py-3 px-4 text-white">{evento.fecha}</td>
+                      <td className="py-3 px-4 text-white">{evento.tipo}</td>
+                      <td className="py-3 px-4 text-white">
+                        {/* Añadir descripción con límite de caracteres */}
+                        {evento.descripcion && evento.descripcion.length > 100
+                          ? `${evento.descripcion.substring(0, 100)}...`
+                          : evento.descripcion}
+                      </td>
+                      <td className="py-2 px-4">
+                        <div className="flex justify-center space-x-2">
+                          <Link 
+                            to={`/eventos/${evento.id}`} 
+                            className="btn-ver bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition"
+                          >
+                            Ver
+                          </Link>
+                          <Link 
+                            to={`/editar-evento/${evento.id}`} 
+                            className="btn-editar bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition"
+                          >
+                            Editar
+                          </Link>
+                          <button 
+                            className="btn-eliminar bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm font-medium transition"
+                            onClick={() => {
+                              if (window.confirm(`¿Estás seguro de que quieres eliminar el evento "${evento.nombre}"?`)) {
+                                // Aquí iría la función para eliminar el evento
+                                console.log(`Eliminando evento ${evento.id}`);
+                              }
+                            }}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-white text-center p-4">No hay eventos disponibles.</p>
           )}
         </div>
       </div>

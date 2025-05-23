@@ -9,7 +9,6 @@ D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\Jw
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtService.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\SecurityConfig.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\AdminController.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\EmpresaController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\EventoController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\HitoController.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\OrganizadorController.java
@@ -24,12 +23,10 @@ D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Ti
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Usuario.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\UsuarioInfo.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\ParcialFashionEventApplication.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IEmpresaRepository.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IEventoRepository.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IHitoRepository.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IInvitadoExternoRepository.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IUsuarioRepository.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\EmpresaService.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\EventoService.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\HitoService.java
 D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\InvitadoExternoService.java

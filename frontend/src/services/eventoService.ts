@@ -1,6 +1,22 @@
 // src/services/eventoService.ts
 import { API_URL } from '../main';
 import { getToken } from './authService';
+import {jwtDecode} from 'jwt-decode';
+
+// Funciones de formato de fecha
+export const formatDateForBackend = (dateStr: string): string => {
+  if (!dateStr) return '';
+  // Convierte YYYY-MM-DD a dd-MM-yyyy
+  const [year, month, day] = dateStr.split('-');
+  return `${day}-${month}-${year}`;
+};
+
+export const formatDateForFrontend = (dateStr: string): string => {
+  if (!dateStr) return '';
+  // Convierte dd-MM-yyyy a YYYY-MM-DD
+  const [day, month, year] = dateStr.split('-');
+  return `${year}-${month}-${day}`;
+};
 
 // Interfaz Evento (asegúrate de que coincida con la estructura que tu backend devuelve/espera)
 export interface Evento {
@@ -9,8 +25,7 @@ export interface Evento {
   tipo: string;
   fecha: string; // Considera usar Date si tu backend devuelve un formato ISO. Para el formulario, string está bien.
   descripcion: string;
-  cantidadParticipantes?: number;
-  empresaPatrocinadora?: string;
+  empresa: string;
   invitadosExternos?: string[]; // Nombres o identificadores de invitados externos (string)
   invitados?: string[]; // Estos deberían ser los IDs de los usuarios de tu BD, ej. string[] de UUIDs o number[]
 }
@@ -18,15 +33,11 @@ export interface Evento {
 // Función auxiliar para obtener los headers con el token de autenticación
 const getAuthHeaders = () => {
   const token = getToken();
-  if (!token) {
-    // Si no hay token, el usuario no está autenticado, puedes redirigir o lanzar un error
-    // En un entorno de producción, esto podría ser un error más grave.
-    console.error('No authentication token found. Please log in.');
-    throw new Error('No authentication token found. Please log in.');
-  }
+  console.log("Token recuperado:", token); // Para debug
+  
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    'Authorization': token ? `Bearer ${token}` : '',
   };
 };
 
@@ -66,7 +77,7 @@ export const getRecentEvents = async (limit: number = 3): Promise<Evento[]> => {
  * @returns Promise con un array de objetos Evento.
  */
 export const getEventos = async (): Promise<Evento[]> => {
-  const response = await fetch(`${API_URL}/api/events`, {
+  const response = await fetch(`${API_URL}/api/v1/eventos/activos`, {
     headers: getAuthHeaders(),
   });
   if (!response.ok) {
@@ -82,7 +93,7 @@ export const getEventos = async (): Promise<Evento[]> => {
  * @returns Promise con el objeto Evento o undefined si no se encuentra.
  */
 export const getEventoById = async (id: number): Promise<Evento | undefined> => {
-  const response = await fetch(`${API_URL}/api/events/${id}`, {
+  const response = await fetch(`${API_URL}/api/v1/eventos/${id}`, {
     headers: getAuthHeaders(),
   });
   if (!response.ok) {
@@ -92,7 +103,11 @@ export const getEventoById = async (id: number): Promise<Evento | undefined> => 
     const errorData = await response.json();
     throw new Error(errorData.message || `Error al cargar el evento con ID ${id}`);
   }
-  return response.json();
+  const event = await response.json();
+  return {
+    ...event,
+    fecha: formatDateForFrontend(event.fecha)
+  };
 };
 
 /**
@@ -101,13 +116,37 @@ export const getEventoById = async (id: number): Promise<Evento | undefined> => 
  * @returns Promise con el objeto Evento creado (incluyendo el ID).
  */
 export const createEvent = async (newEvent: Omit<Evento, 'id'>): Promise<Evento> => {
-  const response = await fetch(`${API_URL}/api/events`, {
+  const token = getToken();
+  try {
+    if (token) {
+      const decoded = jwtDecode(token);
+      console.log("Token decoded:", decoded);
+    } else {
+      console.warn("No token found for decoding.");
+    }
+  } catch (e) {
+    console.error("Error decoding token:", e);
+  }
+  
+  // Copia y formatea la fecha antes de enviar
+  const eventToSend = {
+    ...newEvent,
+    fecha: formatDateForBackend(newEvent.fecha)
+  };
+
+  const response = await fetch(`${API_URL}/api/v1/eventos/nuevo-evento`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(newEvent),
+    body: JSON.stringify(eventToSend),
   });
   if (!response.ok) {
-    const errorData = await response.json();
+    if (response.status === 403) {
+      throw new Error("No tienes permisos para crear eventos. Verifica tu rol de usuario.");
+    }
+    
+    // Intentar leer el cuerpo de respuesta solo si hay contenido
+    const text = await response.text();
+    const errorData = text ? JSON.parse(text) : {};
     throw new Error(errorData.message || 'Error al crear el evento');
   }
   return response.json();

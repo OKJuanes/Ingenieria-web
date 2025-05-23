@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 export interface UserData {
   id: string; // Asume que el ID es un string (ej. UUID). Si es un número, cambia a 'number'.
   username: string;
-  role: 'admin' | 'user';
+  role: 'admin' | 'usuario';
 }
 
 const TOKEN_KEY = 'authToken';
@@ -48,7 +48,7 @@ export const getUserData = (): UserData | null => {
 
 // Función para almacenar el token y los datos del usuario en localStorage
 // ¡AHORA RECIBE EL 'id' Y LO ALMACENA!
-export const setAuthData = (token: string, role: 'admin' | 'user', username: string, id: string): void => {
+export const setAuthData = (token: string, role: 'admin' | 'usuario', username: string, id: string): void => {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(USER_DATA_KEY, JSON.stringify({ id, username, role })); // ¡ALMACENA EL ID!
 };
@@ -112,9 +112,22 @@ export const login = async (usernameInput: string, passwordInput: string): Promi
   // Decodifica el token para extraer los datos
   const decoded = jwtDecode<JwtPayload>(token);
   
+  // Añade este log para ver qué contiene exactamente el token
+  console.log("Token decodificado:", decoded);
+  
   // Extrae los datos del token
   const id = decoded.id?.toString() || '';
-  const role = (decoded.role as 'admin' | 'user') || 'user';
+  const roleFromToken = decoded.role || 'usuario';
+  console.log("Rol extraído del token:", roleFromToken);
+  
+  // Normaliza el rol para asegurarte que siempre es "admin" o "usuario"
+  let role: 'admin' | 'usuario';
+  if (roleFromToken.toLowerCase() === 'admin') {
+    role = 'admin';
+  } else {
+    role = 'usuario';
+  }
+  
   const username = decoded.sub || usernameInput;
 
   // Almacena el token y los datos en localStorage
@@ -162,7 +175,7 @@ export const register = async (correo: string, nombre: string, apellido: string,
   
   // Extrae los datos del token
   const id = decoded.id?.toString() || '';
-  const role = (decoded.role as 'admin' | 'user') || 'usuario';
+  const role = (decoded.role as 'admin' | 'usuario') || 'usuario';
   const username = decoded.sub || usernameInput;
 
   // Almacena el token y los datos en localStorage

@@ -1,45 +1,47 @@
 // src/pages/HomeUsuario.tsx
-import React, { useState, useEffect } from 'react'; // Importa useEffect
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
-import { Evento, getEventos } from '../services/eventoService'; // Importa Evento y getEventos
+import { getEventos, Evento } from '../services/eventoService';
 import '../assets/styles/HomeUsuario.css';
 
 const HomeUsuario: React.FC = () => {
-  const [eventos, setEventos] = useState<Evento[]>([]); // Estado para los eventos, tipado con Evento[]
-  const [loading, setLoading] = useState(true); // Estado para controlar la carga
-  const [error, setError] = useState<string | null>(null); // Estado para manejar errores
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState<string[]>([]);
 
-  // useEffect para cargar los eventos del backend al montar el componente
   useEffect(() => {
     const fetchEventos = async () => {
       try {
         setLoading(true);
-        setError(null);
-        const fetchedEventos = await getEventos(); // Llama a la función del servicio
+        const fetchedEventos = await getEventos();
+        console.log("Eventos cargados:", fetchedEventos);
         setEventos(fetchedEventos);
       } catch (err: any) {
+        console.error("Error al cargar eventos:", err);
         setError(err.message || 'Error al cargar los eventos.');
-        console.error("Error fetching events for HomeUsuario:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchEventos();
-  }, []); // El array vacío asegura que se ejecute solo una vez al montar
+  }, []);
 
   const handleEtiquetaClick = (etiqueta: string) => {
-    if (etiquetasSeleccionadas.includes(etiqueta)) {
-      setEtiquetasSeleccionadas(etiquetasSeleccionadas.filter((e) => e !== etiqueta));
-    } else {
-      setEtiquetasSeleccionadas([...etiquetasSeleccionadas, etiqueta]);
-    }
+    setEtiquetasSeleccionadas(prev => 
+      prev.includes(etiqueta) 
+        ? prev.filter(e => e !== etiqueta)
+        : [...prev, etiqueta]
+    );
   };
 
-  // Filtrar eventos según las etiquetas seleccionadas
-  // Asumiendo que `evento.tipo` es un campo de la interfaz Evento que usas para el filtro
-  const eventosFiltrados = eventos.filter((evento) =>
+  // Extraer tipos de eventos únicos para los filtros
+  const tiposDeEvento = [...new Set(eventos.map(e => e.tipo))];
+  
+  // Filtrar eventos según etiquetas seleccionadas
+  const eventosFiltrados = eventos.filter(evento =>
     etiquetasSeleccionadas.length === 0 || etiquetasSeleccionadas.includes(evento.tipo)
   );
 
@@ -47,22 +49,19 @@ const HomeUsuario: React.FC = () => {
     <div className="home-usuario-container">
       <Navbar />
       <div className="home-usuario-content">
-        <h2 className="home-usuario-title">Bienvenido, Usuario</h2>
-
-        {/* Filtro de etiquetas */}
+        <h2 className="home-usuario-title">Bienvenido</h2>
+        
+        {/* Filtro por tipos */}
         <div className="filtro-etiquetas">
           <h3>Filtrar por tipo de evento:</h3>
           <div className="filtro-etiquetas-botones">
-            {/* Si los tipos de evento vienen del backend, puedes generar dinámicamente estos botones
-                Por ahora, se mantienen los tipos hardcodeados para el ejemplo.
-                Deberías obtener la lista de tipos únicos de tus `eventos` una vez cargados. */}
-            {['Tecnología', 'Inteligencia Artificial', 'Programación', 'Deporte', 'Cultura', 'Social'].map((etiqueta) => (
+            {tiposDeEvento.map(tipo => (
               <button
-                key={etiqueta}
-                onClick={() => handleEtiquetaClick(etiqueta)}
-                className={etiquetasSeleccionadas.includes(etiqueta) ? 'active' : 'inactive'}
+                key={tipo}
+                onClick={() => handleEtiquetaClick(tipo)}
+                className={etiquetasSeleccionadas.includes(tipo) ? 'active' : 'inactive'}
               >
-                {etiqueta}
+                {tipo}
               </button>
             ))}
           </div>
@@ -82,34 +81,16 @@ const HomeUsuario: React.FC = () => {
                   <h4>{evento.nombre}</h4>
                   <p><strong>Fecha:</strong> {evento.fecha}</p>
                   <p><strong>Tipo:</strong> {evento.tipo}</p>
-                  <p><strong>Participantes:</strong> {evento.cantidadParticipantes}</p>
-                  <p><strong>Patrocinador:</strong> {evento.empresaPatrocinadora}</p>
-                  {/* Asegúrate que `invitadosExternos` e `invitados` sean arrays en tu interfaz Evento */}
-                  {evento.invitadosExternos && evento.invitadosExternos.length > 0 && (
-                    <div>
-                      <p><strong>Invitados Externos:</strong></p>
-                      <ul className="lista-invitados">
-                        {evento.invitadosExternos.map((invitado, index) => (
-                          <li key={index}>{invitado}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {evento.invitados && evento.invitados.length > 0 && (
-                    <div>
-                      <p><strong>Invitados:</strong></p>
-                      <ul className="lista-invitados">
-                        {evento.invitados.map((invitado, index) => (
-                          <li key={index}>{invitado}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                  <p><strong>Patrocinador:</strong> {evento.empresa || 'No especificado'}</p>
+                  <p><strong>Descripción:</strong> {evento.descripcion}</p>
+                  <Link to={`/eventos/${evento.id}`} className="btn-ver-detalle">
+                    Ver detalles
+                  </Link>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="mensaje-sin-eventos">No hay eventos que coincidan con los filtros seleccionados.</p>
+            <p className="mensaje-sin-eventos">No hay eventos disponibles.</p>
           )}
         </div>
       </div>

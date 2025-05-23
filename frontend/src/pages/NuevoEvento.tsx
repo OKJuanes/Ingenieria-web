@@ -4,6 +4,7 @@ import Navbar from '../components/common/Navbar';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Evento, createEvent, getEventoById, updateEvent } from '../services/eventoService'; // Importa las funciones
 import '../assets/styles/NuevoEvento.css'; // Asegúrate de tener este CSS
+import {jwtDecode} from 'jwt-decode'; // Asegúrate de tener instalada esta dependencia
 
 const NuevoEvento: React.FC = () => {
   const navigate = useNavigate();
@@ -17,8 +18,7 @@ const NuevoEvento: React.FC = () => {
     tipo: '',
     fecha: '',
     descripcion: '',
-    cantidadParticipantes: 0,
-    empresaPatrocinadora: '',
+    empresa: '',
     invitadosExternos: [],
     invitados: [], // Para los usuarios registrados
   });
@@ -90,8 +90,7 @@ const NuevoEvento: React.FC = () => {
           tipo: '',
           fecha: '',
           descripcion: '',
-          cantidadParticipantes: 0,
-          empresaPatrocinadora: '',
+          empresa: '',
           invitadosExternos: [],
           invitados: [],
         });
@@ -147,11 +146,11 @@ const NuevoEvento: React.FC = () => {
               required
             >
               <option value="">Selecciona un tipo</option>
-              <option value="Hackathon">Hackathon</option>
-              <option value="Conferencia">Conferencia</option>
-              <option value="Bootcamp">Bootcamp</option>
-              <option value="Taller">Taller</option>
-              <option value="Webinar">Webinar</option>
+              <option value="BOOTCAMP">BOOTCAMP</option>
+              <option value="HACKATON">HACKATON</option>
+              <option value="CHARLA">CHARLA</option>
+              <option value="CONCURSO">CONCURSO</option>
+              <option value="OTROS">OTROS</option>
             </select>
           </div>
 
@@ -182,31 +181,18 @@ const NuevoEvento: React.FC = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="cantidadParticipantes" className="block text-gray-700 text-sm font-bold mb-2">Cantidad de Participantes:</label>
-            <input
-              type="number"
-              id="cantidadParticipantes"
-              name="cantidadParticipantes"
-              value={eventoData.cantidadParticipantes}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              min="0"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="empresaPatrocinadora" className="block text-gray-700 text-sm font-bold mb-2">Empresa Patrocinadora:</label>
+            <label htmlFor="empresa" className="block text-gray-700 text-sm font-bold mb-2">Empresa Patrocinadora:</label>
             <input
               type="text"
-              id="empresaPatrocinadora"
-              name="empresaPatrocinadora"
-              value={eventoData.empresaPatrocinadora || ''}
+              id="empresa"
+              name="empresa"
+              value={eventoData.empresa || ''}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="invitadosExternos" className="block text-gray-700 text-sm font-bold mb-2">Invitados Externos (separados por comas):</label>
             <input
               type="text"
@@ -217,6 +203,31 @@ const NuevoEvento: React.FC = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Ej: Juan Perez (Speaker), Maria Lopez (Keynote)"
             />
+          </div> */}
+
+          <div className="mb-4">
+            <button 
+              type="button"
+              onClick={() => {
+                const token = localStorage.getItem('authToken');
+                if (token) {
+                  try {
+                    // Importa jwtDecode o ajusta según tu implementación
+                    const decoded = jwtDecode<{ role?: string; authorities?: string }>(token);
+                    console.log("Token decodificado:", decoded);
+                    alert(`Rol: ${decoded.role}\nPermisos: ${decoded.authorities || 'No disponible'}`);
+                  } catch (e) {
+                    console.error("Error decodificando token:", e);
+                    alert("Error al decodificar token. Ver consola.");
+                  }
+                } else {
+                  alert("No hay token guardado");
+                }
+              }}
+              className="text-sm text-gray-600 mb-2"
+            >
+              Verificar permisos
+            </button>
           </div>
 
           <button

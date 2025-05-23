@@ -48,9 +48,20 @@ export const getUserData = (): UserData | null => {
 
 // Función para almacenar el token y los datos del usuario en localStorage
 // ¡AHORA RECIBE EL 'id' Y LO ALMACENA!
-export const setAuthData = (token: string, role: 'admin' | 'usuario', username: string, id: string): void => {
+export const setAuthData = (token: string, userData: any): void => {
   localStorage.setItem(TOKEN_KEY, token);
-  localStorage.setItem(USER_DATA_KEY, JSON.stringify({ id, username, role })); // ¡ALMACENA EL ID!
+  
+  // Asegúrate de guardar TODOS los campos del usuario
+  const userToStore = {
+    id: userData.id,
+    username: userData.username,
+    role: userData.role,
+    nombre: userData.nombre || '',  // Guarda estos campos adicionales
+    apellido: userData.apellido || '',
+    correo: userData.correo || ''
+  };
+  
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(userToStore));
 };
 
 // Función para eliminar el token y los datos del usuario de localStorage (cerrar sesión)
@@ -103,37 +114,19 @@ export const login = async (usernameInput: string, passwordInput: string): Promi
     throw new Error(errorData.message || 'Credenciales incorrectas');
   }
 
-  // Solo recupera el token de la respuesta
   const { token } = await response.json();
-  if (!token) {
-    throw new Error('Backend did not return token.');
-  }
-
-  // Decodifica el token para extraer los datos
+  
+  // Decodifica el token para extraer datos
   const decoded = jwtDecode<JwtPayload>(token);
   
-  // Añade este log para ver qué contiene exactamente el token
-  console.log("Token decodificado:", decoded);
-  
-  // Extrae los datos del token
+  // Extrae los datos básicos del token
   const id = decoded.id?.toString() || '';
-  const roleFromToken = decoded.role || 'usuario';
-  console.log("Rol extraído del token:", roleFromToken);
-  
-  // Normaliza el rol para asegurarte que siempre es "admin" o "usuario"
-  let role: 'admin' | 'usuario';
-  if (roleFromToken.toLowerCase() === 'admin') {
-    role = 'admin';
-  } else {
-    role = 'usuario';
-  }
-  
+  const role = decoded.role?.toLowerCase() === 'admin' ? 'admin' : 'usuario';
   const username = decoded.sub || usernameInput;
 
-  // Almacena el token y los datos en localStorage
-  setAuthData(token, role, username, id);
+  // Almacena el token y los datos mínimos necesarios
+  setAuthData(token, { id, username, role });
   
-  // Retorna los datos del usuario
   return { id, username, role };
 };
 
@@ -179,8 +172,67 @@ export const register = async (correo: string, nombre: string, apellido: string,
   const username = decoded.sub || usernameInput;
 
   // Almacena el token y los datos en localStorage
-  setAuthData(token, role as any, username, id);
+  setAuthData(token, { id, username, role: role as any });
   
   // Retorna los datos del usuario
   return { id, username, role: role as any };
 };
+
+// Devuelve los headers de autorización usando el token almacenado
+const getAuthHeaders = (): Record<string, string> => {
+  const token = getToken();
+  return token
+    ? { Authorization: `Bearer ${token}` }
+    : {};
+};
+
+// Añade esta función para actualizar el perfil
+export const updateUserProfile = async (userData: any): Promise<UserData> => {
+  const response = await fetch(`${API_URL}/api/v1/usuarios/perfil`, {
+    method: 'PUT',
+    headers: {
+      ...getAuthHeaders(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al actualizar el perfil');
+  }
+  
+  const updatedUser = await response.json();
+  
+  // Actualizar datos en localStorage
+  localStorage.setItem('userData', JSON.stringify(updatedUser));
+  
+  return updatedUser;
+};
+
+// Añade esta función adicional
+export const getUserProfileData = (): UserProfileData | null => {
+  const data = localStorage.getItem(USER_DATA_KEY);
+  if (!data) return null;
+  
+  try {
+    const parsedData = JSON.parse(data);
+    // Validación básica
+    if (!parsedData || !parsedData.id || !parsedData.username) {
+      console.warn("User data in localStorage is invalid. Clearing data.");
+      clearAuthData();
+      return null;
+    }
+    return parsedData;
+  } catch (e) {
+    console.error("Error parsing user profile data from localStorage", e);
+    return null;
+  }
+};
+
+// Añade esta interfaz
+export interface UserProfileData extends UserData {
+  nombre?: string;
+  apellido?: string;
+  correo?: string;
+}

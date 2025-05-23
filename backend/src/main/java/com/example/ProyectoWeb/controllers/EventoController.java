@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/eventos")
@@ -116,5 +117,20 @@ public class EventoController {
     @GetMapping("/{id}")
     public Evento getEventoById(@PathVariable Long id) {
         return eventoService.getEventoById(id);
+    }
+
+    @GetMapping("/mis-eventos")
+    public List<Evento> getMisEventos() {
+        // Obtiene el nombre de usuario autenticado del SecurityContext
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        // Obtiene todos los eventos
+        List<Evento> todosLosEventos = eventoService.getAllEventos();
+        
+        // Filtra los eventos donde el usuario actual es participante
+        return todosLosEventos.stream()
+                .filter(evento -> evento.getParticipantes() != null && 
+                         evento.getParticipantes().contains(username))
+                .collect(Collectors.toList());
     }
 }

@@ -36,9 +36,18 @@ public class UsuarioController {
     // Editar perfil
     @PutMapping("/perfil/Editar")
     public Usuario updateUserProfile(@RequestBody Usuario request) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName(); // Obtener el username del usuario autenticado
-        Long id = usuarioService.getUserByUsername(username).getId();
-        return usuarioService.updateUserById(request, id);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario currentUser = usuarioService.getUserByUsername(username);
+        
+        // Actualizar solo los campos permitidos desde el cliente
+        if (request.getNombre() != null) currentUser.setNombre(request.getNombre());
+        if (request.getApellido() != null) currentUser.setApellido(request.getApellido());
+        if (request.getCorreo() != null) currentUser.setCorreo(request.getCorreo());
+        
+        // No permitimos actualizar el username ni la contraseña por esta vía
+        // No permitimos actualizar el rol desde el perfil
+        
+        return usuarioService.updateUserById(currentUser, currentUser.getId());
     }
 
     // Eliminar perfil

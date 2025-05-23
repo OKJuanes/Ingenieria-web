@@ -201,8 +201,9 @@ export const unregisterUserFromEvent = async (eventId: number): Promise<void> =>
  * @returns Promise con un array de objetos Evento.
  */
 export const getRegisteredEventsForCurrentUser = async (): Promise<Evento[]> => {
-  // Asumimos que el backend tiene una ruta para obtener los eventos del usuario actual
-  const response = await fetch(`${API_URL}/api/users/me/events`, {
+  // La ruta actual no existe: /api/users/me/events
+  // Cambia a la ruta correcta de tu backend:
+  const response = await fetch(`${API_URL}/api/v1/eventos/mis-eventos`, {
     headers: getAuthHeaders(),
   });
 

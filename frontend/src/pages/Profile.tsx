@@ -4,14 +4,14 @@ import Navbar from '../components/common/Navbar';
 import EventoCard from '../components/eventos/EventoCard';
 import { getUserData, isAuthenticated } from '../services/authService';
 import { getRegisteredEventsForCurrentUser, Evento, unregisterUserFromEvent } from '../services/eventoService';
-import { updateUserProfile, deleteUserAccount, getUserProfileData } from '../services/ProfileService';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { updateUserProfile, deleteUserAccount, getUserProfileData, fetchUserProfile } from '../services/ProfileService';
+import { useNavigate } from 'react-router-dom';
 
 import '../assets/styles/Profile.css';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(getUserProfileData()); // Obtener los datos del usuario
+  const [userData, setUserData] = useState(getUserProfileData()); // Inicializa con datos del localStorage
   const [userEventos, setUserEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,9 +19,9 @@ const Profile: React.FC = () => {
   // Estados para edición de perfil
   const [isEditing, setIsEditing] = useState(false);
   const [profileForm, setProfileForm] = useState({
-    nombre: getUserProfileData()?.nombre || '',
-    apellido: getUserProfileData()?.apellido || '',
-    correo: getUserProfileData()?.correo || ''
+    nombre: userData?.nombre || '',
+    apellido: userData?.apellido || '',
+    correo: userData?.correo || ''
   });
 
   // Redirección con useEffect en lugar de condicional directo
@@ -29,6 +29,37 @@ const Profile: React.FC = () => {
     if (!isAuthenticated()) {
       navigate('/login', { replace: true });
     }
+  }, [navigate]);
+
+  // Efecto para cargar datos actualizados del perfil desde el backend
+  useEffect(() => {
+    const loadProfileData = async () => {
+      if (!isAuthenticated()) {
+        navigate('/login', { replace: true });
+        return;
+      }
+      
+      try {
+        // Obtener datos del perfil directamente del backend
+        const profileData = await fetchUserProfile();
+        console.log("Datos del perfil cargados:", profileData);
+        
+        // Actualizar el estado con los datos recibidos
+        setUserData(profileData);
+        
+        // Actualizar también el formulario de edición
+        setProfileForm({
+          nombre: profileData.nombre || '',
+          apellido: profileData.apellido || '',
+          correo: profileData.correo || ''
+        });
+      } catch (err: any) {
+        console.error("Error al cargar datos del perfil:", err);
+        // No establecer error en el estado para no interrumpir la experiencia
+      }
+    };
+    
+    loadProfileData();
   }, [navigate]);
 
   // Efecto para obtener los eventos a los que el usuario está registrado
@@ -69,7 +100,7 @@ const Profile: React.FC = () => {
     try {
       const updatedProfile = await updateUserProfile(profileForm);
       setUserData({
-        ...userData,
+        ...userData!,
         ...updatedProfile
       });
       setIsEditing(false);
@@ -123,6 +154,9 @@ const Profile: React.FC = () => {
   // El renderizado principal solo debe ocurrir si tenemos datos de usuario
   if (!userData) return null;
 
+  // Añadir esta constante para verificar si el usuario es admin
+  const isAdmin = userData?.role?.toLowerCase() === 'admin';
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
       <Navbar />
@@ -133,15 +167,18 @@ const Profile: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-2xl font-semibold text-gray-800">Información del Usuario</h3>
-            <button 
-              onClick={() => setIsEditing(!isEditing)}
-              className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
-            >
-              {isEditing ? 'Cancelar' : 'Editar Perfil'}
-            </button>
+            {!isAdmin && ( // Solo mostrar el botón editar si NO es admin
+              <button 
+                onClick={() => setIsEditing(!isEditing)}
+                className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
+              >
+                {isEditing ? 'Cancelar' : 'Editar Perfil'}
+              </button>
+            )}
           </div>
           
-          {isEditing ? (
+          {/* Mostrar el formulario de edición solo si no es admin y está en modo edición */}
+          {isEditing && !isAdmin ? (
             <form onSubmit={handleProfileSubmit} className="space-y-4">
               <div>
                 <label className="block text-gray-700 mb-1">Nombre:</label>
@@ -182,10 +219,10 @@ const Profile: React.FC = () => {
             </form>
           ) : (
             <div className="space-y-2">
-              <p className="text-gray-700 mb-2"><span className="font-bold">Usuario:</span> {userData.username}</p>
-              <p className="text-gray-700 mb-2"><span className="font-bold">Nombre:</span> {userData.nombre || 'No especificado'}</p>
-              <p className="text-gray-700 mb-2"><span className="font-bold">Apellido:</span> {userData.apellido || 'No especificado'}</p>
-              <p className="text-gray-700 mb-2"><span className="font-bold">Correo:</span> {userData.correo || 'No especificado'}</p>
+              <p className="text-gray-700 mb-2"><span className="font-bold">Usuario:</span> {userData?.username || 'No disponible'}</p>
+              <p className="text-gray-700 mb-2"><span className="font-bold">Nombre:</span> {userData?.nombre || 'No especificado'}</p>
+              <p className="text-gray-700 mb-2"><span className="font-bold">Apellido:</span> {userData?.apellido || 'No especificado'}</p>
+              <p className="text-gray-700 mb-2"><span className="font-bold">Correo:</span> {userData?.correo || 'No especificado'}</p>
               <p className="text-gray-700">
                 <span className="font-bold">Rol:</span> {
                   (() => {
@@ -206,19 +243,28 @@ const Profile: React.FC = () => {
                   })()
                 }
               </p>
+              
+              {/* Añadir mensaje explicativo para los administradores */}
+              {isAdmin && (
+                <p className="mt-4 p-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-md">
+                  <span className="font-bold">Nota:</span> Como administrador, tu perfil no puede ser modificado desde esta interfaz por motivos de seguridad.
+                </p>
+              )}
             </div>
           )}
           
-          {/* Botón para eliminar cuenta */}
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <button 
-              onClick={handleDeleteAccount}
-              className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
-            >
-              Eliminar mi cuenta
-            </button>
-            <p className="text-sm text-gray-500 mt-2">Esta acción es permanente y no se puede deshacer.</p>
-          </div>
+          {/* Botón para eliminar cuenta, solo visible para usuarios normales */}
+          {!isAdmin && (
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <button 
+                onClick={handleDeleteAccount}
+                className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+              >
+                Eliminar mi cuenta
+              </button>
+              <p className="text-sm text-gray-500 mt-2">Esta acción es permanente y no se puede deshacer.</p>
+            </div>
+          )}
         </div>
 
         {/* Mis Eventos Registrados */}

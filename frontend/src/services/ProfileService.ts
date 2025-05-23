@@ -123,14 +123,19 @@ export const fetchUserProfile = async (): Promise<UserProfileData> => {
   
   const profileData = await response.json();
   
-  // Actualizar localStorage con los datos más recientes
+  // Actualizar localStorage PRESERVANDO el rol original
   const currentUserData = getUserData();
   if (currentUserData) {
+    // Mantener el rol original mientras se actualizan otros campos
     const updatedUserData = {
       ...currentUserData,
-      ...profileData
+      ...profileData,
+      role: currentUserData.role // Preservar el rol original
     };
     localStorage.setItem('userData', JSON.stringify(updatedUserData));
+    
+    // También actualizar el objeto a retornar
+    profileData.role = currentUserData.role;
   }
   
   return profileData as UserProfileData;

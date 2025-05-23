@@ -10,7 +10,9 @@ import com.example.ProyectoWeb.entity.Evento;
 import com.example.ProyectoWeb.entity.Usuario;
 import com.example.ProyectoWeb.services.UsuarioService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/usuario")
@@ -21,9 +23,20 @@ public class UsuarioController {
 
     // Información de perfil propio
     @GetMapping("/perfil")
-    public Usuario getUserProfile() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName(); // Obtener el username del usuario autenticado
-        return usuarioService.getUserByUsername(username);
+    public ResponseEntity<Map<String, Object>> getUserProfile() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = usuarioService.getUserByUsername(username);
+        
+        // Crear un mapa con todos los campos que queremos devolver explícitamente
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", usuario.getId());
+        response.put("username", usuario.getUsername());
+        response.put("nombre", usuario.getNombre());
+        response.put("apellido", usuario.getApellido());
+        response.put("correo", usuario.getCorreo());
+        response.put("role", usuario.getRol().toString());
+        
+        return ResponseEntity.ok(response);
     }
     // Eventos de usuario
     @GetMapping("/mis-eventos")

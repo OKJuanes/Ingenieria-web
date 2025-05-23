@@ -31,6 +31,7 @@ const Navbar: React.FC = () => {
               <>
                 <Link to="/home-admin" className="navbar-button">Panel Admin</Link>
                 <Link to="/eventos/nuevo-evento" className="navbar-button">Crear Evento</Link>
+                <Link to="/perfil" className="navbar-button">Perfil</Link>
                 {/* Puedes añadir más enlaces para admin aquí */}
               </>
             ) : (

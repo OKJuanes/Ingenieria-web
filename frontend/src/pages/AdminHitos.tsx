@@ -354,7 +354,7 @@ hito.completado ? 'bg-green-200' : 'bg-red-200'
 
 onClick={() => handleEdit(hito.id)}
 
-className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-xs mr-2"
+className="btn btn-link btn-sm text-primary me-2"
 
 >
 
@@ -366,7 +366,7 @@ Editar
 
 onClick={() => handleDelete(hito.id)}
 
-className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
+className="btn btn-link btn-sm text-danger"
 
 >
 

@@ -5,6 +5,7 @@ import { getEventStats, getRecentEvents, Evento, generateEventsReportCsv, getEve
 import { Link, useNavigate } from 'react-router-dom'; // Para la navegación
 import EventoCard from '../components/eventos/EventoCard'; // Para mostrar eventos recientes
 import '../assets/styles/HomeAdmin.css'; // Tu archivo de estilos para HomeAdmin
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const HomeAdmin: React.FC = () => {
   const navigate = useNavigate();
@@ -199,46 +200,45 @@ const HomeAdmin: React.FC = () => {
             <p className="text-red-300 text-center p-4">Error: {error}</p>
           ) : eventos.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="eventos-table w-full">
+              <table className="min-w-full bg-white rounded shadow">
                 <thead>
-                  <tr className="bg-purple-800 text-white">
-                    <th className="py-3 px-4 text-left w-[5%]">ID</th>
-                    <th className="py-3 px-4 text-left w-[25%]">Nombre</th>
-                    <th className="py-3 px-4 text-left w-[15%]">Fecha</th>
-                    <th className="py-3 px-4 text-left w-[15%]">Tipo</th>
-                    <th className="py-3 px-4 text-left w-[35%]">Descripción</th> {/* Nueva columna */}
-                    <th className="py-3 px-4 text-center w-[25%]">Acciones</th>
+                  <tr className="bg-violet-700 text-white">
+                    <th className="py-2 px-4 text-left">ID</th>
+                    <th className="py-2 px-4 text-left">Nombre</th>
+                    <th className="py-2 px-4 text-left">Fecha</th>
+                    <th className="py-2 px-4 text-left">Tipo</th>
+                    <th className="py-2 px-4 text-left">Descripción</th>
+                    <th className="py-2 px-4 text-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {eventos.map((evento) => (
-                    <tr key={evento.id} className="border-t border-gray-700 hover:bg-purple-900 hover:bg-opacity-20 transition">
-                      <td className="py-3 px-4 text-white">{evento.id}</td>
-                      <td className="py-3 px-4 text-white">{evento.nombre}</td>
-                      <td className="py-3 px-4 text-white">{evento.fecha}</td>
-                      <td className="py-3 px-4 text-white">{evento.tipo}</td>
-                      <td className="py-3 px-4 text-white">
-                        {/* Añadir descripción con límite de caracteres */}
+                    <tr key={evento.id} className="border-b border-gray-200 hover:bg-violet-100 transition">
+                      <td className="py-2 px-4">{evento.id}</td>
+                      <td className="py-2 px-4">{evento.nombre}</td>
+                      <td className="py-2 px-4">{evento.fecha}</td>
+                      <td className="py-2 px-4">{evento.tipo}</td>
+                      <td className="py-2 px-4">
                         {evento.descripcion && evento.descripcion.length > 100
                           ? `${evento.descripcion.substring(0, 100)}...`
                           : evento.descripcion}
                       </td>
-                      <td className="py-2 px-4">
-                        <div className="flex justify-center space-x-2">
-                          <Link 
-                            to={`/eventos/${evento.id}`} 
-                            className="btn-ver bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition"
+                      <td className="py-2 px-4 text-center">
+                        <div className="flex justify-center gap-2">
+                          <Link
+                            to={`/eventos/${evento.id}`}
+                            className="btn btn-outline-primary btn-sm"
                           >
                             Ver
                           </Link>
-                          <Link 
-                            to={`/editar-evento/${evento.id}`} 
-                            className="btn-editar bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition"
+                          <Link
+                            to={`/editar-evento/${evento.id}`}
+                            className="btn btn-outline-success btn-sm"
                           >
                             Editar
                           </Link>
-                          <button 
-                            className="btn-eliminar bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm font-medium transition"
+                          <button
+                            className="btn btn-outline-danger btn-sm"
                             onClick={() => {
                               if (window.confirm(`¿Estás seguro de que quieres eliminar el evento "${evento.nombre}"?`)) {
                                 // Aquí iría la función para eliminar el evento

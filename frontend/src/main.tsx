@@ -15,7 +15,8 @@ import Profile from './pages/Profile';
 import Register from './pages/Register';
 import EventoView from './pages/EventoView';
 import NuevoEvento from './pages/NuevoEvento';
-
+import CambiarRoles from './pages/CambiarRoles';
+import MisHitos from './pages/MisHitos';
 
 // Configura la URL de la API
 export const API_URL = import.meta.env.VITE_API_URL;
@@ -61,6 +62,14 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/admin/cambiar-roles',
+    element: <CambiarRoles />,
+  },
+  {
+    path: '/mis-hitos',
+    element: <MisHitos />,
   },
   
 ]);

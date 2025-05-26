@@ -1,10 +1,12 @@
 // src/components/hitos/HitoForm.tsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Hito, createHito, getHitoById, updateHito } from '../../services/hitoService';
 
 import { Evento, getEventos } from '../../services/eventoService'; // Para obtener la lista de eventos
+
+import { getAllUsers, User } from '../../services/userService';
 
 import '../../assets/styles/HitoForm.css';
 
@@ -47,6 +49,10 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
  });
 
  const [eventos, setEventos] = useState<Evento[]>([]);
+
+ const [usuarios, setUsuarios] = useState<User[]>([]);
+
+ const [usuarioGanadorId, setUsuarioGanadorId] = useState<number | ''>('');
 
  const [loading, setLoading] = useState(false);
 
@@ -104,6 +110,10 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
       setHitoData(hito);
 
+      // Cargar el usuario ganador si existe
+
+      setUsuarioGanadorId(hito.usuarioGanadorId || '');
+
      } else {
 
       setError('Hito no encontrado.');
@@ -127,6 +137,32 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
   }
 
  }, [hitoId, isEditing]);
+
+
+
+ useEffect(() => {
+
+  // Cargar la lista de usuarios al montar el componente
+
+  const fetchUsuarios = async () => {
+
+   try {
+
+    const fetchedUsuarios = await getAllUsers();
+
+    setUsuarios(fetchedUsuarios);
+
+   } catch (err: any) {
+
+    console.error("Error cargando usuarios:", err);
+
+   }
+
+  };
+
+  fetchUsuarios();
+
+ }, []);
 
 
 
@@ -168,16 +204,17 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
    if (isEditing) {
 
-    await updateHito(hitoData);
-
-    setSuccess('Hito actualizado exitosamente.');
-
-   } else {
-
-    await createHito(hitoData);
-
-    setSuccess('Hito creado exitosamente.');
-
+  await updateHito({
+    ...hitoData,
+    usuarioGanadorId: usuarioGanadorId === '' ? null : usuarioGanadorId,
+  });
+  setSuccess('Hito actualizado exitosamente.');
+} else {
+  await createHito({
+    ...hitoData,
+    usuarioGanadorId: usuarioGanadorId === '' ? null : usuarioGanadorId,
+  });
+  setSuccess('Hito creado exitosamente.');
     setHitoData({
 
      id: 0,
@@ -365,6 +402,50 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
      />
 
      <label htmlFor="completado" className="text-gray-700 text-sm font-bold">Completado</label>
+
+    </div>
+
+
+
+    <div className="mb-3">
+
+     <label htmlFor="usuarioGanadorId" className="form-label">Usuario Ganador</label>
+
+     <select
+
+      id="usuarioGanadorId"
+
+      name="usuarioGanadorId"
+
+      className="form-select"
+
+      value={usuarioGanadorId}
+
+      onChange={e => {
+
+        const value = e.target.value;
+
+        setUsuarioGanadorId(value === '' ? '' : Number(value));
+
+      }}
+
+      required // Quita esto si quieres que sea opcional
+
+     >
+
+      <option value="">Selecciona un usuario</option>
+
+      {usuarios.map(user => (
+
+       <option key={user.id} value={user.id}>
+
+        {user.username || user.correo}
+
+       </option>
+
+      ))}
+
+     </select>
 
     </div>
 

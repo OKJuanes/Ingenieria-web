@@ -12,15 +12,17 @@ export interface Hito {
 
  id: number;
 
+ eventoId: number; // ID del evento al que pertenece el hito
+
  nombre: string;
 
- descripcion: string;
+ descripcion?: string; // <-- Cambiado a opcional
 
  fecha: string; // O Date si tu backend lo maneja así
 
- eventoId: number; // ID del evento al que pertenece el hito
-
  completado: boolean; // Estado del hito (ej. completado o pendiente)
+
+ usuarioGanadorId?: number | null; // <-- Agrega esta línea
 
 }
 
@@ -266,4 +268,17 @@ export const deleteHito = async (id: number): Promise<void> => {
 
  }
 
+};
+
+
+
+export const getAllHitos = async () => {
+  const response = await fetch(`${API_URL}/api/v1/hitos`, {
+    headers: {
+      'Content-Type': 'application/json',
+      // Agrega autenticación si es necesario
+    },
+  });
+  if (!response.ok) throw new Error('Error al obtener los hitos');
+  return response.json();
 };

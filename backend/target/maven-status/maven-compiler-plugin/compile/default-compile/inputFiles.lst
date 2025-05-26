@@ -1,33 +1,33 @@
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\AuthController.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\AuthResponse.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\AuthService.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\LoginRequest.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\RegisterRequest.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\ApplicationConfig.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\CorsConfig.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtAuthFilter.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtService.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\SecurityConfig.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\AdminController.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\EventoController.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\HitoController.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\OrganizadorController.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\UsuarioController.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Empresa.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Evento.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Hito.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\InvitadoExterno.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Permission.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Role.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\TipoEvento.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Usuario.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\UsuarioInfo.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\ParcialFashionEventApplication.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IEventoRepository.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IHitoRepository.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IInvitadoExternoRepository.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IUsuarioRepository.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\EventoService.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\HitoService.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\InvitadoExternoService.java
-D:\Github\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\UsuarioService.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\AuthController.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\AuthResponse.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\AuthService.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\LoginRequest.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\auth\RegisterRequest.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\ApplicationConfig.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\CorsConfig.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtAuthFilter.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\JwtService.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\config\SecurityConfig.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\AdminController.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\EventoController.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\HitoController.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\OrganizadorController.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\controllers\UsuarioController.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Empresa.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Evento.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Hito.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\InvitadoExterno.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Permission.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Role.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\TipoEvento.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Usuario.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\UsuarioInfo.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\ParcialFashionEventApplication.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IEventoRepository.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IHitoRepository.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IInvitadoExternoRepository.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IUsuarioRepository.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\EventoService.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\HitoService.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\InvitadoExternoService.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\services\UsuarioService.java

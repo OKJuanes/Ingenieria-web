@@ -1,7 +1,9 @@
 // src/components/hitos/HitoForm.tsx
 import React, { useState, useEffect } from 'react';
 import { Hito, createHito, getHitoById, updateHito } from '../../services/hitoService';
-import { Evento, getEventos } from '../../services/eventoService'; // Para obtener la lista de eventos
+// Importa las funciones de formato de fecha desde eventoService, ya que tu hitoService no las tiene
+import { Evento, getEventos } from '../../services/eventoService';
+import { formatDateForBackend, formatDateForFrontend } from '../../services/eventoService'; // ¡NUEVA IMPORTACIÓN!
 import '../../assets/styles/HitoForm.css';
 
 interface HitoFormProps {
@@ -19,7 +21,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
     eventoId: eventoIdParent || 0,
     nombre: '',
     descripcion: '',
-    fecha: '',
+    fecha: '', // La fecha se inicializa vacía, luego se formatea si es edición
     completado: false,
   });
   const [eventos, setEventos] = useState<Evento[]>([]);
@@ -33,7 +35,8 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
         const fetchedEventos = await getEventos();
         setEventos(fetchedEventos);
         if (!isEditing && !eventoIdParent && fetchedEventos.length > 0) {
-            setHitoData(prev => ({ ...prev, eventoId: fetchedEventos[0].id }));
+          // Si es un nuevo hito y no hay eventoIdParent, selecciona el primer evento por defecto
+          setHitoData(prev => ({ ...prev, eventoId: fetchedEventos[0].id }));
         }
       } catch (err: any) {
         console.error("Error cargando eventos para el formulario de hito:", err);
@@ -50,7 +53,8 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
         try {
           const hito = await getHitoById(hitoId!);
           if (hito) {
-            setHitoData(hito);
+            // Formatea la fecha de dd-MM-yyyy (backend) a YYYY-MM-DD (frontend input type="date")
+            setHitoData({ ...hito, fecha: formatDateForFrontend(hito.fecha) });
           } else {
             setError('Hito no encontrado.');
           }
@@ -61,8 +65,18 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
         }
       };
       fetchHito();
+    } else {
+      // Si no es edición, reinicia el formulario y establece el eventoIdParent si existe
+      setHitoData({
+        id: 0,
+        eventoId: eventoIdParent || 0,
+        nombre: '',
+        descripcion: '',
+        fecha: '',
+        completado: false,
+      });
     }
-  }, [hitoId, isEditing]);
+  }, [hitoId, isEditing, eventoIdParent]); // Añadido eventoIdParent a las dependencias
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
@@ -80,14 +94,24 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
     try {
       if (!hitoData.eventoId) {
-          throw new Error("Por favor, selecciona un evento al que asociar el hito.");
+        throw new Error("Por favor, selecciona un evento al que asociar el hito.");
       }
+
+      // Prepara los datos del hito, formateando la fecha de YYYY-MM-DD a dd-MM-yyyy para el backend
+      const hitoToSend = {
+        ...hitoData,
+        fecha: formatDateForBackend(hitoData.fecha),
+      };
+
       if (isEditing) {
-        await updateHito(hitoData);
+        await updateHito(hitoToSend);
         setSuccess('Hito actualizado exitosamente.');
       } else {
-        await createHito(hitoData);
+        // Al crear, el ID debería ser 0 o no estar presente, ya que el backend lo asignará.
+        // Omit<Hito, 'id'> asegura que no se envíe un ID si el backend lo autogenera.
+        await createHito(hitoToSend); // HitoToSend ya tiene el id si es edición
         setSuccess('Hito creado exitosamente.');
+        // Limpia el formulario para un nuevo hito, manteniendo el eventoId si se pre-seleccionó
         setHitoData({
           id: 0,
           eventoId: hitoData.eventoId,
@@ -97,7 +121,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
           completado: false,
         });
       }
-      setTimeout(() => onSave(), 1500);
+      setTimeout(() => onSave(), 1500); // Llama a onSave para que el padre recargue la lista
     } catch (err: any) {
       setError(err.message || 'Error al guardar el hito.');
       console.error("Error saving hito:", err);
@@ -123,12 +147,12 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
-            disabled={!!eventoIdParent && isEditing}
+            disabled={!!eventoIdParent && isEditing} // Deshabilita si se está editando y se originó de un evento específico
           >
             <option value="">Selecciona un evento</option>
             {eventos.map(evento => (
               <option key={evento.id} value={evento.id}>
-                {evento.nombre} ({evento.fecha})
+                {evento.nombre} ({formatDateForFrontend(evento.fecha)}) {/* Muestra la fecha en formato legible */}
               </option>
             ))}
           </select>
@@ -165,7 +189,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
             type="date"
             id="fecha"
             name="fecha"
-            value={hitoData.fecha}
+            value={hitoData.fecha} // Ya está en YYYY-MM-DD
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required

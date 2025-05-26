@@ -7,12 +7,32 @@ import { getRegisteredEventsForCurrentUser, Evento, unregisterUserFromEvent } fr
 import { updateUserProfile, deleteUserAccount, getUserProfileData, fetchUserProfile } from '../services/ProfileService';
 import { useNavigate } from 'react-router-dom';
 
+// NUEVAS IMPORTACIONES AÑADIDAS
+import { Hito, getHitosForCurrentUser } from '../services/hitoService';
+import { format } from 'date-fns'; // Para formatear fechas, asegúrate de instalar: npm install date-fns
+
+
 import '../assets/styles/Profile.css';
+
+// Interfaz UserProfileData (añadida para mejor tipado, si no existe en ProfileService.ts)
+interface UserProfileData {
+  username?: string;
+  nombre?: string;
+  apellido?: string;
+  correo?: string;
+  role?: string;
+  id?: number;
+  // Agrega cualquier otra propiedad que tu backend devuelva para el perfil de usuario
+}
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(getUserProfileData()); // Inicializa con datos del localStorage
+  const [userData, setUserData] = useState<UserProfileData | null>(getUserProfileData()); // Inicializa con datos del localStorage
   const [userEventos, setUserEventos] = useState<Evento[]>([]);
+
+  // NUEVO ESTADO PARA LOS HITOS DEL USUARIO
+  const [userHitos, setUserHitos] = useState<Hito[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -86,6 +106,26 @@ const Profile: React.FC = () => {
     fetchUserEventos();
   }, [fetchUserEventos]);
 
+  // NUEVO useEffect PARA CARGAR LOS HITOS DEL USUARIO
+  useEffect(() => {
+    const fetchUserHitos = async () => {
+      if (!isAuthenticated()) return;
+
+      try {
+        const hitos = await getHitosForCurrentUser();
+        setUserHitos(hitos);
+      } catch (err: any) {
+        console.error("Error al cargar los hitos del usuario:", err);
+        // Aquí podrías querer establecer un error específico para los hitos
+        // o manejarlo de forma más granular si la carga de hitos falla.
+        // Por ahora, solo logueamos el error.
+      }
+    };
+
+    fetchUserHitos();
+  }, []); // Se ejecuta una vez al montar el componente
+
+
   // Funciones para manejar la edición del perfil
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -135,6 +175,8 @@ const Profile: React.FC = () => {
   };
 
   // === Renderizado condicional de estados de la UI ===
+  // Nota: El loading actual se basa en userEventos.length === 0.
+  // Podrías considerar un loading más granular si la carga de userData, eventos y hitos son independientes.
   if (loading && userEventos.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 flex items-center justify-center">
@@ -283,6 +325,36 @@ const Profile: React.FC = () => {
             ))}
           </div>
         )}
+
+        {/* --- NUEVA SECCIÓN: Mis Hitos --- */}
+        <h3 className="text-3xl font-bold text-white mb-6 mt-8">Mis Hitos Asociados a Eventos</h3>
+        {userHitos.length === 0 ? (
+          <p className="text-white text-lg">Aún no tienes hitos asociados a tus eventos registrados.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {userHitos.map(hito => (
+              <div key={hito.id} className="bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200">
+                <h4 className="text-lg font-semibold text-blue-800 mb-2">{hito.nombre}</h4>
+                <p className="text-gray-700 text-sm mb-1">{hito.descripcion}</p>
+                <p className="text-gray-600 text-xs">Fecha: {format(new Date(hito.fecha), 'dd/MM/yyyy')}</p>
+                {/* Si el backend proporciona la información del evento anidada en el hito */}
+                {hito.evento && (
+                  <p className="text-gray-600 text-xs">
+                    Evento: <span className="font-medium">{hito.evento.nombre}</span>
+                  </p>
+                )}
+                <span
+                  className={`inline-block px-3 py-1 text-xs font-semibold rounded-full mt-2 ${
+                    hito.completado ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                  }`}
+                >
+                  {hito.completado ? 'Completado' : 'Pendiente'}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+        {/* --- FIN NUEVA SECCIÓN --- */}
       </div>
     </div>
   );

@@ -133,4 +133,41 @@ public class EventoController {
                          evento.getParticipantes().contains(username))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Devuelve la lista de usuarios participantes en un evento específico
+     * @param id El ID del evento a consultar
+     * @return Lista de nombres de usuario de los participantes
+     */
+    @GetMapping("/{id}/participantes")
+    public ResponseEntity<List<Map<String, Object>>> getParticipantesByEventoId(@PathVariable Long id) {
+        try {
+            // Obtener el evento
+            Evento evento = eventoService.getEventoById(id);
+            
+            // Obtener la lista de nombres de usuario de los participantes
+            List<String> participantesUsernames = evento.getParticipantes();
+            
+            // Convertir los nombres de usuario en objetos con información detallada
+            List<Map<String, Object>> participantesInfo = new ArrayList<>();
+            for (String username : participantesUsernames) {
+                Usuario usuario = usuarioService.getUserByUsername(username);
+                
+                // Crear un mapa con la información que queremos devolver de cada usuario
+                Map<String, Object> usuarioInfo = new HashMap<>();
+                usuarioInfo.put("id", usuario.getId());
+                usuarioInfo.put("username", usuario.getUsername());
+                usuarioInfo.put("nombre", usuario.getNombre());
+                usuarioInfo.put("apellido", usuario.getApellido());
+                usuarioInfo.put("correo", usuario.getCorreo());
+                usuarioInfo.put("role", usuario.getRol().toString());
+                
+                participantesInfo.add(usuarioInfo);
+            }
+            
+            return ResponseEntity.ok(participantesInfo);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 }

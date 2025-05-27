@@ -9,23 +9,15 @@ import { getToken } from './authService';
 // ¡Interfaz Hito actualizada con eventoId y completado!
 
 export interface Hito {
-
- id: number;
-
- eventoId: number; // ID del evento al que pertenece el hito
-
- nombre: string;
-
- descripcion?: string; // <-- Cambiado a opcional
-
- fecha: string; // O Date si tu backend lo maneja así
-
- completado: boolean; // Estado del hito (ej. completado o pendiente)
-
- usuarioGanadorId?: number | null; // <-- Agrega esta línea
-
+  id: number;
+  titulo: string;
+  descripcion: string;
+  categoria: string;
+  fechaRegistro: string;
+  eventoId: number;    // Usar un solo nombre consistente
+  usuarioGanadorId?: number;
+  completado: boolean;
 }
-
 
 
 // Función auxiliar para obtener los headers con el token de autenticación

@@ -1,40 +1,56 @@
 .hito-card {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(107,33,168,0.07);
-  padding: 20px 24px;
-  margin-bottom: 18px;
-  transition: box-shadow 0.2s;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(107,33,168,0.10);
+  padding: 24px 20px;
+  margin: 24px auto;
+  max-width: 500px;
+  animation: fadeInUp 0.6s cubic-bezier(.4,0,.2,1);
+  transition: box-shadow 0.22s, transform 0.22s;
+  will-change: box-shadow, transform;
 }
 
-.hito-card:hover {
-  box-shadow: 0 6px 24px rgba(76,0,224,0.13);
+.hito-card:hover, .hito-card:focus-within {
+  box-shadow: 0 8px 32px rgba(107,33,168,0.18);
+  transform: translateY(-6px) scale(1.025);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .hito-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
 }
 
 .hito-title {
-  font-size: 1.25rem;
-  font-weight: 700;
   color: #6b21a8;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
 }
 
 .badge {
-  padding: 4px 14px;
-  border-radius: 999px;
-  font-size: 0.9rem;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #fff;
-  background: #6b21a8;
+  transition: background 0.2s;
 }
 
 .badge-blue {
-  background: #4a00e0;
+  background: #6366f1;
 }
 
 .badge-green {
@@ -42,40 +58,43 @@
 }
 
 .hito-date {
-  font-size: 0.95rem;
-  color: #6b21a8;
-  margin-bottom: 6px;
+  color: #888;
+  font-size: 0.98rem;
+  margin-bottom: 8px;
 }
 
 .hito-desc {
   color: #444;
+  font-size: 1.08rem;
   margin-bottom: 16px;
 }
 
 .hito-actions {
   display: flex;
   gap: 12px;
-  justify-content: flex-end;
 }
 
 .hito-btn {
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.15s;
+  will-change: background, color, box-shadow, transform;
   border: none;
   border-radius: 6px;
   padding: 8px 18px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.07);
 }
 
 .hito-btn-edit {
-  background: #6b21a8;
-  color: #fff;
+  background: #fff;
+  color: #6b21a8;
+  border: 1.5px solid #6b21a8;
 }
 
-.hito-btn-edit:hover,
-.hito-btn-edit:focus {
-  background: #4a00e0;
+.hito-btn-edit:hover, .hito-btn-edit:focus {
+  background: #f3e8ff;
+  color: #4a00e0;
 }
 
 .hito-btn-delete {
@@ -84,8 +103,7 @@
   border: 1.5px solid #e11d48;
 }
 
-.hito-btn-delete:hover,
-.hito-btn-delete:focus {
+.hito-btn-delete:hover, .hito-btn-delete:focus {
   background: #fee2e2;
   color: #b91c1c;
 }

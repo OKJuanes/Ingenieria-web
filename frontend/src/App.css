@@ -1,6 +1,7 @@
 /* src/App.css */
 body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
+    padding-top: 80px; /* Ajusta según la altura real de tu navbar */
   }
   
   /* Animación de fondo */

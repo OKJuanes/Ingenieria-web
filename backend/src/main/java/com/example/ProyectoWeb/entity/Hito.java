@@ -11,6 +11,8 @@ import java.util.Date;
 @Table(name = "hito")
 public class Hito {
 
+//pa hacer un commit
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

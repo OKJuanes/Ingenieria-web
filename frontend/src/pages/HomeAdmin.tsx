@@ -1,12 +1,13 @@
 // src/pages/HomeAdmin.tsx
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/common/Navbar';
-import { getEventStats, getRecentEvents, Evento, generateEventsReportCsv, getEventos } from '../services/eventoService'; // Importa las nuevas funciones y la interfaz Evento
-import { Link, useNavigate } from 'react-router-dom'; // Para la navegación
-import EventoCard from '../components/eventos/EventoCard'; // Para mostrar eventos recientes
-import '../assets/styles/HomeAdmin.css'; // Tu archivo de estilos para HomeAdmin
+import { getEventStats, getRecentEvents, Evento, generateEventsReportCsv, getEventos } from '../services/eventoService';
+import { Link, useNavigate } from 'react-router-dom';
+import EventoCard from '../components/eventos/EventoCard';
+import '../assets/styles/HomeAdmin.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/global.css';
+
 const HomeAdmin: React.FC = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
@@ -118,81 +119,76 @@ const HomeAdmin: React.FC = () => {
     navigate('/admin/hitos'); // Redirige a la nueva página de gestión de hitos
   };
   return (
-    <div className="home-admin-container">
+    <div className="home-admin-container min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
       <Navbar />
-      <div className="home-admin-content">
-        <h2>Panel de Administración</h2>
-        
-        {loadingStats ? (
-          <p className="text-white text-center">Cargando estadísticas...</p>
-        ) : errorStats ? (
-          <p className="text-red-300 text-center">Error al cargar estadísticas: {errorStats}</p>
-        ) : (
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h3>📅 Eventos Activos</h3>
-              <p>{stats.eventosActivos}</p>
-            </div>
-            <div className="stat-card">
-              <h3>👥 Total Participantes</h3>
-              <p>{stats.totalParticipantes}</p>
-            </div>
-            <div className="stat-card">
-              <h3>🔜 Próximo Evento</h3>
-              <p>{stats.proximoEvento}</p>
-            </div>
-          </div>
-        )}
+      <div className="home-admin-content container mx-auto p-6">
+        <h2 className="panel-title text-4xl font-bold text-white mb-8">Panel de Administración</h2>
 
-        <div className="admin-actions">
-          {/* Botón Crear Evento */}
+        {/* Estadísticas */}
+        <div className="stats-grid grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="stat-card bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <div className="stat-icon text-3xl mb-2">📅</div>
+            <h3 className="text-lg font-semibold mb-1">Eventos Activos</h3>
+            <p className="stat-value text-2xl font-bold">{stats.eventosActivos}</p>
+          </div>
+          <div className="stat-card bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <div className="stat-icon text-3xl mb-2">👥</div>
+            <h3 className="text-lg font-semibold mb-1">Total Participantes</h3>
+            <p className="stat-value text-2xl font-bold">{stats.totalParticipantes}</p>
+          </div>
+          <div className="stat-card bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <div className="stat-icon text-3xl mb-2">🔜</div>
+            <h3 className="text-lg font-semibold mb-1">Próximo Evento</h3>
+            <p className="stat-value text-2xl font-bold">{stats.proximoEvento}</p>
+          </div>
+        </div>
+
+        {/* Botones de acción */}
+        <div className="action-buttons flex flex-wrap gap-4 mb-10">
           <button
             onClick={handleCreateEvent}
-            className="btn btn-primary bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
+            className="action-button create-button bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-6 rounded transition"
           >
-            <i className="fas fa-plus"></i> Crear Evento
+            <i className="fas fa-plus mr-2"></i>Crear Evento
           </button>
-          
-          {/* Botón Gestionar Hitos */}
           <button
-            onClick={handleManageMilestones} // Llama a la nueva función de navegación
-            className="btn btn-secondary bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            onClick={handleManageMilestones}
+            className="action-button manage-button bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded transition"
           >
-            <i className="fas fa-trophy"></i> Gestionar Hitos
+            <i className="fas fa-trophy mr-2"></i>Gestionar Hitos
           </button>
-          
           <button
             onClick={handleGenerateReport}
-            className="btn btn-tertiary bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            className="action-button report-button bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded transition"
           >
-            <i className="fas fa-file-export"></i> Generar Reporte
+            <i className="fas fa-file-export mr-2"></i>Generar Reporte
           </button>
         </div>
 
-        <div className="recent-events">
-          <h3>📋 Eventos Recientes</h3>
+        {/* Eventos recientes */}
+        <div className="recent-events-section mb-10">
+          <h3 className="section-title text-2xl font-semibold text-white mb-4">📋 Eventos Recientes</h3>
           {loadingRecent ? (
-            <p className="text-white text-center">Cargando eventos recientes...</p>
+            <p className="loading-text text-white">Cargando eventos recientes...</p>
           ) : errorRecent ? (
-            <p className="text-red-300 text-center">Error al cargar eventos: {errorRecent}</p>
+            <p className="error-text text-red-300">Error al cargar eventos: {errorRecent}</p>
           ) : recentEvents.length === 0 ? (
-            <p className="text-white">No hay eventos recientes para mostrar.</p>
+            <p className="empty-text text-white">No hay eventos recientes para mostrar.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="events-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recentEvents.map((evento) => (
                 <EventoCard
                   key={evento.id}
                   evento={evento}
-                  isAdmin={true} // <-- ¡Pasa isAdmin a true para mostrar el botón de edición!
-                  // No necesitas onRegisterClick/onUnregisterClick aquí a menos que quieras esa funcionalidad en el admin
+                  isAdmin={true}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* Nueva sección: Gestión de Eventos */}
-        <div className="admin-eventos mt-8 bg-white bg-opacity-10 p-6 rounded-lg shadow-lg">
+        {/* Gestión de eventos */}
+        <div className="admin-eventos bg-white bg-opacity-10 p-6 rounded-lg shadow-lg">
           <h3 className="text-xl font-semibold mb-4 text-white">Gestión de Eventos</h3>
           {loading ? (
             <p className="text-white text-center p-4">Cargando eventos...</p>
@@ -203,7 +199,6 @@ const HomeAdmin: React.FC = () => {
               <table className="min-w-full bg-white rounded shadow">
                 <thead>
                   <tr className="bg-violet-700 text-white">
-                    {/* <th className="py-2 px-4 text-left">ID</th> */} {/* Elimina o comenta esta línea */}
                     <th className="py-2 px-4 text-left">Nombre</th>
                     <th className="py-2 px-4 text-left">Fecha</th>
                     <th className="py-2 px-4 text-left">Tipo</th>
@@ -214,7 +209,6 @@ const HomeAdmin: React.FC = () => {
                 <tbody>
                   {eventos.map((evento) => (
                     <tr key={evento.id} className="border-b border-gray-200 hover:bg-violet-100 transition">
-                      {/* <td className="py-2 px-4">{evento.id}</td> */} {/* Elimina o comenta esta línea */}
                       <td className="py-2 px-4">{evento.nombre}</td>
                       <td className="py-2 px-4">{evento.fecha}</td>
                       <td className="py-2 px-4">{evento.tipo}</td>

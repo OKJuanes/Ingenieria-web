@@ -17,6 +17,7 @@ import EventoView from './pages/EventoView';
 import NuevoEvento from './pages/NuevoEvento';
 import CambiarRoles from './pages/CambiarRoles';
 import MisHitos from './pages/MisHitos';
+import EditarEvento from './pages/EditarEvento';
 
 // Configura la URL de la API
 export const API_URL = import.meta.env.VITE_API_URL;
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: '/eventos/:id',
     element: <EventoView />,
+  },
+  {
+    path: '/editar-evento/:id',
+    element: <EditarEvento />,
   },
   {
     path: '/eventos/nuevo-evento',

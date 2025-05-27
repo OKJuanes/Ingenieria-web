@@ -337,11 +337,8 @@ const Profile: React.FC = () => {
             {!isAdmin && ( // Solo mostrar el botón editar si NO es admin
 
               <button
-
                 onClick={() => setIsEditing(!isEditing)}
-
-                className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
-
+                className={`profile-btn ${isEditing ? 'profile-btn-secondary' : ''}`}
               >
 
                 {isEditing ? 'Cancelar' : 'Editar Perfil'}

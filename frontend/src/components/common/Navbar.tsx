@@ -41,12 +41,7 @@ const Navbar: React.FC = () => {
                 <Link to="/perfil" className="navbar-link">Perfil</Link>
               </>
             )
-          ) : (
-            <>
-              <Link to="/login" className="navbar-link">Iniciar Sesión</Link>
-              <Link to="/register" className="navbar-link">Registrarse</Link>
-            </>
-          )}
+          ) : null}
         </div>
         <div className="navbar-user">
           {loggedIn && userData && (

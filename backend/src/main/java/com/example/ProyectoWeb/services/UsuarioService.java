@@ -71,17 +71,17 @@ public class UsuarioService implements UserDetailsService {
         return eventoRepository.getEventosByUsuario(userId);
     }
 
-    public Usuario updateUserById(Usuario request, Long userId){
-        Usuario user = userRepository.findById(userId).get();
+    public Usuario updateUserById(Usuario request, Long userId) {
+        Usuario user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        user.setNombre(request.getNombre());
-        user.setApellido(request.getApellido());
-        user.setCorreo(request.getCorreo());
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
-        saveUser(user);
-
-        return user;
+        // Actualizar solo los campos no sensibles
+        if (request.getNombre() != null) user.setNombre(request.getNombre());
+        if (request.getApellido() != null) user.setApellido(request.getApellido());
+        if (request.getCorreo() != null) user.setCorreo(request.getCorreo());
+        
+        // Guardar directamente sin pasar por la encriptación de contraseña
+        return userRepository.save(user);
     }
     public String deleteUser(Long userId) {
         Usuario user = userRepository.findById(userId)

@@ -5,7 +5,7 @@ import EventoCard from '../components/eventos/EventoCard';
 import { getEventos, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
 import { getUserData, isAuthenticated } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
-import '../../assets/styles/HitoForm.css';
+import "../assets/styles/HitoForm.css";
 
 const Eventos: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);

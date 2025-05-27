@@ -224,7 +224,7 @@ const HomeAdmin: React.FC = () => {
               <table className="events-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    {/* <th>ID</th> */} {/* Elimina o comenta esta línea */}
                     <th>Nombre</th>
                     <th>Fecha</th>
                     <th>Tipo</th>
@@ -235,11 +235,12 @@ const HomeAdmin: React.FC = () => {
                 <tbody>
                   {eventos.map((evento) => (
                     <tr key={evento.id}>
-                      <td>{evento.id}</td>
+                      {/* <td>{evento.id}</td> */} {/* Elimina o comenta esta línea */}
                       <td>{evento.nombre}</td>
                       <td>{evento.fecha}</td>
                       <td>{evento.tipo}</td>
                       <td>
+                        {/* Aquí puedes mostrar el estado si lo tienes */}
                       </td>
                       <td className="actions-cell">
                         <Link 
@@ -256,7 +257,6 @@ const HomeAdmin: React.FC = () => {
                         </Link>
                         <button
                           onClick={() => {
-                            // Agregar lógica para eliminar evento
                             if (window.confirm(`¿Estás seguro de que quieres eliminar el evento "${evento.nombre}"?`)) {
                               console.log(`Eliminando evento ${evento.id}`);
                               // Implementar lógica de eliminación

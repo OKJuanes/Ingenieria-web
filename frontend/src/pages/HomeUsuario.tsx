@@ -83,7 +83,7 @@ const HomeUsuario: React.FC = () => {
                   <p><strong>Tipo:</strong> {evento.tipo}</p>
                   <p><strong>Patrocinador:</strong> {evento.empresa || 'No especificado'}</p>
                   <p><strong>Descripción:</strong> {evento.descripcion}</p>
-                  <Link to={`/eventos/${evento.id}`} className="btn-ver-detalle">
+                  <Link to={`/eventos/${evento.id}`} className="evento-btn btn-ver-detalle">
                     Ver detalles
                   </Link>
                 </li>

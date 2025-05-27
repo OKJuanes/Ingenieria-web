@@ -35,12 +35,20 @@ const CambiarRoles: React.FC = () => {
   }, [navigate]);
 
   const handleRoleChange = async (userId: number, newRole: 'admin' | 'usuario') => {
+    // Mensaje de confirmación personalizado
+    let confirmMsg = '';
+    if (newRole === 'admin') {
+      confirmMsg = '¿Estás seguro que quieres que este usuario sea ADMINISTRADOR?';
+    } else {
+      confirmMsg = '¿Estás seguro que quieres que este usuario vuelva a ser USUARIO normal?';
+    }
+    if (!window.confirm(confirmMsg)) return;
+
     try {
       await updateUserRole(userId, newRole);
-      // Actualizar la lista de usuarios después del cambio exitoso
-      setUsers(prev => prev.map(user => 
-        user.id === userId 
-          ? { ...user, role: newRole } 
+      setUsers(prev => prev.map(user =>
+        user.id === userId
+          ? { ...user, role: newRole }
           : user
       ));
     } catch (err: any) {

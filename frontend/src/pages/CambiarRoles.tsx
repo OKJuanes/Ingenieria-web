@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllUsers, updateUserRole, User } from '../services/userService';
 import Navbar from '../components/common/Navbar';
 import { useNavigate } from 'react-router-dom';
-import '../../assets/styles/CambiarRoles.css';
+import "../assets/styles/CambiarRoles.css";
 const CambiarRoles: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);

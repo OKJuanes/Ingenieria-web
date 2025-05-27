@@ -18,6 +18,7 @@ import MisHitos from './pages/MisHitos';
 import HomeAdmin from './pages/HomeAdmin';
 import AdminHitos from './pages/AdminHitos';
 import CambiarRoles from './pages/CambiarRoles';
+import AnadirInvitado from './pages/AnadirInvitado';
 
 // Importa páginas de eventos
 import Eventos from './pages/Eventos';
@@ -99,6 +100,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <CambiarRoles />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/anadir-invitado',
+    element: (
+      <ProtectedRoute>
+        <AnadirInvitado />
       </ProtectedRoute>
     ),
   },

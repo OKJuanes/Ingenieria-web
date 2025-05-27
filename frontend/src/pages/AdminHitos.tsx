@@ -170,222 +170,119 @@ return (
 
 <h2 className="text-4xl font-bold text-white mb-6">Gestión de Hitos</h2>
 
-
-
 <div className="flex justify-between items-center mb-6">
+  <button
+    onClick={() => { setShowForm(true); setEditingHitoId(undefined); }}
+    className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
+  >
+    <i className="fas fa-plus"></i> Nuevo Hito
+  </button>
 
-<button
-
-onClick={() => { setShowForm(true); setEditingHitoId(undefined); }}
-
-className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
-
->
-
-<i className="fas fa-plus"></i> Crear Nuevo Hito
-
-</button>
-
-
-
-<select
-
-value={selectedEventoId}
-
-onChange={(e) => setSelectedEventoId(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
-
-className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-
->
-
-<option value="all">Todos los Eventos</option>
-
-{eventos.map(evento => (
-
-<option key={evento.id} value={evento.id}>
-
-{evento.nombre}
-
-</option>
-
-))}
-
-</select>
-
+  <select
+    value={selectedEventoId}
+    onChange={(e) => setSelectedEventoId(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
+    className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+  >
+    <option value="all">Todos los eventos</option>
+    {eventos.map(evento => (
+      <option key={evento.id} value={evento.id}>
+        {evento.nombre}
+      </option>
+    ))}
+  </select>
 </div>
-
-
 
 {showForm && (
-
-<div className="mb-8">
-
-<HitoForm
-
-hitoId={editingHitoId}
-
-onSave={handleSaveHito}
-
-onCancel={handleCancelForm}
-
-/>
-
-</div>
-
+  <div className="mb-8">
+    <HitoForm
+      hitoId={editingHitoId}
+      onSave={handleSaveHito}
+      onCancel={handleCancelForm}
+    />
+  </div>
 )}
 
-
-
 {loading ? (
-
-<p className="text-white text-center">Cargando hitos...</p>
-
+  <p className="text-white text-center">Cargando hitos...</p>
 ) : error ? (
-
-<p className="text-red-300 text-center">Error: {error}</p>
-
+  <p className="text-red-300 text-center">Error: {error}</p>
 ) : hitos.length === 0 ? (
-
-<p className="text-white text-lg">No hay hitos para mostrar {selectedEventoId !== 'all' ? `para este evento.` : `.`}</p>
-
+  <p className="text-white text-lg">
+    {selectedEventoId !== 'all'
+      ? 'No hay hitos para este evento.'
+      : 'No hay hitos para mostrar.'}
+  </p>
 ) : (
-
-<div className="bg-white rounded-lg shadow-md p-6">
-
-<table className="min-w-full leading-normal">
-
-<thead>
-
-<tr>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Hito
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Evento
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Fecha
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Estado
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Acciones
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{hitos.map((hito) => (
-
-<tr key={hito.id} className="hover:bg-gray-50">
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<p className="text-gray-900 whitespace-no-wrap">{hito.nombre}</p>
-
-{hito.descripcion && <p className="text-gray-600 text-xs">{hito.descripcion}</p>}
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<p className="text-gray-900 whitespace-no-wrap">{getEventName(hito.eventoId)}</p>
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<p className="text-gray-900 whitespace-no-wrap">{hito.fecha}</p>
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<span
-
-className={`relative inline-block px-3 py-1 font-semibold leading-tight ${
-
-hito.completado ? 'text-green-900' : 'text-red-900'
-
-}`}
-
->
-
-<span
-
-aria-hidden
-
-className={`absolute inset-0 ${
-
-hito.completado ? 'bg-green-200' : 'bg-red-200'
-
-} opacity-50 rounded-full`}
-
-></span>
-
-<span className="relative">{hito.completado ? 'Completado' : 'Pendiente'}</span>
-
-</span>
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<button
-
-onClick={() => handleEdit(hito.id)}
-
-className="btn btn-link btn-sm text-primary me-2"
-
->
-
-Editar
-
-</button>
-
-<button
-
-onClick={() => handleDelete(hito.id)}
-
-className="btn btn-link btn-sm text-danger"
-
->
-
-Eliminar
-
-</button>
-
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
+  <div className="bg-white rounded-lg shadow-md p-6">
+    <table className="min-w-full leading-normal">
+      <thead>
+        <tr>
+          <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Nombre del Hito
+          </th>
+          <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Evento
+          </th>
+          <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Fecha
+          </th>
+          <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Estado
+          </th>
+          <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Acciones
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {hitos.map((hito) => (
+          <tr key={hito.id} className="hover:bg-gray-50">
+            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <p className="text-gray-900 whitespace-no-wrap font-semibold">{hito.nombre}</p>
+              {hito.descripcion && <p className="text-gray-600 text-xs">{hito.descripcion}</p>}
+            </td>
+            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <p className="text-gray-900 whitespace-no-wrap">{getEventName(hito.eventoId)}</p>
+            </td>
+            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <p className="text-gray-900 whitespace-no-wrap">{hito.fecha}</p>
+            </td>
+            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <span
+                className={`relative inline-block px-3 py-1 font-semibold leading-tight ${
+                  hito.completado ? 'text-green-900' : 'text-red-900'
+                }`}
+              >
+                <span
+                  aria-hidden
+                  className={`absolute inset-0 ${
+                    hito.completado ? 'bg-green-200' : 'bg-red-200'
+                  } opacity-50 rounded-full`}
+                ></span>
+                <span className="relative">
+                  {hito.completado ? 'Completado' : 'Pendiente'}
+                </span>
+              </span>
+            </td>
+            <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <button
+                onClick={() => handleEdit(hito.id)}
+                className="btn btn-link btn-sm text-violet-700 font-semibold hover:underline me-2"
+              >
+                Editar
+              </button>
+              <button
+                onClick={() => handleDelete(hito.id)}
+                className="btn btn-link btn-sm text-red-600 font-semibold hover:underline"
+              >
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 )}
 
 </div>

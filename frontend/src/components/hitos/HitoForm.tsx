@@ -255,7 +255,11 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
   <div className="hito-form-container bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto my-4">
 
-   <h3 className="text-2xl font-semibold text-gray-800 mb-4">{isEditing ? 'Editar Hito' : 'Crear Hito'}</h3>
+   <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+
+      {isEditing ? 'Editar Hito' : 'Crear Nuevo Hito'}
+
+    </h3>
 
 
 
@@ -269,7 +273,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
     <div className="mb-4">
 
-     <label htmlFor="eventoId" className="block text-gray-700 text-sm font-bold mb-2">Evento Asociado:</label>
+     <label htmlFor="eventoId" className="block text-gray-700 text-sm font-bold mb-2">Evento asociado:</label>
 
      <select
 
@@ -309,7 +313,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
     <div className="mb-4">
 
-     <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">Nombre del Hito:</label>
+     <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">Nombre del hito:</label>
 
      <input
 
@@ -335,7 +339,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
     <div className="mb-4">
 
-     <label htmlFor="descripcion" className="block text-gray-700 text-sm font-bold mb-2">Descripción (opcional):</label>
+     <label htmlFor="descripcion" className="block text-gray-700 text-sm font-bold mb-2">Descripción <span className="text-gray-400">(opcional)</span>:</label>
 
      <textarea
 
@@ -359,7 +363,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
     <div className="mb-4">
 
-     <label htmlFor="fecha" className="block text-gray-700 text-sm font-bold mb-2">Fecha del Hito:</label>
+     <label htmlFor="fecha" className="block text-gray-700 text-sm font-bold mb-2">Fecha del hito:</label>
 
      <input
 
@@ -409,7 +413,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
     <div className="mb-3">
 
-     <label htmlFor="usuarioGanadorId" className="form-label">Usuario Ganador</label>
+     <label htmlFor="usuarioGanadorId" className="block text-gray-700 text-sm font-bold mb-2">Usuario ganador:</label>
 
      <select
 
@@ -417,7 +421,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
       name="usuarioGanadorId"
 
-      className="form-select"
+      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
       value={usuarioGanadorId}
 
@@ -477,7 +481,7 @@ const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onC
 
      >
 
-      {loading ? 'Guardando...' : (isEditing ? 'Actualizar Hito' : 'Crear Hito')}
+      {loading ? 'Guardando...' : (isEditing ? 'Actualizar hito' : 'Crear hito')}
 
      </button>
 

@@ -48,7 +48,9 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
       <div className="mb-4">
-        <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
+        <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">
+          Nombre del evento:
+        </label>
         <input
           type="text"
           id="nombre"
@@ -60,7 +62,9 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="tipo" className="block text-gray-700 text-sm font-bold mb-2">Tipo:</label>
+        <label htmlFor="tipo" className="block text-gray-700 text-sm font-bold mb-2">
+          Tipo de evento:
+        </label>
         <input
           type="text"
           id="tipo"
@@ -72,13 +76,13 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="fecha" className="block text-gray-700 text-sm font-bold mb-2">Fecha:</label>
+        <label htmlFor="fecha" className="block text-gray-700 text-sm font-bold mb-2">
+          Fecha:
+        </label>
         <input
           type="date"
           id="fecha"
           name="fecha"
-          // La fecha se guarda como string en el backend, pero el input type="date" espera 'YYYY-MM-DD'
-          // split('T')[0] asegura que solo se tome la parte de la fecha si viene con hora
           value={formData.fecha ? formData.fecha.split('T')[0] : ''}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -86,7 +90,9 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="descripcion" className="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
+        <label htmlFor="descripcion" className="block text-gray-700 text-sm font-bold mb-2">
+          Descripción:
+        </label>
         <textarea
           id="descripcion"
           name="descripcion"
@@ -97,18 +103,22 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="cantidadParticipantes" className="block text-gray-700 text-sm font-bold mb-2">Cantidad de Participantes:</label>
+        <label htmlFor="cantidadParticipantes" className="block text-gray-700 text-sm font-bold mb-2">
+          Cantidad de participantes:
+        </label>
         <input
           type="number"
           id="cantidadParticipantes"
           name="cantidadParticipantes"
-          value={formData.cantidadParticipantes || ''} // Usar '' si es undefined o 0 para evitar warnings
+          value={formData.cantidadParticipantes || ''}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="empresaPatrocinadora" className="block text-gray-700 text-sm font-bold mb-2">Empresa Patrocinadora:</label>
+        <label htmlFor="empresaPatrocinadora" className="block text-gray-700 text-sm font-bold mb-2">
+          Empresa patrocinadora:
+        </label>
         <input
           type="text"
           id="empresaPatrocinadora"
@@ -119,7 +129,9 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="invitadosExternos" className="block text-gray-700 text-sm font-bold mb-2">Invitados Externos (separados por coma):</label>
+        <label htmlFor="invitadosExternos" className="block text-gray-700 text-sm font-bold mb-2">
+          Invitados externos (separados por coma):
+        </label>
         <input
           type="text"
           id="invitadosExternos"
@@ -130,7 +142,9 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
         />
       </div>
       <div className="mb-6">
-        <label htmlFor="invitados" className="block text-gray-700 text-sm font-bold mb-2">Invitados (IDs de usuarios, separados por coma):</label>
+        <label htmlFor="invitados" className="block text-gray-700 text-sm font-bold mb-2">
+          Invitados (IDs de usuarios, separados por coma):
+        </label>
         <input
           type="text"
           id="invitados"
@@ -143,9 +157,9 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
       <div className="flex items-center justify-between">
         <button
           type="submit"
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
+          className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
         >
-          Guardar Cambios
+          Guardar cambios
         </button>
         <button
           type="button"

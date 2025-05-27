@@ -3,11 +3,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../components/common/Navbar';
 import EventoCard from '../components/eventos/EventoCard';
 import '../assets/styles/global.css';
-// Asegúrate que registerUserToEvent y unregisterUserFromEvent no esperan userId aquí si el backend lo saca del token
 import { getEventos, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
 import { getUserData, isAuthenticated } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
-import '../assets/styles/global.css';
+
 const Eventos: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -15,7 +14,7 @@ const Eventos: React.FC = () => {
   const [registeredEventIds, setRegisteredEventIds] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
   const currentUser = getUserData();
-  const userId = currentUser ? currentUser.username : ''; // Este userId es para la lógica del frontend (e.invitados.includes)
+  const userId = currentUser ? currentUser.username : '';
 
   const fetchEventos = useCallback(async () => {
     setLoading(true);
@@ -25,7 +24,6 @@ const Eventos: React.FC = () => {
       setEventos(fetchedEventos);
 
       if (isAuthenticated() && userId) {
-        // Asumiendo que `e.invitados` contiene los `username`s de los usuarios registrados
         const registered = fetchedEventos
           .filter(e => e.invitados?.includes(userId))
           .map(e => e.id);
@@ -45,43 +43,37 @@ const Eventos: React.FC = () => {
 
   const handleRegisterClick = async (eventId: number) => {
     if (!isAuthenticated()) {
-      alert('Necesitas iniciar sesión para registrarte en un evento.');
+      alert('Debes iniciar sesión para inscribirte en un evento.');
       navigate('/login');
       return;
     }
-    // No es necesario verificar userId aquí si el backend lo obtiene del token
     try {
-      // Llama sin userId si el backend lo infiere del token
       await registerUserToEvent(eventId); 
-      alert('¡Te has registrado exitosamente!');
+      alert('¡Te has inscrito correctamente en el evento!');
       setRegisteredEventIds(prev => new Set(prev).add(eventId));
-      // Recargar para obtener la lista actualizada de participantes
       fetchEventos(); 
     } catch (err: any) {
-      alert(`Error al registrarte: ${err.message}`);
+      alert(`No se pudo inscribir en el evento: ${err.message}`);
     }
   };
 
   const handleUnregisterClick = async (eventId: number) => {
     if (!isAuthenticated()) {
-      alert('Necesitas iniciar sesión para desinscribirte de un evento.');
+      alert('Debes iniciar sesión para cancelar tu inscripción.');
       navigate('/login');
       return;
     }
-    // No es necesario verificar userId aquí si el backend lo obtiene del token
     try {
-      // Llama sin userId si el backend lo infiere del token
       await unregisterUserFromEvent(eventId);
-      alert('¡Te has desinscrito del evento!');
+      alert('Has cancelado tu inscripción en el evento.');
       setRegisteredEventIds(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(eventId);
-          return newSet;
+        const newSet = new Set(prev);
+        newSet.delete(eventId);
+        return newSet;
       });
-      // Recargar para obtener la lista actualizada de participantes
       fetchEventos();
     } catch (err: any) {
-      alert(`Error al desinscribirte: ${err.message}`);
+      alert(`No se pudo cancelar la inscripción: ${err.message}`);
     }
   };
 

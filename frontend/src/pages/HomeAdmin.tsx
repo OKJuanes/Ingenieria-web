@@ -203,7 +203,7 @@ const HomeAdmin: React.FC = () => {
               <table className="min-w-full bg-white rounded shadow">
                 <thead>
                   <tr className="bg-violet-700 text-white">
-                    <th className="py-2 px-4 text-left">ID</th>
+                    {/* <th className="py-2 px-4 text-left">ID</th> */} {/* Elimina o comenta esta línea */}
                     <th className="py-2 px-4 text-left">Nombre</th>
                     <th className="py-2 px-4 text-left">Fecha</th>
                     <th className="py-2 px-4 text-left">Tipo</th>
@@ -214,7 +214,7 @@ const HomeAdmin: React.FC = () => {
                 <tbody>
                   {eventos.map((evento) => (
                     <tr key={evento.id} className="border-b border-gray-200 hover:bg-violet-100 transition">
-                      <td className="py-2 px-4">{evento.id}</td>
+                      {/* <td className="py-2 px-4">{evento.id}</td> */} {/* Elimina o comenta esta línea */}
                       <td className="py-2 px-4">{evento.nombre}</td>
                       <td className="py-2 px-4">{evento.fecha}</td>
                       <td className="py-2 px-4">{evento.tipo}</td>

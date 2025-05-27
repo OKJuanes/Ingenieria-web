@@ -6,6 +6,7 @@ import { getEventoById, registerUserToEvent, unregisterUserFromEvent, Evento } f
 import { isAuthenticated, getUserData } from '../services/authService';
 import '../assets/styles/EventoView.css';
 import '../assets/styles/global.css';
+
 const EventoView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -13,10 +14,9 @@ const EventoView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
-  
+
   const currentUser = getUserData();
-  // currentUserId es el ID del usuario logueado. Si tu backend usa usernames en 'invitados', cambia a currentUser.username
-  const currentUsername = currentUser ? currentUser.username : ''; 
+  const currentUsername = currentUser ? currentUser.username : '';
 
   useEffect(() => {
     const fetchEvento = async () => {
@@ -30,13 +30,10 @@ const EventoView: React.FC = () => {
         const fetchedEvento = await getEventoById(eventoId);
         if (fetchedEvento) {
           setEvento(fetchedEvento);
-          // *** ESTA LÍNEA ES CLAVE ***
-          // Asume que fetchedEvento.invitados contiene los IDs de los usuarios registrados (strings o numbers).
-          // Si tu backend devuelve usernames en invitados, entonces usa fetchedEvento.invitados?.includes(currentUser.username)
           if (currentUsername && fetchedEvento.participantes?.includes(currentUsername)) {
-              setIsRegistered(true);
+            setIsRegistered(true);
           } else {
-              setIsRegistered(false);
+            setIsRegistered(false);
           }
         } else {
           setError('Evento no encontrado.');
@@ -45,7 +42,7 @@ const EventoView: React.FC = () => {
         setError(err.message || 'Error al cargar el evento.');
         console.error("Error fetching single evento:", err);
         if (err.message.includes('No authentication token found')) {
-          navigate('/login'); // Redirigir si el token es inválido/expirado
+          navigate('/login');
         }
       } finally {
         setLoading(false);
@@ -53,11 +50,11 @@ const EventoView: React.FC = () => {
     };
 
     fetchEvento();
-  }, [id, currentUsername, navigate]); // Dependencias para re-ejecutar el efecto
+  }, [id, currentUsername, navigate]);
 
   const handleRegisterClick = async () => {
     if (!isAuthenticated()) {
-      alert('Necesitas iniciar sesión para registrarte en un evento.');
+      alert('Debes iniciar sesión para registrarte en un evento.');
       navigate('/login');
       return;
     }
@@ -67,22 +64,22 @@ const EventoView: React.FC = () => {
     }
     try {
       await registerUserToEvent(evento.id);
-      alert('¡Te has registrado exitosamente!');
+      alert('¡Te has inscrito correctamente en el evento!');
       setIsRegistered(true);
-      setEvento(prevEvento => prevEvento ? { 
-        ...prevEvento, 
-        cantidadParticipantes: (prevEvento.cantidadParticipantes || 0) + 1, 
+      setEvento(prevEvento => prevEvento ? {
+        ...prevEvento,
+        cantidadParticipantes: (prevEvento.cantidadParticipantes || 0) + 1,
         participantes: [...(prevEvento.participantes || []), currentUsername]
       } : null);
 
     } catch (err: any) {
-      alert(`Error al registrarte: ${err.message}`);
+      alert(`No se pudo completar la inscripción: ${err.message}`);
     }
   };
 
   const handleUnregisterClick = async () => {
     if (!isAuthenticated()) {
-      alert('Necesitas iniciar sesión para desinscribirte de un evento.');
+      alert('Debes iniciar sesión para cancelar tu inscripción.');
       navigate('/login');
       return;
     }
@@ -92,16 +89,16 @@ const EventoView: React.FC = () => {
     }
     try {
       await unregisterUserFromEvent(evento.id);
-      alert('¡Te has desinscrito del evento!');
+      alert('Has cancelado tu inscripción en el evento.');
       setIsRegistered(false);
-      setEvento(prevEvento => prevEvento ? { 
-        ...prevEvento, 
-        cantidadParticipantes: Math.max(0, (prevEvento.cantidadParticipantes || 0) - 1), 
+      setEvento(prevEvento => prevEvento ? {
+        ...prevEvento,
+        cantidadParticipantes: Math.max(0, (prevEvento.cantidadParticipantes || 0) - 1),
         participantes: (prevEvento.participantes || []).filter(p => p !== currentUsername)
       } : null);
 
     } catch (err: any) {
-      alert(`Error al desinscribirte: ${err.message}`);
+      alert(`No se pudo cancelar la inscripción: ${err.message}`);
     }
   };
 
@@ -163,7 +160,7 @@ const EventoView: React.FC = () => {
           {evento.invitadosExternos && evento.invitadosExternos.length > 0 && (
             <div className="mb-4">
               <p className="text-gray-700 font-semibold mb-1">
-                <i className="fas fa-user-tie mr-2 text-indigo-600"></i>Invitados Especiales:
+                <i className="fas fa-user-tie mr-2 text-indigo-600"></i>Invitados especiales:
               </p>
               <ul className="list-disc list-inside text-gray-600">
                 {evento.invitadosExternos.map((invitado, index) => (
@@ -172,11 +169,11 @@ const EventoView: React.FC = () => {
               </ul>
             </div>
           )}
-          
+
           {evento.participantes && evento.participantes.length > 0 && (
             <div className="mb-4">
               <p className="text-gray-700 font-semibold mb-1">
-                <i className="fas fa-user-check mr-2 text-indigo-600"></i>Usuarios Registrados:
+                <i className="fas fa-user-check mr-2 text-indigo-600"></i>Usuarios registrados:
               </p>
               <ul className="list-disc list-inside text-gray-600">
                 {evento.participantes.map((username, index) => (
@@ -186,7 +183,6 @@ const EventoView: React.FC = () => {
             </div>
           )}
 
-
           <div className="mt-6 text-center">
             {isAuthenticated() && (
               isRegistered ? (
@@ -194,27 +190,27 @@ const EventoView: React.FC = () => {
                   onClick={handleUnregisterClick}
                   className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
                 >
-                  Desinscribirme del Evento
+                  Cancelar inscripción
                 </button>
               ) : (
                 <button
                   onClick={handleRegisterClick}
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
                 >
-                  Registrarme en el Evento
+                  Inscribirme en el evento
                 </button>
               )
             )}
             {!isAuthenticated() && (
-                <p className="text-gray-700 text-sm mt-4">
-                    <Link to="/login" className="text-indigo-600 hover:underline font-semibold">Inicia sesión</Link> para registrarte en este evento.
-                </p>
+              <p className="text-gray-700 text-sm mt-4">
+                <Link to="/login" className="text-indigo-600 hover:underline font-semibold">Inicia sesión</Link> para inscribirte en este evento.
+              </p>
             )}
             <button
               onClick={() => navigate('/eventos')}
               className="mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-300"
             >
-              Volver a Eventos
+              Volver a eventos
             </button>
           </div>
         </div>

@@ -30,6 +30,7 @@ const Navbar: React.FC = () => {
                 <Link to="/eventos/nuevo-evento" className="navbar-button">Crear Evento</Link>
                 <Link to="/admin/cambiar-roles" className="navbar-button">Cambiar Roles</Link>
                 <Link to="/perfil" className="navbar-button">Perfil</Link>
+                <Link to="/eventos" className="navbar-button">Eventos</Link>
               </>
             ) : (
               <>

@@ -210,7 +210,7 @@ const Profile: React.FC = () => {
 
       setIsEditing(false);
 
-      alert('Perfil actualizado con éxito');
+      alert('Perfil actualizado con éxito.');
 
     } catch (err: any) {
 
@@ -232,7 +232,7 @@ const Profile: React.FC = () => {
 
         await deleteUserAccount();
 
-        alert('Cuenta eliminada con éxito');
+        alert('Cuenta eliminada con éxito.');
 
         navigate('/login');
 
@@ -256,7 +256,7 @@ const Profile: React.FC = () => {
 
       await unregisterUserFromEvent(eventId);
 
-      alert('¡Te has desinscrito del evento exitosamente!');
+      alert('Te has desinscrito del evento exitosamente.');
 
       fetchUserEventos();
 
@@ -334,7 +334,7 @@ const Profile: React.FC = () => {
 
           <div className="flex justify-between items-center mb-4">
 
-            <h3 className="text-2xl font-semibold text-gray-800">Información del Usuario</h3>
+            <h3 className="text-2xl font-semibold text-gray-800">Información del usuario</h3>
 
             {!isAdmin && ( // Solo mostrar el botón editar si NO es admin
 
@@ -346,7 +346,7 @@ const Profile: React.FC = () => {
 
               >
 
-                {isEditing ? 'Cancelar' : 'Editar Perfil'}
+                {isEditing ? 'Cancelar' : 'Editar perfil'}
 
               </button>
 
@@ -430,7 +430,7 @@ const Profile: React.FC = () => {
 
               >
 
-                Guardar Cambios
+                Guardar cambios
 
               </button>
 
@@ -472,7 +472,7 @@ const Profile: React.FC = () => {
 
                       'organizador': 'Organizador',
 
-                      'usuario': 'Usuario Regular'
+                      'usuario': 'Usuario regular'
 
                     };
 
@@ -480,7 +480,7 @@ const Profile: React.FC = () => {
 
                     // Retornar el nombre amigable o un valor por defecto
 
-                    return roleNames[role as keyof typeof roleNames] || 'Usuario Regular';
+                    return roleNames[role as keyof typeof roleNames] || 'Usuario regular';
 
                   })()
 
@@ -538,7 +538,7 @@ const Profile: React.FC = () => {
 
         {/* Mis Eventos Registrados */}
 
-        <h3 className="text-3xl font-bold text-white mb-6">Mis Eventos Registrados</h3>
+        <h3 className="text-3xl font-bold text-white mb-6">Mis eventos registrados</h3>
 
         {userEventos.length === 0 ? (
 

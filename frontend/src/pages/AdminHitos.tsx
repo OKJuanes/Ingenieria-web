@@ -14,7 +14,7 @@ import HitoForm from '../components/hitos/HitoForm';
 
 import '../assets/styles/AdminHitos.css';
 
-
+import '../assets/styles/global.css';
 
 const AdminHitos: React.FC = () => {
 

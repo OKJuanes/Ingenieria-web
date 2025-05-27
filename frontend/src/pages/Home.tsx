@@ -1,7 +1,7 @@
 // src/pages/Home.tsx
 import React from 'react';
 import Navbar from '../components/common/Navbar';
-
+import '../assets/styles/global.css';
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">

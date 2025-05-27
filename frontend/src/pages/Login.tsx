@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../main.tsx';
 import '../assets/styles/Login.css'; // Ruta corregida
 import { login } from '../services/authService'; // Importar la función login del servicio de autenticación
-
+import '../assets/styles/global.css';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

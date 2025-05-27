@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAllHitos } from '../services/hitoService';
 import { getUserData } from '../services/authService';
-
+import '../assets/styles/global.css';
 interface Hito {
   id: number;
   nombre: string;

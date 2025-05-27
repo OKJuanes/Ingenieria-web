@@ -4,8 +4,9 @@ import Navbar from '../components/common/Navbar';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Evento, createEvent, getEventoById, updateEvent } from '../services/eventoService'; // Importa las funciones
 import '../assets/styles/NuevoEvento.css'; // Asegúrate de tener este CSS
-import {jwtDecode} from 'jwt-decode'; // Asegúrate de tener instalada esta dependencia
-
+import { jwtDecode } from 'jwt-decode'; // Asegúrate de tener instalada esta dependencia
+import '../assets/styles/global.css';
+import '../assets/styles/global.css';
 const NuevoEvento: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>(); // Obtener el ID de la URL si estamos en modo edición
@@ -206,7 +207,7 @@ const NuevoEvento: React.FC = () => {
           </div> */}
 
           <div className="mb-4">
-            <button 
+            <button
               type="button"
               onClick={() => {
                 const token = localStorage.getItem('authToken');

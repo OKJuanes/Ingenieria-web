@@ -2,11 +2,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../components/common/Navbar';
 import EventoCard from '../components/eventos/EventoCard';
+import '../assets/styles/global.css';
 // Asegúrate que registerUserToEvent y unregisterUserFromEvent no esperan userId aquí si el backend lo saca del token
 import { getEventos, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
 import { getUserData, isAuthenticated } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
-
+import '../assets/styles/global.css';
 const Eventos: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

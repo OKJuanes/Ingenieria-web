@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import { getEventos, Evento } from '../services/eventoService';
 import '../assets/styles/HomeUsuario.css';
-
+import '../assets/styles/global.css';
 const HomeUsuario: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);

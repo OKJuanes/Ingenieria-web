@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Para la navegación
 import EventoCard from '../components/eventos/EventoCard'; // Para mostrar eventos recientes
 import '../assets/styles/HomeAdmin.css'; // Tu archivo de estilos para HomeAdmin
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import '../assets/styles/global.css';
 const HomeAdmin: React.FC = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({

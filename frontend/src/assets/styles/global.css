@@ -1,0 +1,38 @@
+/* src/assets/styles/global.css */
+.input-main {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #d8b4fe;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #4a5568;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.input-main:focus {
+  border-color: #6b21a8;
+}
+
+.btn-main {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #6b21a8;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-main:hover {
+  background-color: #7c3aed;
+}
+
+.text-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #6b21a8;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}

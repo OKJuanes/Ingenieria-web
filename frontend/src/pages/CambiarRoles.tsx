@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getAllUsers, updateUserRole, User } from '../services/userService';
-
+import '../assets/styles/global.css';
 const CambiarRoles = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);

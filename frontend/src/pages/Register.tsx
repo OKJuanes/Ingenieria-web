@@ -4,7 +4,7 @@ import { API_URL } from '../main.tsx';
 import Navbar from "../components/common/Navbar.tsx";
 import '../assets/styles/Register.css'; // Importa el archivo CSS para los estilos
 import { register } from '../services/authService'; // Importar la función register del servicio
-
+import '../assets/styles/global.css';
 function Register() {
     const [correo, setCorreo] = useState('');
     const [nombre, setNombre] = useState('');

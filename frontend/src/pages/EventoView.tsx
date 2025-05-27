@@ -5,7 +5,7 @@ import Navbar from '../components/common/Navbar';
 import { getEventoById, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
 import { isAuthenticated, getUserData } from '../services/authService';
 import '../assets/styles/EventoView.css';
-
+import '../assets/styles/global.css';
 const EventoView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();

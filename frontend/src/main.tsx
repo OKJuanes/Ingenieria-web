@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
-
+import './assets/styles/global.css';
 // Importa las páginas
 import HomeAdmin from './pages/HomeAdmin';// Página para administradores
 import Login from './pages/Login';

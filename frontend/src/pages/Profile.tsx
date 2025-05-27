@@ -14,7 +14,7 @@ import { updateUserProfile, deleteUserAccount, getUserProfileData, fetchUserProf
 
 import { useNavigate } from 'react-router-dom';
 
-
+import '../assets/styles/global.css';
 
 import '../assets/styles/Profile.css';
 

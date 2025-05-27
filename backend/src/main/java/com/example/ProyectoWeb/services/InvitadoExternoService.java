@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ProyectoWeb.entity.InvitadoExterno;
+import com.example.ProyectoWeb.entity.Evento;
 import com.example.ProyectoWeb.repositories.IInvitadoExternoRepository;
 
 import java.util.List;
@@ -17,10 +18,29 @@ public class InvitadoExternoService {
     @Autowired
     private IInvitadoExternoRepository invitadoExternoRepository;
 
-    public void saveInvitadoExterno(InvitadoExterno invitadoExterno) {
-        // Guarda el invitado externo en la base de datos
-        invitadoExternoRepository.save(invitadoExterno);
-        System.out.println("Invitado externo guardado con éxito");
+    public InvitadoExterno saveInvitadoExterno(InvitadoExterno invitadoExterno) {
+        // Validar que los campos obligatorios estén presentes
+        if (invitadoExterno.getNombre() == null || invitadoExterno.getNombre().isEmpty()) {
+            throw new RuntimeException("El nombre del invitado es obligatorio");
+        }
+        if (invitadoExterno.getApellido() == null || invitadoExterno.getApellido().isEmpty()) {
+            throw new RuntimeException("El apellido del invitado es obligatorio");
+        }
+        if (invitadoExterno.getCorreo() == null || invitadoExterno.getCorreo().isEmpty()) {
+            throw new RuntimeException("El correo del invitado es obligatorio");
+        }
+        if (invitadoExterno.getEvento() == null) {
+            throw new RuntimeException("El invitado debe estar asociado a un evento");
+        }
+        
+        // Verificar si ya existe un invitado con el mismo correo para este evento
+        Optional<InvitadoExterno> existingInvitado = invitadoExternoRepository.findByCorreo(invitadoExterno.getCorreo());
+        if (existingInvitado.isPresent() && 
+            existingInvitado.get().getEvento().getId().equals(invitadoExterno.getEvento().getId())) {
+            throw new RuntimeException("Ya existe un invitado con este correo en el evento");
+        }
+        
+        return invitadoExternoRepository.save(invitadoExterno);
     }
 
     public InvitadoExterno getInvitadoExternoById(Long id) {

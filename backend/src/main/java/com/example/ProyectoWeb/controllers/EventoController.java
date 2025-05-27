@@ -10,6 +10,8 @@ import com.example.ProyectoWeb.entity.Evento;
 import com.example.ProyectoWeb.entity.Usuario;
 import com.example.ProyectoWeb.services.EventoService;
 import com.example.ProyectoWeb.services.UsuarioService;
+import com.example.ProyectoWeb.entity.InvitadoExterno;
+import com.example.ProyectoWeb.services.InvitadoExternoService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,21 +25,11 @@ public class EventoController {
 
     @Autowired
     private EventoService eventoService;
-
     @Autowired
     private UsuarioService usuarioService; // con minúscula, es una instancia
 
-    // Comprar un ticket para un evento con el usuario actual
-    @PutMapping("/{id}/añadir-invitado")
-    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write')")
-    public String addInvitado(@PathVariable Long id) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        try {
-            return eventoService.addInvitado(username, id);
-        } catch (RuntimeException e) {
-            return e.getMessage();
-        }
-    }
+    @Autowired
+    private InvitadoExternoService invitadoExternoService;
 
     // Para registrarse a un evento
     @PutMapping("/{id}/inscribirse")
@@ -72,16 +64,6 @@ public class EventoController {
         return eventoService.deleteEvento(id);
     }
 
-    // Eliminar un invitado de un evento
-    @DeleteMapping("/{id}/eliminar-invitado")
-    @PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
-    public String removeInvitado(@RequestParam String username, @PathVariable Long id) {
-        try {
-            return eventoService.removeInvitado(username, id);
-        } catch (RuntimeException e) {
-            return e.getMessage();
-        }
-    }
 
     // Eliminar un participante de un evento
     @DeleteMapping("/{id}/eliminar-participante")
@@ -213,5 +195,85 @@ public class EventoController {
     public ResponseEntity<Integer> getCountEventosActivos() {
         Integer countEventos = eventoService.getCountEventosActivos();
         return ResponseEntity.ok(countEventos);
+    }
+
+    /**
+     * Añade un invitado externo a un evento específico
+     * @param id El ID del evento
+     * @param request Datos del invitado externo
+     * @return El invitado externo creado
+     */
+    @PostMapping("/{id}/invitados-externos")
+    public ResponseEntity<?> addInvitadoExterno(@PathVariable Long id, @RequestBody InvitadoExternoRequest request) {
+        try {
+            // Obtener el evento
+            Evento evento = eventoService.getEventoById(id);
+            
+            // Crear el invitado externo
+            InvitadoExterno invitado = new InvitadoExterno();
+            invitado.setNombre(request.getNombre());
+            invitado.setApellido(request.getApellido());
+            invitado.setCorreo(request.getCorreo());
+            invitado.setTelefono(request.getTelefono());
+            invitado.setEmpresa(request.getEmpresa()); // Asegúrate de que se establezca la empresa
+            invitado.setEvento(evento);
+            
+            // Guardar el invitado externo
+            InvitadoExterno savedInvitado = invitadoExternoService.saveInvitadoExterno(invitado);
+            
+            return ResponseEntity.ok(savedInvitado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    // Clase para manejar la solicitud
+    public static class InvitadoExternoRequest {
+        private String nombre;
+        private String apellido;
+        private String correo;
+        private String telefono;
+        private String empresa;  // Añadir esta propiedad
+        
+        // Getters y setters
+        public String getNombre() {
+            return nombre;
+        }
+        
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+        
+        public String getApellido() {
+            return apellido;
+        }
+        
+        public void setApellido(String apellido) {
+            this.apellido = apellido;
+        }
+        
+        public String getCorreo() {
+            return correo;
+        }
+        
+        public void setCorreo(String correo) {
+            this.correo = correo;
+        }
+        
+        public String getTelefono() {
+            return telefono;
+        }
+        
+        public void setTelefono(String telefono) {
+            this.telefono = telefono;
+        }
+        
+        public String getEmpresa() {
+            return empresa;
+        }
+        
+        public void setEmpresa(String empresa) {
+            this.empresa = empresa;
+        }
     }
 }

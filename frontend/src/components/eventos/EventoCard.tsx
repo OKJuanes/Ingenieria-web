@@ -35,7 +35,7 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
           Ver Detalles
         </Link>
 
-        {/* Botón de REGISTRARSE */}
+        {/* Botón de REGISTRARSE - solo se muestra si NO está registrado */}
         {onRegisterClick && !isRegistered && (
           <button
             onClick={() => onRegisterClick(evento.id)}
@@ -45,7 +45,7 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
           </button>
         )}
 
-        {/* Botón de DESINSCRIBIRSE */}
+        {/* Botón de DESINSCRIBIRSE - solo se muestra si está registrado */}
         {onUnregisterClick && isRegistered && (
           <button
             onClick={() => onUnregisterClick(evento.id)}

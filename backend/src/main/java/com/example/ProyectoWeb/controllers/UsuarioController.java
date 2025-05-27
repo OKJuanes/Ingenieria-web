@@ -7,8 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.ProyectoWeb.entity.Evento;
+import com.example.ProyectoWeb.entity.Hito;
 import com.example.ProyectoWeb.entity.Usuario;
 import com.example.ProyectoWeb.services.UsuarioService;
+import com.example.ProyectoWeb.services.HitoService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private HitoService hitoService;
 
     // Información de perfil propio
     @GetMapping("/perfil")
@@ -139,5 +144,21 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
+    }
+
+    /**
+     * Obtiene los hitos ganados por un usuario específico
+     * @return Lista de hitos ganados por el usuario
+     */
+    @GetMapping("/mis-hitos-ganados")
+    public ResponseEntity<List<Hito>> getHitosGanados() {
+        // Obtener el usuario autenticado
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = usuarioService.getUserByUsername(username);
+        
+        // Obtener los hitos donde este usuario es beneficiario
+        List<Hito> hitosGanados = hitoService.getHitosByBeneficiarioId(usuario.getId());
+        
+        return ResponseEntity.ok(hitosGanados);
     }
 }

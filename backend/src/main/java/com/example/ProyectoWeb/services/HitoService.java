@@ -88,4 +88,16 @@ public class HitoService {
         // Obtener los hitos asociados al evento
         return hitoRepository.findByEventoId(eventoId);
     }
+    /**
+     * Obtiene todos los hitos donde un usuario específico es el beneficiario
+     * @param userId ID del usuario beneficiario
+     * @return Lista de hitos ganados por el usuario
+     */
+    public List<Hito> getHitosByBeneficiarioId(Long userId) {
+        // Verificar que el usuario existe
+        usuarioService.getUserById(userId); // Lanzará excepción si no existe
+        
+        // Obtener los hitos donde el usuario es beneficiario
+        return hitoRepository.findByBeneficiarioId(userId);
+    }
 }

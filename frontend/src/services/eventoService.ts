@@ -549,3 +549,67 @@ export const getParticipantesByEventoId = async (eventoId: number): Promise<Part
   return response.json();
 
 };
+
+
+
+/**
+
+ * Añade un invitado externo a un evento específico
+
+ * @param eventoId ID del evento
+
+ * @param invitadoData Datos del invitado externo
+
+ * @returns Promise con los datos del invitado añadido
+
+ */
+
+export const addExternalGuest = async (eventoId: number, invitadoData: {
+
+  nombre: string;
+
+  apellido: string;
+
+  correo: string;
+
+  telefono?: string;
+
+  empresa?: string;  // Asegúrate de incluir esta propiedad
+
+}): Promise<any> => {
+
+  const response = await fetch(`${API_URL}/api/v1/eventos/${eventoId}/invitados-externos`, {
+
+    method: 'POST',
+
+    headers: getAuthHeaders(),
+
+    body: JSON.stringify(invitadoData),
+
+  });
+
+
+
+  if (!response.ok) {
+
+    const errorText = await response.text();
+
+    try {
+
+      const errorData = errorText ? JSON.parse(errorText) : {};
+
+      throw new Error(errorData.message || 'Error al añadir invitado externo');
+
+    } catch (e) {
+
+      throw new Error(`Error al añadir invitado externo: ${response.statusText}`);
+
+    }
+
+  }
+
+
+
+  return response.json();
+
+};

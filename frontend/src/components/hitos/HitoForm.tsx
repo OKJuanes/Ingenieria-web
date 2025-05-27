@@ -15,29 +15,57 @@ export interface HitoFormProps {
 const HitoForm: React.FC<HitoFormProps> = ({ 
   hitoId, 
   eventoIdParent, 
+  participantesEvento,
   onSave, 
   onCancel 
 }) => {
   const isEditing = !!hitoId;
   const [eventos, setEventos] = useState<Evento[]>([]);
-  const [participantes, setParticipantes] = useState<ParticipanteEvento[]>([]);
+  const [participantes, setParticipantes] = useState<ParticipanteEvento[]>(participantesEvento);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
+  
   // Estado para el hito
   const [hitoData, setHitoData] = useState<Hito>({
     id: 0,
     titulo: '',
     descripcion: '',
     categoria: '',
-    fechaRegistro: new Date().toISOString().split('T')[0],
+    fechaRegistro: new Date().toISOString().split('T')[0], // Fecha actual en formato YYYY-MM-DD
     eventoId: eventoIdParent || 0,
     completado: false
   });
 
   // Estado para el usuario seleccionado
   const [usuarioGanadorId, setUsuarioGanadorId] = useState<number | ''>('');
+
+  // Cargar el hito existente cuando estamos editando
+  useEffect(() => {
+    if (isEditing && hitoId) {
+      const fetchHito = async () => {
+        setLoading(true);
+        try {
+          const hitoExistente = await getHitoById(hitoId);
+          if (hitoExistente) {
+            setHitoData(hitoExistente);
+            // Si el hito tiene un userId (ganador), establecer su ID
+            if (hitoExistente.usuarioGanadorId) {
+              setUsuarioGanadorId(hitoExistente.usuarioGanadorId);
+            }
+          } else {
+            setError("No se encontró el hito solicitado.");
+          }
+        } catch (err: any) {
+          console.error("Error al cargar el hito:", err);
+          setError(`Error al cargar el hito: ${err.message}`);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchHito();
+    }
+  }, [hitoId, isEditing]);
 
   // Cargar eventos al iniciar
   useEffect(() => {
@@ -64,7 +92,6 @@ const HitoForm: React.FC<HitoFormProps> = ({
 
       try {
         const fetchedParticipantes = await getParticipantesByEventoId(hitoData.eventoId);
-        console.log("Participantes cargados:", fetchedParticipantes); // Log para depuración
         setParticipantes(fetchedParticipantes);
       } catch (err: any) {
         console.error(`Error cargando participantes del evento ${hitoData.eventoId}:`, err);
@@ -72,8 +99,10 @@ const HitoForm: React.FC<HitoFormProps> = ({
       }
     };
 
-    fetchParticipantes();
-  }, [hitoData.eventoId]);
+    if (participantesEvento.length === 0) {
+      fetchParticipantes();
+    }
+  }, [hitoData.eventoId, participantesEvento]);
 
   // Manejar cambios en los inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -113,6 +142,7 @@ const HitoForm: React.FC<HitoFormProps> = ({
     setError(null);
     try {
       const hitoToSave = {
+        ...hitoData, // Mantener el ID si estamos editando
         userId: usuarioGanadorId as number,
         titulo: hitoData.titulo,
         descripcion: hitoData.descripcion,
@@ -123,11 +153,16 @@ const HitoForm: React.FC<HitoFormProps> = ({
       };
 
       console.log("Hito a guardar:", hitoToSave);
-      console.log("Evento ID:", hitoData.eventoId);
+      
+      // Determinar si estamos creando o actualizando
+      if (isEditing) {
+        await updateHito({ ...hitoToSave, id: hitoId! });
+        setSuccess("Hito actualizado exitosamente");
+      } else {
+        await createHito(hitoToSave.eventoId, hitoToSave);
+        setSuccess("Hito creado exitosamente");
+      }
 
-      await createHito(hitoToSave.eventoId, hitoToSave);
-
-      setSuccess("Hito guardado exitosamente");
       setTimeout(() => {
         onSave();
       }, 1500);
@@ -144,6 +179,7 @@ const HitoForm: React.FC<HitoFormProps> = ({
 
       {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
       {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{success}</div>}
+      {loading && <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">Cargando...</div>}
 
       <form onSubmit={handleSubmit}>
         {/* Evento Asociado */}

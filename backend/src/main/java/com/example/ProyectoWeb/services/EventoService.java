@@ -71,30 +71,6 @@ public class EventoService {
     }
 
     @Transactional
-    public String addInvitado(String username, Long eventoId) throws RuntimeException {
-        Evento evento = getEventoById(eventoId);
-        Usuario usuario = usuarioService.getUserByUsername(username);
-        if (!evento.getInvitados().contains(username)){
-            evento.addInvitado(usuario);
-            eventoRepository.save(evento);
-            return username + " se agregó con éxito al evento: " + evento.getNombre();
-        } else {
-            throw new RuntimeException("Usuario ya agregado al evento");
-        }
-    }
-    public String removeInvitado(String username, Long eventoId) throws RuntimeException {
-        Evento evento = getEventoById(eventoId);
-        Usuario usuario = usuarioService.getUserByUsername(username);
-        if (evento.getInvitados().contains(username)){
-            evento.removeInvitado(usuario);
-            eventoRepository.save(evento);
-            return username + " se eliminó con éxito del evento: " + evento.getNombre();
-        } else {
-            throw new RuntimeException("Usuario no encontrado en el evento");
-        }
-    }
-
-    @Transactional
     public String addParticipante(String username, Long eventoId) throws RuntimeException {
         Evento evento = getEventoById(eventoId);
         Usuario usuario = usuarioService.getUserByUsername(username);

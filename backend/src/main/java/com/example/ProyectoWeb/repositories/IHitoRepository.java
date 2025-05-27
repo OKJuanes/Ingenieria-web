@@ -22,6 +22,10 @@ public interface IHitoRepository extends JpaRepository<Hito, Long> {
     @Query("SELECT h FROM Hito h WHERE h.eventoRelacionado.id = :eventoId")
     List<Hito> findByEventoId(@Param("eventoId") Long eventoId);
 
-    // También puedes usar el método derivado de Spring Data:
-    // List<Hito> findByEventoRelacionadoId(Long eventoId);
+    // Agregar este nuevo método para buscar por beneficiario id
+    List<Hito> findByBeneficiarioId(Long beneficiarioId);
+
+    // Opcionalmente también puedes definirlo con @Query así:
+    // @Query("SELECT h FROM Hito h WHERE h.beneficiario.id = :beneficiarioId")
+    // List<Hito> findByBeneficiarioId(@Param("beneficiarioId") Long beneficiarioId);
 }

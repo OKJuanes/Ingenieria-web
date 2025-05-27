@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../main.tsx';
-import Navbar from "../components/common/Navbar.tsx";
+// Eliminamos la importación de Navbar
 import '../assets/styles/Register.css'; // Importa el archivo CSS para los estilos
 import { register } from '../services/authService'; // Importar la función register del servicio
 
@@ -37,7 +37,7 @@ function Register() {
 
     return (
         <div className="main-container">
-            <Navbar />
+            {/* Eliminamos el componente Navbar */}
             <div className="welcome">
                 <div className="auth-container">
                     <h2>Regístrate</h2>

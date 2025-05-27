@@ -7,6 +7,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -33,29 +34,10 @@ public class Evento {
     @Column(length = 500)
     private String descripcion;
 
-    // Invitados (para uso futuro)
-    @ManyToMany
-    @JoinTable(
-            name = "evento_Invitado",
-            joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "usuario_id")
-    )
-    private List<Usuario> invitados = new ArrayList<>();
-
-    public List<String> getInvitados() {
-        return this.invitados.stream().map(Usuario::getUsername).toList();
-    }
-    public void addInvitado(Usuario usuario){
-        this.invitados.add(usuario);
-    }
-    public void removeInvitado(Usuario usuario){
-        this.invitados.remove(usuario);
-    }
-
     // Participantes (usuarios inscritos)
     @ManyToMany
     @JoinTable(
-            name = "evento_usuario", // <-- Aquí el nombre correcto de la tabla intermedia
+            name = "evento_usuario",
             joinColumns = @JoinColumn(name = "evento_id"),
             inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
@@ -64,30 +46,33 @@ public class Evento {
     public List<String> getParticipantes() {
         return this.participantes.stream().map(Usuario::getUsername).toList();
     }
+    
     public void addParticipante(Usuario usuario){
         this.participantes.add(usuario);
     }
+    
     public void removeParticipante(Usuario usuario){
         this.participantes.remove(usuario);
     }
 
-    // Invitados externos (para uso futuro)
-    @ManyToMany
-    @JoinTable(
-            name = "evento_Externo",
-            joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "InvitadoExterno_id")
-    )
+    // Invitados externos
+    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InvitadoExterno> invitadosExternos = new ArrayList<>();
 
     public List<String> getInvitadosExternos() {
-        return this.invitadosExternos.stream().map(InvitadoExterno::getNombre).toList();
+        return this.invitadosExternos.stream()
+            .map(invitado -> invitado.getNombre() + " " + invitado.getApellido())
+            .collect(Collectors.toList());
     }
-    public void addInvitadosExternos(InvitadoExterno usuario){
-        this.invitadosExternos.add(usuario);
+
+    public void addInvitadoExterno(InvitadoExterno invitado) {
+        invitado.setEvento(this);
+        this.invitadosExternos.add(invitado);
     }
-    public void removeInvitadosExternos(InvitadoExterno usuario){
-        this.invitadosExternos.remove(usuario);
+
+    public void removeInvitadoExterno(InvitadoExterno invitado) {
+        this.invitadosExternos.remove(invitado);
+        invitado.setEvento(null);
     }
 
     // Cantidad de participantes calculada dinámicamente

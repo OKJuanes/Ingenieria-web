@@ -1,13 +1,29 @@
 /* src/styles/Login.css */
+/* Reset para quitar márgenes predeterminados */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #6b21a8; /* Color morado que coincide con tu diseño */
+}
+
 .login-container {
-    min-height: 100vh;
-    background: linear-gradient(120deg, #8e2de2 0%, #4a00e0 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .login-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Usar la altura completa de la ventana */
+  background-color: #6b21a8;
+  padding: 20px;
+}
+
+.login-box {
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 4px 32px rgba(107,33,168,0.13);

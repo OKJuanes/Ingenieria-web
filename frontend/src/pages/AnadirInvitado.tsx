@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
-import { getEventos, Evento } from '../services/eventoService';
+import { getEventos, Evento, addExternalGuest } from '../services/eventoService';
 import '../assets/styles/NuevoEvento.css';
+import { useNavigate } from 'react-router-dom';
 
 const initialInvitado = {
   nombre: '',
@@ -9,15 +10,17 @@ const initialInvitado = {
   correo: '',
   empresa: '',
   telefono: '',
-  cargo: '', // Solo para invitado normal
 };
 
 const AnadirInvitado: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [filtro, setFiltro] = useState('');
   const [eventoSeleccionado, setEventoSeleccionado] = useState<Evento | null>(null);
-  const [tipoInvitado, setTipoInvitado] = useState<'normal' | 'externo'>('normal');
   const [invitado, setInvitado] = useState(initialInvitado);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEventos = async () => {
@@ -35,11 +38,45 @@ const AnadirInvitado: React.FC = () => {
     setInvitado({ ...invitado, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí deberías llamar a tu servicio para guardar el invitado
-    alert(`Invitado ${tipoInvitado === 'externo' ? 'externo' : 'normal'} añadido correctamente al evento "${eventoSeleccionado?.nombre}"`);
-    setInvitado(initialInvitado);
+    
+    // Reiniciar estados
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    
+    // Validar que se ha seleccionado un evento
+    if (!eventoSeleccionado) {
+      setError("Debes seleccionar un evento");
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      // Preparar los datos para el invitado externo
+      const externalGuestData = {
+        nombre: invitado.nombre,
+        apellido: invitado.apellido,
+        correo: invitado.correo,
+        telefono: invitado.telefono,
+        empresa: invitado.empresa  // AÑADIR ESTA LÍNEA
+      };
+      
+      // Llamar al servicio para añadir el invitado externo
+      await addExternalGuest(eventoSeleccionado.id, externalGuestData);
+      
+      // Mostrar mensaje de éxito
+      setSuccess(`Invitado externo ${invitado.nombre} ${invitado.apellido} añadido correctamente al evento "${eventoSeleccionado.nombre}"`);
+      
+      // Resetear el formulario
+      setInvitado(initialInvitado);
+    } catch (err: any) {
+      console.error("Error al añadir invitado:", err);
+      setError(err.message || "Error al añadir el invitado");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,7 +84,20 @@ const AnadirInvitado: React.FC = () => {
       <Navbar />
       <div className="container mx-auto p-4 flex flex-col items-center">
         <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mt-8">
-          <h2 className="text-3xl font-bold text-violet-800 mb-6 text-center">Añadir Invitado</h2>
+          <h2 className="text-3xl font-bold text-violet-800 mb-6 text-center">Añadir Invitado Externo</h2>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-md">
+              <p>{error}</p>
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-4 p-3 bg-green-100 text-green-700 border border-green-300 rounded-md">
+              <p>{success}</p>
+            </div>
+          )}
+
           <div className="mb-4">
             <label className="block text-gray-700 font-semibold mb-2">Buscar Evento:</label>
             <input
@@ -74,22 +124,7 @@ const AnadirInvitado: React.FC = () => {
               ))}
             </select>
           </div>
-          <div className="mb-4 flex gap-4">
-            <button
-              type="button"
-              className={`eventoform-btn ${tipoInvitado === 'normal' ? '' : 'eventoform-btn-secondary'}`}
-              onClick={() => setTipoInvitado('normal')}
-            >
-              Invitado Normal
-            </button>
-            <button
-              type="button"
-              className={`eventoform-btn ${tipoInvitado === 'externo' ? '' : 'eventoform-btn-secondary'}`}
-              onClick={() => setTipoInvitado('externo')}
-            >
-              Invitado Externo
-            </button>
-          </div>
+          
           <form onSubmit={handleSubmit}>
             <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -112,16 +147,14 @@ const AnadirInvitado: React.FC = () => {
                 <label className="block text-gray-700 mb-1">Teléfono:</label>
                 <input type="text" name="telefono" value={invitado.telefono} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" required />
               </div>
-              {tipoInvitado === 'normal' && (
-                <div>
-                  <label className="block text-gray-700 mb-1">Cargo:</label>
-                  <input type="text" name="cargo" value={invitado.cargo} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" required />
-                </div>
-              )}
             </div>
             <div className="flex justify-end gap-3 mt-6">
-              <button type="submit" className="eventoform-btn">
-                Añadir Invitado
+              <button 
+                type="submit" 
+                disabled={loading} 
+                className={`eventoform-btn ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
+              >
+                {loading ? 'Añadiendo...' : 'Añadir Invitado'}
               </button>
             </div>
           </form>

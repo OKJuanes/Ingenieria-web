@@ -25,11 +25,13 @@ com\example\ProyectoWeb\controllers\AsignarRolRequest.class
 com\example\ProyectoWeb\auth\AuthController.class
 com\example\ProyectoWeb\repositories\IHitoRepository.class
 com\example\ProyectoWeb\services\HitoService.class
+com\example\ProyectoWeb\controllers\HitoController$HitoUpdateRequest.class
 com\example\ProyectoWeb\auth\RegisterRequest.class
 com\example\ProyectoWeb\auth\LoginRequest.class
 com\example\ProyectoWeb\controllers\EventoController.class
 com\example\ProyectoWeb\services\InvitadoExternoService.class
 com\example\ProyectoWeb\controllers\AdminController.class
+com\example\ProyectoWeb\controllers\EventoController$InvitadoExternoRequest.class
 com\example\ProyectoWeb\entity\InvitadoExterno.class
 com\example\ProyectoWeb\entity\Evento.class
 com\example\ProyectoWeb\config\ApplicationConfig.class

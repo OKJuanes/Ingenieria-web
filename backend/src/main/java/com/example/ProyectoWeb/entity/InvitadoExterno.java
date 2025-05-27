@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table (name = "invitado_externo")
+@Table(name = "invitado_externo")
 public class InvitadoExterno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +20,14 @@ public class InvitadoExterno {
     @Column(nullable = false)
     private String correo;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String telefono;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String empresa;
+    
+    // Relación ManyToOne con Evento en lugar de ManyToMany
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "evento_id", nullable = false)
+    private Evento evento;
 }

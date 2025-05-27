@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../components/common/Navbar';
 import EventoCard from '../components/eventos/EventoCard';
-import { getEventos, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
+import { getEventos, registerUserToEvent, unregisterUserFromEvent, Evento, getRegisteredEventsForCurrentUser } from '../services/eventoService';
 import { getUserData, isAuthenticated } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 import "../assets/styles/HitoForm.css";
@@ -14,7 +14,7 @@ const Eventos: React.FC = () => {
   const [registeredEventIds, setRegisteredEventIds] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
   const currentUser = getUserData();
-  const userId = currentUser ? currentUser.username : ''; // Este userId es para la lógica del frontend (e.invitados.includes)
+  const userId = currentUser ? currentUser.username : '';
 
   const fetchEventos = useCallback(async () => {
     setLoading(true);
@@ -24,11 +24,12 @@ const Eventos: React.FC = () => {
       setEventos(fetchedEventos);
 
       if (isAuthenticated() && userId) {
-        // Asumiendo que `e.invitados` contiene los `username`s de los usuarios registrados
-        const registered = fetchedEventos
-          .filter(e => e.invitados?.includes(userId))
-          .map(e => e.id);
-        setRegisteredEventIds(new Set(registered));
+        // Obtener eventos donde el usuario está registrado
+        const misEventos = await getRegisteredEventsForCurrentUser();
+        
+        // Convertir a un Set de IDs para búsquedas rápidas
+        const registeredIds = new Set(misEventos.map(e => e.id));
+        setRegisteredEventIds(registeredIds);
       }
     } catch (err: any) {
       setError(err.message || 'Error al cargar los eventos.');

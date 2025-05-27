@@ -66,6 +66,30 @@ export interface Evento {
 
 
 
+/**
+
+* Interfaz para los datos de un participante de evento
+
+*/
+
+export interface ParticipanteEvento {
+
+ id: number;
+
+ username: string;
+
+ nombre: string;
+
+ apellido: string;
+
+ correo: string;
+
+ role: string;
+
+}
+
+
+
 // Función auxiliar para obtener los headers con el token de autenticación
 
 const getAuthHeaders = () => {
@@ -130,7 +154,7 @@ export const getEventStats = async (): Promise<{ eventosActivos: number; totalPa
 
 export const getRecentEvents = async (limit: number = 3): Promise<Evento[]> => {
 
- const response = await fetch(`${API_URL}/api/events/recent/${limit}`, {
+ const response = await fetch(`${API_URL}/api/v1/eventos/activos3`, {
 
   headers: getAuthHeaders(),
 
@@ -455,5 +479,31 @@ export const generateEventsReportCsv = async (): Promise<string> => {
  }
 
  return response.text(); // El backend debe devolver el contenido CSV directamente como texto plano
+
+};
+
+
+
+/**
+ * @param eventoId ID del evento
+ * @returns Promise con array de objetos ParticipanteEvento
+ */
+export const getParticipantesByEventoId = async (eventoId: number): Promise<ParticipanteEvento[]> => {
+  const response = await fetch(`${API_URL}/api/v1/eventos/${eventoId}/participantes`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+
+  if (!response.ok) {
+
+    const errorData = await response.json().catch(() => ({}));
+
+    throw new Error(errorData.message || `Error al obtener participantes del evento ${eventoId}`);
+
+  }
+
+  return response.json();
 
 };

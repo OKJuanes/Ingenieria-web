@@ -61,7 +61,6 @@ public class HitoService {
         Evento evento = eventoService.getEventoById(eventoId);
         Usuario usuario = usuarioService.getUserById(userId);
 
-        // Verifica que el usuario participó en el evento
         if (!evento.getParticipantes().contains(usuario.getUsername())) {
             throw new RuntimeException("El usuario no participó en este evento");
         }
@@ -75,5 +74,18 @@ public class HitoService {
         hito.setEventoRelacionado(evento);
 
         return hitoRepository.save(hito);
+    }
+
+    /**
+     * Obtiene todos los hitos asociados a un evento específico
+     * @param eventoId ID del evento
+     * @return Lista de hitos asociados al evento
+     */
+    public List<Hito> getHitosByEventoId(Long eventoId) {
+        // Verificar que el evento existe
+        eventoService.getEventoById(eventoId); // Lanzará excepción si no existe
+        
+        // Obtener los hitos asociados al evento
+        return hitoRepository.findByEventoId(eventoId);
     }
 }

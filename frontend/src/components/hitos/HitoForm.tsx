@@ -1,496 +1,262 @@
 // src/components/hitos/HitoForm.tsx
-
-import React, { useEffect, useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import { Hito, createHito, getHitoById, updateHito } from '../../services/hitoService';
-
-import { Evento, getEventos } from '../../services/eventoService'; // Para obtener la lista de eventos
-
-import { getAllUsers, User } from '../../services/userService';
-
+import { Evento, getEventos, getParticipantesByEventoId, ParticipanteEvento } from '../../services/eventoService';
 import '../../assets/styles/HitoForm.css';
 
-
-
-interface HitoFormProps {
-
- hitoId?: number; // Opcional: ID del hito a editar
-
- eventoIdParent?: number; // Opcional: ID del evento si se crea desde un evento específico
-
- onSave: () => void; // Callback para cuando se guarda un hito
-
- onCancel: () => void; // Callback para cancelar
-
+export interface HitoFormProps {
+  hitoId?: number;
+  eventoIdParent?: number;
+  participantesEvento: ParticipanteEvento[];
+  onSave: () => void;
+  onCancel: () => void;
 }
 
+const HitoForm: React.FC<HitoFormProps> = ({ 
+  hitoId, 
+  eventoIdParent, 
+  onSave, 
+  onCancel 
+}) => {
+  const isEditing = !!hitoId;
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [participantes, setParticipantes] = useState<ParticipanteEvento[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
+  // Estado para el hito
+  const [hitoData, setHitoData] = useState<Hito>({
+    id: 0,
+    titulo: '',
+    descripcion: '',
+    categoria: '',
+    fechaRegistro: new Date().toISOString().split('T')[0],
+    eventoId: eventoIdParent || 0,
+    completado: false
+  });
 
-const HitoForm: React.FC<HitoFormProps> = ({ hitoId, eventoIdParent, onSave, onCancel }) => {
+  // Estado para el usuario seleccionado
+  const [usuarioGanadorId, setUsuarioGanadorId] = useState<number | ''>('');
 
- const isEditing = !!hitoId;
+  // Cargar eventos al iniciar
+  useEffect(() => {
+    const fetchEventos = async () => {
+      try {
+        const fetchedEventos = await getEventos();
+        setEventos(fetchedEventos);
 
+        // Si no estamos editando y no hay evento preseleccionado, seleccionar el primero
+        if (!isEditing && !eventoIdParent && fetchedEventos.length > 0) {
+          setHitoData(prev => ({ ...prev, eventoId: fetchedEventos[0].id }));
+        }
+      } catch (err: any) {
+        console.error("Error cargando eventos:", err);
+      }
+    };
+    fetchEventos();
+  }, [isEditing, eventoIdParent]);
 
+  // Cargar participantes cuando cambia el evento seleccionado
+  useEffect(() => {
+    const fetchParticipantes = async () => {
+      if (!hitoData.eventoId) return;
 
- const [hitoData, setHitoData] = useState<Hito>({
+      try {
+        const fetchedParticipantes = await getParticipantesByEventoId(hitoData.eventoId);
+        console.log("Participantes cargados:", fetchedParticipantes); // Log para depuración
+        setParticipantes(fetchedParticipantes);
+      } catch (err: any) {
+        console.error(`Error cargando participantes del evento ${hitoData.eventoId}:`, err);
+        setParticipantes([]);
+      }
+    };
 
-  id: 0,
+    fetchParticipantes();
+  }, [hitoData.eventoId]);
 
-  eventoId: eventoIdParent || 0,
+  // Manejar cambios en los inputs
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target as HTMLInputElement;
 
-  nombre: '',
-
-  descripcion: '',
-
-  fecha: '',
-
-  completado: false,
-
- });
-
- const [eventos, setEventos] = useState<Evento[]>([]);
-
- const [usuarios, setUsuarios] = useState<User[]>([]);
-
- const [usuarioGanadorId, setUsuarioGanadorId] = useState<number | ''>('');
-
- const [loading, setLoading] = useState(false);
-
- const [error, setError] = useState<string | null>(null);
-
- const [success, setSuccess] = useState<string | null>(null);
-
-
-
- useEffect(() => {
-
-  const fetchEventos = async () => {
-
-   try {
-
-    const fetchedEventos = await getEventos();
-
-    setEventos(fetchedEventos);
-
-    if (!isEditing && !eventoIdParent && fetchedEventos.length > 0) {
-
-      setHitoData(prev => ({ ...prev, eventoId: fetchedEventos[0].id }));
-
+    // Si cambia el evento, resetear el usuario ganador
+    if (name === 'eventoId') {
+      setUsuarioGanadorId('');
+      // Convertir explícitamente a número para eventoId
+      const numValue = value ? Number(value) : 0;
+      setHitoData(prev => ({
+        ...prev,
+        [name]: numValue
+      }));
+    } else {
+      setHitoData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      }));
     }
-
-   } catch (err: any) {
-
-    console.error("Error cargando eventos para el formulario de hito:", err);
-
-   }
-
   };
 
-  fetchEventos();
+  // Manejar envío del formulario
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!usuarioGanadorId) {
+      setError("Debe seleccionar un usuario ganador");
+      return;
+    }
 
- }, [isEditing, eventoIdParent]);
-
-
-
- useEffect(() => {
-
-  if (isEditing) {
-
-   const fetchHito = async () => {
+    if (!hitoData.eventoId || typeof hitoData.eventoId !== 'number') {
+      setError("Evento inválido, seleccione un evento válido");
+      return;
+    }
 
     setLoading(true);
-
     setError(null);
-
     try {
+      const hitoToSave = {
+        userId: usuarioGanadorId as number,
+        titulo: hitoData.titulo,
+        descripcion: hitoData.descripcion,
+        categoria: hitoData.categoria,
+        completado: hitoData.completado,
+        fechaRegistro: hitoData.fechaRegistro,
+        eventoId: Number(hitoData.eventoId),
+      };
 
-     const hito = await getHitoById(hitoId!);
+      console.log("Hito a guardar:", hitoToSave);
+      console.log("Evento ID:", hitoData.eventoId);
 
-     if (hito) {
+      await createHito(hitoToSave.eventoId, hitoToSave);
 
-      setHitoData(hito);
-
-      // Cargar el usuario ganador si existe
-
-      setUsuarioGanadorId(hito.usuarioGanadorId || '');
-
-     } else {
-
-      setError('Hito no encontrado.');
-
-     }
-
+      setSuccess("Hito guardado exitosamente");
+      setTimeout(() => {
+        onSave();
+      }, 1500);
     } catch (err: any) {
-
-     setError(err.message || 'Error al cargar el hito para edición.');
-
+      setError(`Error al guardar el hito: ${err.message}`);
     } finally {
-
-     setLoading(false);
-
+      setLoading(false);
     }
-
-   };
-
-   fetchHito();
-
-  }
-
- }, [hitoId, isEditing]);
-
-
-
- useEffect(() => {
-
-  // Cargar la lista de usuarios al montar el componente
-
-  const fetchUsuarios = async () => {
-
-   try {
-
-    const fetchedUsuarios = await getAllUsers();
-
-    setUsuarios(fetchedUsuarios);
-
-   } catch (err: any) {
-
-    console.error("Error cargando usuarios:", err);
-
-   }
-
   };
 
-  fetchUsuarios();
-
- }, []);
-
-
-
- const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-
-  const { name, value, type, checked } = e.target as HTMLInputElement;
-
-  setHitoData(prevData => ({
-
-   ...prevData,
-
-   [name]: type === 'checkbox' ? checked : value,
-
-  }));
-
- };
-
-
-
- const handleSubmit = async (e: React.FormEvent) => {
-
-  e.preventDefault();
-
-  setLoading(true);
-
-  setError(null);
-
-  setSuccess(null);
-
-
-
-  try {
-
-   if (!hitoData.eventoId) {
-
-     throw new Error("Por favor, selecciona un evento al que asociar el hito.");
-
-   }
-
-   if (isEditing) {
-
-  await updateHito({
-    ...hitoData,
-    usuarioGanadorId: usuarioGanadorId === '' ? null : usuarioGanadorId,
-  });
-  setSuccess('Hito actualizado exitosamente.');
-} else {
-  await createHito({
-    ...hitoData,
-    usuarioGanadorId: usuarioGanadorId === '' ? null : usuarioGanadorId,
-  });
-  setSuccess('Hito creado exitosamente.');
-    setHitoData({
-
-     id: 0,
-
-     eventoId: hitoData.eventoId,
-
-     nombre: '',
-
-     descripcion: '',
-
-     fecha: '',
-
-     completado: false,
-
-    });
-
-   }
-
-   setTimeout(() => onSave(), 1500);
-
-  } catch (err: any) {
-
-   setError(err.message || 'Error al guardar el hito.');
-
-   console.error("Error saving hito:", err);
-
-  } finally {
-
-   setLoading(false);
-
-  }
-
- };
-
-
-
- return (
-
-  <div className="hito-form-container bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto my-4">
-
-   <h3 className="text-2xl font-semibold text-gray-800 mb-4">{isEditing ? 'Editar Hito' : 'Crear Hito'}</h3>
-
-
-
-   {error && <div className="bg-red-200 text-red-800 p-3 rounded mb-4">{error}</div>}
-
-   {success && <div className="bg-green-200 text-green-800 p-3 rounded mb-4">{success}</div>}
-
-
-
-   <form onSubmit={handleSubmit}>
-
-    <div className="mb-4">
-
-     <label htmlFor="eventoId" className="block text-gray-700 text-sm font-bold mb-2">Evento Asociado:</label>
-
-     <select
-
-      id="eventoId"
-
-      name="eventoId"
-
-      value={hitoData.eventoId}
-
-      onChange={handleChange}
-
-      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-
-      required
-
-      disabled={!!eventoIdParent && isEditing}
-
-     >
-
-      <option value="">Selecciona un evento</option>
-
-      {eventos.map(evento => (
-
-       <option key={evento.id} value={evento.id}>
-
-        {evento.nombre} ({evento.fecha})
-
-       </option>
-
-      ))}
-
-     </select>
-
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h3 className="text-xl font-semibold mb-4">{isEditing ? 'Editar Hito' : 'Crear Hito'}</h3>
+
+      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
+      {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{success}</div>}
+
+      <form onSubmit={handleSubmit}>
+        {/* Evento Asociado */}
+        <div className="mb-4">
+          <label htmlFor="eventoId" className="block text-gray-700 font-semibold mb-1">Evento Asociado:</label>
+          <select
+            id="eventoId"
+            name="eventoId"
+            value={hitoData.eventoId || ''}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
+            disabled={!!eventoIdParent || isEditing}
+            required
+          >
+            <option value="">Selecciona un evento</option>
+            {eventos.map(evento => (
+              <option key={evento.id} value={evento.id}>{evento.nombre}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Título del Hito */}
+        <div className="mb-4">
+          <label htmlFor="titulo" className="block text-gray-700 font-semibold mb-1">Título del Hito:</label>
+          <input
+            type="text"
+            id="titulo"
+            name="titulo"
+            value={hitoData.titulo || ''}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
+            required
+          />
+        </div>
+
+        {/* Descripción */}
+        <div className="mb-4">
+          <label htmlFor="descripcion" className="block text-gray-700 font-semibold mb-1">Descripción:</label>
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            value={hitoData.descripcion || ''}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
+            rows={4}
+            required
+          />
+        </div>
+
+        {/* Categoría */}
+        <div className="mb-4">
+          <label htmlFor="categoria" className="block text-gray-700 font-semibold mb-1">Categoría:</label>
+          <select
+            id="categoria"
+            name="categoria"
+            value={hitoData.categoria || ''}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
+            required
+          >
+            <option value="">Selecciona una categoría</option>
+            <option value="LOGRO">Logro</option>
+            <option value="META">Meta</option>
+            <option value="OTRO">Otro</option>
+          </select>
+        </div>
+
+        {/* Usuario Ganador */}
+        <div className="mb-4">
+          <label htmlFor="usuarioGanadorId" className="block text-gray-700 font-semibold mb-1">Usuario Ganador:</label>
+          <select
+            id="usuarioGanadorId"
+            name="usuarioGanadorId"
+            value={usuarioGanadorId}
+            onChange={(e) => setUsuarioGanadorId(e.target.value ? Number(e.target.value) : '')}
+            className="w-full border rounded p-2"
+            required
+          >
+            <option value="">Selecciona un usuario</option>
+            {participantes.map(participante => (
+              <option key={participante.id} value={participante.id}>
+                {participante.username} ({participante.nombre} {participante.apellido})
+              </option>
+            ))}
+          </select>
+
+          {hitoData.eventoId && participantes.length === 0 && (
+            <p className="text-yellow-600 text-sm mt-1">
+              No hay participantes registrados para este evento.
+            </p>
+          )}
+        </div>
+
+        {/* Botones de acción */}
+        <div className="flex justify-end space-x-2">
+          <button 
+            type="button" 
+            onClick={onCancel}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit"
+            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+            disabled={loading}
+          >
+            {loading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear')}
+          </button>
+        </div>
+      </form>
     </div>
-
-
-
-    <div className="mb-4">
-
-     <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">Nombre del Hito:</label>
-
-     <input
-
-      type="text"
-
-      id="nombre"
-
-      name="nombre"
-
-      value={hitoData.nombre}
-
-      onChange={handleChange}
-
-      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-
-      required
-
-     />
-
-    </div>
-
-
-
-    <div className="mb-4">
-
-     <label htmlFor="descripcion" className="block text-gray-700 text-sm font-bold mb-2">Descripción (opcional):</label>
-
-     <textarea
-
-      id="descripcion"
-
-      name="descripcion"
-
-      value={hitoData.descripcion || ''}
-
-      onChange={handleChange}
-
-      rows={2}
-
-      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-
-     ></textarea>
-
-    </div>
-
-
-
-    <div className="mb-4">
-
-     <label htmlFor="fecha" className="block text-gray-700 text-sm font-bold mb-2">Fecha del Hito:</label>
-
-     <input
-
-      type="date"
-
-      id="fecha"
-
-      name="fecha"
-
-      value={hitoData.fecha}
-
-      onChange={handleChange}
-
-      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-
-      required
-
-     />
-
-    </div>
-
-
-
-    <div className="mb-4 flex items-center">
-
-     <input
-
-      type="checkbox"
-
-      id="completado"
-
-      name="completado"
-
-      checked={hitoData.completado}
-
-      onChange={handleChange}
-
-      className="mr-2 h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300 rounded"
-
-     />
-
-     <label htmlFor="completado" className="text-gray-700 text-sm font-bold">Completado</label>
-
-    </div>
-
-
-
-    <div className="mb-3">
-
-     <label htmlFor="usuarioGanadorId" className="form-label">Usuario Ganador</label>
-
-     <select
-
-      id="usuarioGanadorId"
-
-      name="usuarioGanadorId"
-
-      className="form-select"
-
-      value={usuarioGanadorId}
-
-      onChange={e => {
-
-        const value = e.target.value;
-
-        setUsuarioGanadorId(value === '' ? '' : Number(value));
-
-      }}
-
-      required // Quita esto si quieres que sea opcional
-
-     >
-
-      <option value="">Selecciona un usuario</option>
-
-      {usuarios.map(user => (
-
-       <option key={user.id} value={user.id}>
-
-        {user.username || user.correo}
-
-       </option>
-
-      ))}
-
-     </select>
-
-    </div>
-
-
-
-    <div className="flex justify-end gap-2">
-
-     <button
-
-      type="button"
-
-      onClick={onCancel}
-
-      className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-
-     >
-
-      Cancelar
-
-     </button>
-
-     <button
-
-      type="submit"
-
-      className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-
-      disabled={loading}
-
-     >
-
-      {loading ? 'Guardando...' : (isEditing ? 'Actualizar Hito' : 'Crear Hito')}
-
-     </button>
-
-    </div>
-
-   </form>
-
-  </div>
-
- );
-
+  );
 };
-
-
 
 export default HitoForm;

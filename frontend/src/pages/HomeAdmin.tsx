@@ -117,146 +117,135 @@ const HomeAdmin: React.FC = () => {
   const handleManageMilestones = () => {
     navigate('/admin/hitos'); // Redirige a la nueva página de gestión de hitos
   };
+  // Reemplaza la sección de contenido principal
   return (
     <div className="home-admin-container">
       <Navbar />
       <div className="home-admin-content">
-        <h2>Panel de Administración</h2>
+        <h2 className="panel-title">Panel de Administración</h2>
         
-        {loadingStats ? (
-          <p className="text-white text-center">Cargando estadísticas...</p>
-        ) : errorStats ? (
-          <p className="text-red-300 text-center">Error al cargar estadísticas: {errorStats}</p>
-        ) : (
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h3>📅 Eventos Activos</h3>
-              <p>{stats.eventosActivos}</p>
-            </div>
-            <div className="stat-card">
-              <h3>👥 Total Participantes</h3>
-              <p>{stats.totalParticipantes}</p>
-            </div>
-            <div className="stat-card">
-              <h3>🔜 Próximo Evento</h3>
-              <p>{stats.proximoEvento}</p>
-            </div>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-icon">📅</div>
+            <h3>Eventos Activos</h3>
+            <p className="stat-value">{stats.eventosActivos}</p>
           </div>
-        )}
+          <div className="stat-card">
+            <div className="stat-icon">👥</div>
+            <h3>Total Participantes</h3>
+            <p className="stat-value">{stats.totalParticipantes}</p>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon">🔜</div>
+            <h3>Próximo Evento</h3>
+            <p className="stat-value">{stats.proximoEvento}</p>
+          </div>
+        </div>
 
-        <div className="admin-actions">
-          {/* Botón Crear Evento */}
-          <button
-            onClick={handleCreateEvent}
-            className="btn btn-primary bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
+        <div className="action-buttons">
+          <button 
+            onClick={handleCreateEvent} 
+            className="action-button create-button"
           >
-            <i className="fas fa-plus"></i> Crear Evento
+            Crear Evento
           </button>
-          
-          {/* Botón Gestionar Hitos */}
-          <button
-            onClick={handleManageMilestones} // Llama a la nueva función de navegación
-            className="btn btn-secondary bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+          <button 
+            onClick={handleManageMilestones} 
+            className="action-button manage-button"
           >
-            <i className="fas fa-trophy"></i> Gestionar Hitos
+            Gestionar Hitos
           </button>
-          
-          <button
-            onClick={handleGenerateReport}
-            className="btn btn-tertiary bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+          <button 
+            onClick={handleGenerateReport} 
+            className="action-button report-button"
           >
-            <i className="fas fa-file-export"></i> Generar Reporte
+            Generar Reporte
           </button>
         </div>
 
-        <div className="recent-events">
-          <h3>📋 Eventos Recientes</h3>
+        <div className="recent-events-section">
+          <h3 className="section-title">📋 Eventos Recientes</h3>
           {loadingRecent ? (
-            <p className="text-white text-center">Cargando eventos recientes...</p>
+            <p className="loading-text">Cargando eventos recientes...</p>
           ) : errorRecent ? (
-            <p className="text-red-300 text-center">Error al cargar eventos: {errorRecent}</p>
+            <p className="error-text">Error al cargar eventos: {errorRecent}</p>
           ) : recentEvents.length === 0 ? (
-            <p className="text-white">No hay eventos recientes para mostrar.</p>
+            <p className="empty-text">No hay eventos recientes para mostrar.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="events-grid">
               {recentEvents.map((evento) => (
                 <EventoCard
                   key={evento.id}
                   evento={evento}
-                  isAdmin={true} // <-- ¡Pasa isAdmin a true para mostrar el botón de edición!
-                  // No necesitas onRegisterClick/onUnregisterClick aquí a menos que quieras esa funcionalidad en el admin
+                  isAdmin={true}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* Nueva sección: Gestión de Eventos */}
-        <div className="admin-eventos mt-8 bg-white bg-opacity-10 p-6 rounded-lg shadow-lg">
-          <h3 className="text-xl font-semibold mb-4 text-white">Gestión de Eventos</h3>
+        {/* Nueva sección: Tabla de gestión de eventos */}
+        <div className="events-table-section">
+          <h3 className="section-title">📋 Gestión de Eventos</h3>
           {loading ? (
-            <p className="text-white text-center p-4">Cargando eventos...</p>
+            <p className="loading-text">Cargando eventos...</p>
           ) : error ? (
-            <p className="text-red-300 text-center p-4">Error: {error}</p>
-          ) : eventos.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white rounded shadow">
+            <p className="error-text">Error al cargar eventos: {error}</p>
+          ) : eventos.length === 0 ? (
+            <p className="empty-text">No hay eventos para mostrar.</p>
+          ) : (
+            <div className="table-container">
+              <table className="events-table">
                 <thead>
-                  <tr className="bg-violet-700 text-white">
-                    <th className="py-2 px-4 text-left">ID</th>
-                    <th className="py-2 px-4 text-left">Nombre</th>
-                    <th className="py-2 px-4 text-left">Fecha</th>
-                    <th className="py-2 px-4 text-left">Tipo</th>
-                    <th className="py-2 px-4 text-left">Descripción</th>
-                    <th className="py-2 px-4 text-center">Acciones</th>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {eventos.map((evento) => (
-                    <tr key={evento.id} className="border-b border-gray-200 hover:bg-violet-100 transition">
-                      <td className="py-2 px-4">{evento.id}</td>
-                      <td className="py-2 px-4">{evento.nombre}</td>
-                      <td className="py-2 px-4">{evento.fecha}</td>
-                      <td className="py-2 px-4">{evento.tipo}</td>
-                      <td className="py-2 px-4">
-                        {evento.descripcion && evento.descripcion.length > 100
-                          ? `${evento.descripcion.substring(0, 100)}...`
-                          : evento.descripcion}
+                    <tr key={evento.id}>
+                      <td>{evento.id}</td>
+                      <td>{evento.nombre}</td>
+                      <td>{evento.fecha}</td>
+                      <td>{evento.tipo}</td>
+                      <td>
                       </td>
-                      <td className="py-2 px-4 text-center">
-                        <div className="flex justify-center gap-2">
-                          <Link
-                            to={`/eventos/${evento.id}`}
-                            className="btn btn-outline-primary btn-sm"
-                          >
-                            Ver
-                          </Link>
-                          <Link
-                            to={`/editar-evento/${evento.id}`}
-                            className="btn btn-outline-success btn-sm"
-                          >
-                            Editar
-                          </Link>
-                          <button
-                            className="btn btn-outline-danger btn-sm"
-                            onClick={() => {
-                              if (window.confirm(`¿Estás seguro de que quieres eliminar el evento "${evento.nombre}"?`)) {
-                                // Aquí iría la función para eliminar el evento
-                                console.log(`Eliminando evento ${evento.id}`);
-                              }
-                            }}
-                          >
-                            Eliminar
-                          </button>
-                        </div>
+                      <td className="actions-cell">
+                        <Link 
+                          to={`/eventos/${evento.id}`} 
+                          className="action-link view-link"
+                        >
+                          Ver
+                        </Link>
+                        <Link 
+                          to={`/editar-evento/${evento.id}`} 
+                          className="action-link edit-link"
+                        >
+                          Editar
+                        </Link>
+                        <button
+                          onClick={() => {
+                            // Agregar lógica para eliminar evento
+                            if (window.confirm(`¿Estás seguro de que quieres eliminar el evento "${evento.nombre}"?`)) {
+                              console.log(`Eliminando evento ${evento.id}`);
+                              // Implementar lógica de eliminación
+                            }
+                          }}
+                          className="action-link delete-link"
+                        >
+                          Eliminar
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          ) : (
-            <p className="text-white text-center p-4">No hay eventos disponibles.</p>
           )}
         </div>
       </div>

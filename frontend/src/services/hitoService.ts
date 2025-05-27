@@ -139,22 +139,20 @@ export const getHitoById = async (id: number): Promise<Hito | undefined> => {
 */
 
 export const getHitosByEventoId = async (eventId: number): Promise<Hito[]> => {
+  if (!eventId || isNaN(eventId)) {
+    throw new Error('ID de evento inválido');
+  }
+  
+  const response = await fetch(`${API_URL}/api/v1/hitos/evento/${eventId}`, {
+    headers: getAuthHeaders(),
+  });
 
- const response = await fetch(`${API_URL}/api/events/${eventId}/milestones`, {
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error al cargar los hitos del evento ${eventId}`);
+  }
 
-  headers: getAuthHeaders(),
-
- });
-
- if (!response.ok) {
-
-  const errorData = await response.json();
-
-  throw new Error(errorData.message || `Error al cargar los hitos del evento ${eventId}`);
-
- }
-
- return response.json();
+  return response.json();
 
 };
 
@@ -170,28 +168,29 @@ export const getHitosByEventoId = async (eventId: number): Promise<Hito[]> => {
 
 */
 
-export const createHito = async (newHito: Omit<Hito, 'id'>): Promise<Hito> => {
+export const createHito = async (eventoId: number, newHito: Omit<Hito, 'id'>): Promise<Hito> => {
+  // Verificar que eventoId sea un número válido
+  if (!eventoId || isNaN(eventoId)) {
+    throw new Error('ID de evento inválido');
+  }
+  
+  console.log("Enviando petición a:", `${API_URL}/api/v1/hitos/${eventoId}/logro`);
+  
+  const response = await fetch(`${API_URL}/api/v1/hitos/${eventoId}/logro`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify(newHito),
+  });
 
- const response = await fetch(`${API_URL}/api/milestones`, {
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Error al crear el hito');
+  }
 
-  method: 'POST',
-
-  headers: getAuthHeaders(),
-
-  body: JSON.stringify(newHito),
-
- });
-
- if (!response.ok) {
-
-  const errorData = await response.json();
-
-  throw new Error(errorData.message || 'Error al crear el hito');
-
- }
-
- return response.json();
-
+  return response.json();
 };
 
 

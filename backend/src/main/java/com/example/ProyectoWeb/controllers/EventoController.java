@@ -7,7 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.ProyectoWeb.entity.Evento;
+import com.example.ProyectoWeb.entity.Usuario;
 import com.example.ProyectoWeb.services.EventoService;
+import com.example.ProyectoWeb.services.UsuarioService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +23,9 @@ public class EventoController {
 
     @Autowired
     private EventoService eventoService;
+
+    @Autowired
+    private UsuarioService usuarioService; // con minúscula, es una instancia
 
     // Comprar un ticket para un evento con el usuario actual
     @PutMapping("/{id}/añadir-invitado")
@@ -94,6 +99,11 @@ public class EventoController {
     public List<Evento> getEventosActivos() {
         return eventoService.getEventosActivos();
     }
+    
+        @GetMapping("/activos3")
+    public List<Evento> getEventosActivos3() {
+        return eventoService.getEventosActivos3();
+    }
 
     @GetMapping("/activos/participantes")
     public List<Map<String, Object>> getCantidadParticipantesEventosActivos() {
@@ -140,7 +150,7 @@ public class EventoController {
      * @return Lista de nombres de usuario de los participantes
      */
     @GetMapping("/{id}/participantes")
-    public ResponseEntity<List<Map<String, Object>>> getParticipantesByEventoId(@PathVariable Long id) {
+    public ResponseEntity<?> getParticipantesByEventoId(@PathVariable Long id) {
         try {
             // Obtener el evento
             Evento evento = eventoService.getEventoById(id);
@@ -151,23 +161,29 @@ public class EventoController {
             // Convertir los nombres de usuario en objetos con información detallada
             List<Map<String, Object>> participantesInfo = new ArrayList<>();
             for (String username : participantesUsernames) {
-                Usuario usuario = usuarioService.getUserByUsername(username);
-                
-                // Crear un mapa con la información que queremos devolver de cada usuario
-                Map<String, Object> usuarioInfo = new HashMap<>();
-                usuarioInfo.put("id", usuario.getId());
-                usuarioInfo.put("username", usuario.getUsername());
-                usuarioInfo.put("nombre", usuario.getNombre());
-                usuarioInfo.put("apellido", usuario.getApellido());
-                usuarioInfo.put("correo", usuario.getCorreo());
-                usuarioInfo.put("role", usuario.getRol().toString());
-                
-                participantesInfo.add(usuarioInfo);
+                try {
+                    Usuario usuario = usuarioService.getUserByUsername(username);
+                    
+                    // Crear un mapa con la información que queremos devolver de cada usuario
+                    Map<String, Object> usuarioInfo = new HashMap<>();
+                    usuarioInfo.put("id", usuario.getId());
+                    usuarioInfo.put("username", usuario.getUsername());
+                    usuarioInfo.put("nombre", usuario.getNombre());
+                    usuarioInfo.put("apellido", usuario.getApellido());
+                    usuarioInfo.put("correo", usuario.getCorreo());
+                    usuarioInfo.put("role", usuario.getRol().toString());
+                    
+                    participantesInfo.add(usuarioInfo);
+                } catch (Exception e) {
+                    // Simplemente registrar el error y continuar con el siguiente usuario
+                    System.err.println("Error al procesar usuario " + username + ": " + e.getMessage());
+                }
             }
             
             return ResponseEntity.ok(participantesInfo);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
+            // Devolver una lista vacía en caso de error, en lugar de null
+            return ResponseEntity.ok(new ArrayList<>());
         }
     }
 }

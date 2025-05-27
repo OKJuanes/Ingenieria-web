@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/hitos")
 @RequiredArgsConstructor
@@ -33,6 +35,21 @@ public class HitoController {
         }
     }
 
+    /**
+     * Obtiene todos los hitos asociados a un evento específico
+     * @param eventoId ID del evento
+     * @return Lista de hitos
+     */
+    @GetMapping("/evento/{eventoId}")
+    public ResponseEntity<?> getHitosByEventoId(@PathVariable Long eventoId) {
+        try {
+            List<Hito> hitos = hitoService.getHitosByEventoId(eventoId);
+            return ResponseEntity.ok(hitos);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
     // DTO para la petición
     public static class HitoRequest {
         private Long userId;

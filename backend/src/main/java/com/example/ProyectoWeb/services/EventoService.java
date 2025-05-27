@@ -36,6 +36,11 @@ public class EventoService {
         return eventoRepository.findEventosActivos();
     }
 
+    
+    public List<Evento> getEventosActivos3() {
+        return eventoRepository.findEventosActivos3();
+    }
+
     public List<Object[]> getCantidadParticipantesEventosActivos() {
         return eventoRepository.findCantidadParticipantesEventosActivos();
     }

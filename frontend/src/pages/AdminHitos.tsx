@@ -1,401 +1,236 @@
 // src/pages/AdminHitos.tsx
-
 import React, { useState, useEffect } from 'react';
-
 import Navbar from '../components/common/Navbar';
-
 // Corregida la importación de getEventos desde eventoService
-
-import { Hito, getHitosByEventoId, deleteHito } from '../services/hitoService';
-
-import { Evento, getEventos } from '../services/eventoService'; // ¡Importación corregida!
-
+import { Hito, getHitosByEventoId, deleteHito } from '../services/hitoService'; 
+import { Evento, getEventos, getEventoById } from '../services/eventoService'; // ¡Importación corregida!
+import { getParticipantesByEventoId } from '../services/eventoService';
+import type { ParticipanteEvento } from '../services/eventoService';
 import HitoForm from '../components/hitos/HitoForm';
-
 import '../assets/styles/AdminHitos.css';
 
-
-
 const AdminHitos: React.FC = () => {
+  const [hitos, setHitos] = useState<Hito[]>([]);
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [selectedEventoId, setSelectedEventoId] = useState<number | 'all'>('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [editingHitoId, setEditingHitoId] = useState<number | undefined>(undefined);
+  const [participantes, setParticipantes] = useState<ParticipanteEvento[]>([]);
 
-const [hitos, setHitos] = useState<Hito[]>([]);
+  const fetchHitos = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const allEvents = await getEventos();
+      setEventos(allEvents);
 
-const [eventos, setEventos] = useState<Evento[]>([]);
+      let fetchedHitos: Hito[] = [];
+      if (selectedEventoId !== 'all') {
+        fetchedHitos = await getHitosByEventoId(selectedEventoId as number);
 
-const [selectedEventoId, setSelectedEventoId] = useState<number | 'all'>('all');
+        try {
+          const participantesData = await getParticipantesByEventoId(selectedEventoId as number);
+          console.log("Participantes cargados desde el servicio:", participantesData); // Log para depuración
+          setParticipantes(participantesData);
+        } catch (err) {
+          console.error(`Error al cargar participantes: ${err}`);
+          setParticipantes([]);
+        }
+      } else {
+        setParticipantes([]);
+      }
 
-const [loading, setLoading] = useState(true);
+      setHitos(fetchedHitos);
+    } catch (err: any) {
+      setError(err.message || 'Error al cargar los hitos.');
+      console.error("Error fetching hitos:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    fetchHitos();
+  }, [selectedEventoId]);
 
-const [showForm, setShowForm] = useState(false);
+  const handleEdit = (hitoId: number) => {
+    setEditingHitoId(hitoId);
+    setShowForm(true);
+  };
 
-const [editingHitoId, setEditingHitoId] = useState<number | undefined>(undefined);
+  const handleDelete = async (hitoId: number) => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este hito?')) {
+      try {
+        await deleteHito(hitoId);
+        fetchHitos(); // Recargar la lista después de eliminar
+      } catch (err: any) {
+        alert(`Error al eliminar hito: ${err.message}`);
+        console.error("Error deleting hito:", err);
+      }
+    }
+  };
 
+  const handleSaveHito = () => {
+    setShowForm(false);
+    setEditingHitoId(undefined);
+    fetchHitos(); // Recargar la lista de hitos
+  };
 
+  const handleCancelForm = () => {
+    setShowForm(false);
+    setEditingHitoId(undefined);
+  };
 
-const fetchHitos = async () => {
+  const getEventName = (eventoId: number) => {
+    const event = eventos.find(e => e.id === eventoId);
+    return event ? event.nombre : 'Evento Desconocido';
+  };
 
-setLoading(true);
+  return (
+    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+      <Navbar />
+      <div className="container mx-auto p-4">
+        <h2 className="text-4xl font-bold text-white mb-6">Gestión de Hitos</h2>
 
-setError(null);
+        <div className="flex justify-between items-center mb-6">
+          <button
+            onClick={() => { setShowForm(true); setEditingHitoId(undefined); }}
+            className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
+          >
+            <i className="fas fa-plus"></i> Crear Nuevo Hito
+          </button>
 
-try {
+          <select
+            value={selectedEventoId}
+            onChange={(e) => setSelectedEventoId(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
+            className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="all">Todos los Eventos</option>
+            {eventos.map(evento => (
+              <option key={evento.id} value={evento.id}>
+                {evento.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
 
-const allEvents = await getEventos(); // Obtener todos los eventos para el filtro
+        {showForm && (
+          <div className="mb-8">
+            <HitoForm
+              hitoId={editingHitoId}
+              eventoIdParent={selectedEventoId !== 'all' ? selectedEventoId as number : undefined}
+              participantesEvento={selectedEventoId !== 'all' ? participantes : []}
+              onSave={handleSaveHito}
+              onCancel={handleCancelForm}
+            />
+          </div>
+        )}
 
-setEventos(allEvents);
+        {/* Lista de participantes si hay un evento seleccionado */}
+        {selectedEventoId !== 'all' && participantes.length > 0 && (
+          <div className="mb-6 bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold mb-2">Participantes del evento</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              {participantes.map((participante) => (
+                <div key={participante.id} className="bg-purple-50 rounded-md p-2 flex items-center">
+                  <span className="material-icons text-purple-600 mr-2">person</span>
+                  {participante.username} ({participante.nombre} {participante.apellido})
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-
-
-let fetchedHitos: Hito[] = [];
-
-if (selectedEventoId === 'all') {
-
-// Obtenemos los hitos de CADA evento.
-
-// Esto es necesario si tu backend no tiene un endpoint para 'todos' los hitos.
-
-const allHitosPromises = allEvents.map(event => getHitosByEventoId(event.id));
-
-const nestedHitos = await Promise.all(allHitosPromises);
-
-fetchedHitos = nestedHitos.flat();
-
-} else {
-
-fetchedHitos = await getHitosByEventoId(selectedEventoId as number);
-
-}
-
-setHitos(fetchedHitos);
-
-} catch (err: any) {
-
-setError(err.message || 'Error al cargar los hitos.');
-
-console.error("Error fetching hitos:", err);
-
-} finally {
-
-setLoading(false);
-
-}
-
+        {loading ? (
+          <p className="text-white text-center">Cargando hitos...</p>
+        ) : error ? (
+          <p className="text-red-300 text-center">Error: {error}</p>
+        ) : hitos.length === 0 ? (
+          <p className="text-white text-lg">No hay hitos para mostrar {selectedEventoId !== 'all' ? `para este evento.` : `.`}</p>
+        ) : (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <table className="min-w-full leading-normal">
+              <thead>
+                <tr>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Hito
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Evento
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Fecha
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Estado
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {hitos.map((hito) => (
+                  <tr key={hito.id} className="hover:bg-gray-50">
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      {/* Cambia hito.nombre por hito.titulo si ese es el nombre en backend */}
+                      <p className="text-gray-900 whitespace-no-wrap">{hito.titulo}</p>
+                      {hito.descripcion && <p className="text-gray-600 text-xs">{hito.descripcion}</p>}
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      {/* Usar el ID correcto dependiendo de cómo lo nombra tu backend */}
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        {getEventName(
+                          hito.eventoId ?? -1
+                        )}
+                      </p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      {/* Usar el campo de fecha que corresponda a tu backend */}
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        {hito.fechaRegistro}
+                      </p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <span
+                        className={`relative inline-block px-3 py-1 font-semibold leading-tight ${
+                          hito.completado ? 'text-green-900' : 'text-red-900'
+                        }`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`absolute inset-0 ${
+                            hito.completado ? 'bg-green-200' : 'bg-red-200'
+                          } opacity-50 rounded-full`}
+                        ></span>
+                        <span className="relative">{hito.completado ? 'Completado' : 'Pendiente'}</span>
+                      </span>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <button
+                        onClick={() => handleEdit(hito.id)}
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-xs mr-2"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(hito.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
-
-
-
-useEffect(() => {
-
-fetchHitos();
-
-}, [selectedEventoId]);
-
-
-
-const handleEdit = (hitoId: number) => {
-
-setEditingHitoId(hitoId);
-
-setShowForm(true);
-
-};
-
-
-
-const handleDelete = async (hitoId: number) => {
-
-if (window.confirm('¿Estás seguro de que quieres eliminar este hito?')) {
-
-try {
-
-await deleteHito(hitoId);
-
-fetchHitos(); // Recargar la lista después de eliminar
-
-} catch (err: any) {
-
-alert(`Error al eliminar hito: ${err.message}`);
-
-console.error("Error deleting hito:", err);
-
-}
-
-}
-
-};
-
-
-
-const handleSaveHito = () => {
-
-setShowForm(false);
-
-setEditingHitoId(undefined);
-
-fetchHitos(); // Recargar la lista de hitos
-
-};
-
-
-
-const handleCancelForm = () => {
-
-setShowForm(false);
-
-setEditingHitoId(undefined);
-
-};
-
-
-
-const getEventName = (eventoId: number) => {
-
-const event = eventos.find(e => e.id === eventoId);
-
-return event ? event.nombre : 'Evento Desconocido';
-
-};
-
-
-
-return (
-
-<div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
-
-<Navbar />
-
-<div className="container mx-auto p-4">
-
-<h2 className="text-4xl font-bold text-white mb-6">Gestión de Hitos</h2>
-
-
-
-<div className="flex justify-between items-center mb-6">
-
-<button
-
-onClick={() => { setShowForm(true); setEditingHitoId(undefined); }}
-
-className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
-
->
-
-<i className="fas fa-plus"></i> Crear Nuevo Hito
-
-</button>
-
-
-
-<select
-
-value={selectedEventoId}
-
-onChange={(e) => setSelectedEventoId(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
-
-className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-
->
-
-<option value="all">Todos los Eventos</option>
-
-{eventos.map(evento => (
-
-<option key={evento.id} value={evento.id}>
-
-{evento.nombre}
-
-</option>
-
-))}
-
-</select>
-
-</div>
-
-
-
-{showForm && (
-
-<div className="mb-8">
-
-<HitoForm
-
-hitoId={editingHitoId}
-
-onSave={handleSaveHito}
-
-onCancel={handleCancelForm}
-
-/>
-
-</div>
-
-)}
-
-
-
-{loading ? (
-
-<p className="text-white text-center">Cargando hitos...</p>
-
-) : error ? (
-
-<p className="text-red-300 text-center">Error: {error}</p>
-
-) : hitos.length === 0 ? (
-
-<p className="text-white text-lg">No hay hitos para mostrar {selectedEventoId !== 'all' ? `para este evento.` : `.`}</p>
-
-) : (
-
-<div className="bg-white rounded-lg shadow-md p-6">
-
-<table className="min-w-full leading-normal">
-
-<thead>
-
-<tr>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Hito
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Evento
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Fecha
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Estado
-
-</th>
-
-<th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-
-Acciones
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{hitos.map((hito) => (
-
-<tr key={hito.id} className="hover:bg-gray-50">
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<p className="text-gray-900 whitespace-no-wrap">{hito.nombre}</p>
-
-{hito.descripcion && <p className="text-gray-600 text-xs">{hito.descripcion}</p>}
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<p className="text-gray-900 whitespace-no-wrap">{getEventName(hito.eventoId)}</p>
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<p className="text-gray-900 whitespace-no-wrap">{hito.fecha}</p>
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<span
-
-className={`relative inline-block px-3 py-1 font-semibold leading-tight ${
-
-hito.completado ? 'text-green-900' : 'text-red-900'
-
-}`}
-
->
-
-<span
-
-aria-hidden
-
-className={`absolute inset-0 ${
-
-hito.completado ? 'bg-green-200' : 'bg-red-200'
-
-} opacity-50 rounded-full`}
-
-></span>
-
-<span className="relative">{hito.completado ? 'Completado' : 'Pendiente'}</span>
-
-</span>
-
-</td>
-
-<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-<button
-
-onClick={() => handleEdit(hito.id)}
-
-className="btn btn-link btn-sm text-primary me-2"
-
->
-
-Editar
-
-</button>
-
-<button
-
-onClick={() => handleDelete(hito.id)}
-
-className="btn btn-link btn-sm text-danger"
-
->
-
-Eliminar
-
-</button>
-
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-)}
-
-</div>
-
-</div>
-
-);
-
-};
-
-
 
 export default AdminHitos;

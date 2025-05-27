@@ -1,7 +1,14 @@
 // src/pages/HomeAdmin.tsx
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/common/Navbar';
-import { getEventStats, getRecentEvents, Evento, generateEventsReportCsv, getEventos } from '../services/eventoService'; // Importa las nuevas funciones y la interfaz Evento
+import { 
+  getEventStats, 
+  getRecentEvents, 
+  Evento, 
+  generateEventsReportCsv, 
+  getEventos, 
+  deleteEvento 
+} from '../services/eventoService';
 import { Link, useNavigate } from 'react-router-dom'; // Para la navegación
 import EventoCard from '../components/eventos/EventoCard'; // Para mostrar eventos recientes
 import '../assets/styles/HomeAdmin.css'; // Tu archivo de estilos para HomeAdmin
@@ -258,8 +265,17 @@ const HomeAdmin: React.FC = () => {
                         <button
                           onClick={() => {
                             if (window.confirm(`¿Estás seguro de que quieres eliminar el evento "${evento.nombre}"?`)) {
-                              console.log(`Eliminando evento ${evento.id}`);
-                              // Implementar lógica de eliminación
+                              // Eliminar el evento y actualizar la lista
+                              deleteEvento(evento.id)
+                                .then(() => {
+                                  // Eliminar el evento de la lista local
+                                  setEventos(eventos.filter(e => e.id !== evento.id));
+                                  alert(`Evento "${evento.nombre}" eliminado exitosamente.`);
+                                })
+                                .catch(err => {
+                                  console.error("Error eliminando evento:", err);
+                                  alert(`Error al eliminar el evento: ${err.message}`);
+                                });
                             }
                           }}
                           className="event-action-btn delete-btn"

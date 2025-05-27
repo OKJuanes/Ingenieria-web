@@ -59,7 +59,7 @@ public class EventoController {
 
     // Eliminar un evento
     @DeleteMapping("/{id}/eliminar-evento")
-    @PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
+    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write') or hasRole('admin') or hasRole('ADMIN')")
     public String deleteEvento(@PathVariable Long id) {
         return eventoService.deleteEvento(id);
     }

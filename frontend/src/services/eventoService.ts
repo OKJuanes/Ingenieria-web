@@ -613,3 +613,33 @@ export const addExternalGuest = async (eventoId: number, invitadoData: {
   return response.json();
 
 };
+
+
+
+/**
+
+ * Elimina un evento existente.
+
+ * @param id El ID del evento a eliminar.
+
+ * @returns Promise<void>
+
+ */
+
+export const deleteEvento = async (id: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/api/v1/eventos/${id}/eliminar-evento`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    // Intentamos obtener el mensaje de error del cuerpo de la respuesta
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Error al eliminar el evento con ID ${id}`);
+    } catch (jsonError) {
+      // Si no podemos parsear el JSON, usamos el statusText
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+};

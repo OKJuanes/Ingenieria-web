@@ -245,13 +245,13 @@ const HomeAdmin: React.FC = () => {
                       <td className="actions-cell">
                         <Link 
                           to={`/eventos/${evento.id}`} 
-                          className="action-link view-link"
+                          className="event-action-btn view-btn"
                         >
                           Ver
                         </Link>
                         <Link 
                           to={`/editar-evento/${evento.id}`} 
-                          className="action-link edit-link"
+                          className="event-action-btn edit-btn"
                         >
                           Editar
                         </Link>
@@ -262,7 +262,7 @@ const HomeAdmin: React.FC = () => {
                               // Implementar lógica de eliminación
                             }
                           }}
-                          className="action-link delete-link"
+                          className="event-action-btn delete-btn"
                         >
                           Eliminar
                         </button>

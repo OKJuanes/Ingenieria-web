@@ -1,7 +1,7 @@
 // src/components/admin/EventoForm.tsx
 import React, { useState, useEffect } from 'react';
 import { Evento } from '../../services/eventoService'; // Asegúrate de importar la interfaz Evento
-
+import '../../assets/styles/EventoForm.css';
 interface EventoFormProps {
   evento: Evento | null; // El evento a editar. Null si fuera para crear, pero aquí siempre será edición.
   onSave: (evento: Evento) => void;
@@ -140,19 +140,19 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       </div>
-      <div className="flex items-center justify-between">
-        <button
-          type="submit"
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
-        >
-          Guardar Cambios
-        </button>
+      <div className="flex items-center justify-end gap-3 mt-6">
         <button
           type="button"
           onClick={onCancel}
-          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
+          className="eventoform-btn eventoform-btn-secondary"
         >
           Cancelar
+        </button>
+        <button
+          type="submit"
+          className="eventoform-btn"
+        >
+          Guardar cambios
         </button>
       </div>
     </form>

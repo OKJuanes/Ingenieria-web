@@ -1,6 +1,4 @@
-/* src/assets/styles/HitoForm.css */
-
-.hitoform-btn {
+.eventoform-btn {
   background: #6b21a8;
   color: #fff;
   border: none;
@@ -16,21 +14,21 @@
   display: inline-block;
 }
 
-.hitoform-btn:hover,
-.hitoform-btn:focus {
+.eventoform-btn:hover,
+.eventoform-btn:focus {
   background: #4a00e0;
   color: #fff;
   box-shadow: 0 4px 16px rgba(76,0,224,0.13);
 }
 
-.hitoform-btn-secondary {
+.eventoform-btn-secondary {
   background: #fff;
   color: #6b21a8;
   border: 1.5px solid #6b21a8;
 }
 
-.hitoform-btn-secondary:hover,
-.hitoform-btn-secondary:focus {
+.eventoform-btn-secondary:hover,
+.eventoform-btn-secondary:focus {
   background: #f3e8ff;
   color: #4a00e0;
 }

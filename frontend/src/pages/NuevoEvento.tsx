@@ -230,13 +230,23 @@ const NuevoEvento: React.FC = () => {
             </button>
           </div>
 
-          <button
-            type="submit"
-            className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            disabled={loading}
-          >
-            {loading ? 'Guardando...' : (isEditing ? 'Actualizar Evento' : 'Crear Evento')}
-          </button>
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              onClick={() => navigate('/home-admin')}
+              className="eventoform-btn eventoform-btn-secondary"
+              disabled={loading}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="eventoform-btn"
+              disabled={loading}
+            >
+              {loading ? 'Guardando...' : (isEditing ? 'Actualizar Evento' : 'Crear Evento')}
+            </button>
+          </div>
         </form>
       </div>
     </div>

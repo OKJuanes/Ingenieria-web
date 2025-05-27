@@ -1,5 +1,4 @@
 // src/components/eventos/MisEventos.tsx
-// src/components/eventos/MisEventos.tsx
 import React from 'react';
 
 export const MisEventos: React.FC = () => {
@@ -11,4 +10,4 @@ export const MisEventos: React.FC = () => {
   );
 };
 
-export default MisEventos; // Agrega esto
+export default MisEventos; 

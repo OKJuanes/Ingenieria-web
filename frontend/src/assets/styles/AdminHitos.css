@@ -1,37 +1,54 @@
 /* src/assets/styles/AdminHitos.css */
-
 .admin-hitos-container {
     /* Puedes añadir estilos específicos para el contenedor de la página si lo necesitas */
     padding-top: 80px; /* Para dejar espacio a la Navbar fija */
     min-height: 100vh; /* Asegura que ocupe al menos toda la altura de la ventana */
 }
-
-/* Estilos para la tabla (si Tailwind no cubre todo o necesitas ajustes) */
-/*
-.admin-hitos-table {
-    width: 100%;
-    border-collapse: collapse;
+.hito-btn {
+  background: #6b21a8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 18px;
+  font-weight: 600;
+  font-size: 0.97rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+  cursor: pointer;
+  margin-right: 4px;
+}
+.hito-btn:hover,
+.hito-btn:focus {
+  background: #4a00e0;
+  color: #fff;
 }
 
-.admin-hitos-table th,
-.admin-hitos-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0; // border-gray-200
+.hito-btn-delete {
+  background: #fff;
+  color: #e11d48;
+  border: 1.5px solid #e11d48;
+}
+.hito-btn-delete:hover,
+.hito-btn-delete:focus {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
-.admin-hitos-table th {
-    background-color: #f8fafc; // bg-gray-100
-    color: #4a5568; // text-gray-600
-    font-size: 0.75rem; // text-xs
-    font-weight: 600; // font-semibold
-    text-transform: uppercase; // uppercase
-    letter-spacing: 0.05em; // tracking-wider
+.hito-badge {
+  display: inline-block;
+  padding: 5px 16px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
-
-.admin-hitos-table tbody tr:hover {
-    background-color: #f7fafc; // hover:bg-gray-50
+.hito-badge-completado {
+  background: #d1fae5;
+  color: #047857;
+  border: 1.5px solid #047857;
 }
-*/
-
-/* Puedes añadir más estilos aquí si necesitas personalizar algo más allá de Tailwind */
+.hito-badge-pendiente {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1.5px solid #b91c1c;
+}

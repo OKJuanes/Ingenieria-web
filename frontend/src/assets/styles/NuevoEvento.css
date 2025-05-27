@@ -22,3 +22,38 @@
     flex: 1;
     margin-bottom: 20px;
   }
+  
+  .eventoform-btn {
+    background: #6b21a8;
+    color: #fff;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+    cursor: pointer;
+    display: inline-block;
+  }
+  
+  .eventoform-btn:hover,
+  .eventoform-btn:focus {
+    background: #4a00e0;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(76,0,224,0.13);
+  }
+  
+  .eventoform-btn-secondary {
+    background: #fff;
+    color: #6b21a8;
+    border: 1.5px solid #6b21a8;
+  }
+  
+  .eventoform-btn-secondary:hover,
+  .eventoform-btn-secondary:focus {
+    background: #f3e8ff;
+    color: #4a00e0;
+  }

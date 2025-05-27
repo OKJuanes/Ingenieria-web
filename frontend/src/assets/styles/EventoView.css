@@ -1,14 +1,136 @@
 /* src/assets/styles/EventoView.css */
 .evento-detail-card {
-    max-width: 800px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+    padding: 2.5rem 2rem;
     margin-top: 2rem;
-    padding: 2.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    width: 100%;
+    transition: box-shadow 0.2s;
 }
 
 /* Ajustes para los botones dentro de la tarjeta de detalles */
-.evento-detail-card button {
-    cursor: pointer;
+.evento-detail-card button,
+.evento-detail-card .evento-btn {
+    background: #6b21a8;
+    color: #fff;
     border: none;
-    outline: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-right: 8px;
+    margin-top: 8px;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+    cursor: pointer;
+    display: inline-block;
+}
+
+.evento-detail-card button:hover,
+.evento-detail-card .evento-btn:hover,
+.evento-detail-card button:focus,
+.evento-detail-card .evento-btn:focus {
+    background: #4a00e0;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(76,0,224,0.13);
+}
+
+.evento-detail-card h2 {
+  color: #6b21a8;
+}
+
+.evento-detail-card .font-semibold {
+  color: #4a00e0;
+}
+
+.evento-detail-card ul {
+  margin-left: 1.5rem;
+}
+
+.evento-detail-card .bg-red-500,
+.evento-detail-card .bg-red-600 {
+  background: #e11d48 !important;
+  color: #fff !important;
+}
+
+.evento-detail-card .bg-red-500:hover,
+.evento-detail-card .bg-red-600:hover {
+  background: #be123c !important;
+}
+
+.evento-detail-card .bg-green-500,
+.evento-detail-card .bg-green-600 {
+  background: #22c55e !important;
+  color: #fff !important;
+}
+
+.evento-detail-card .bg-green-500:hover,
+.evento-detail-card .bg-green-600:hover {
+  background: #16a34a !important;
+}
+
+.evento-detail-card .bg-gray-600,
+.evento-detail-card .bg-gray-700 {
+  background: #6b7280 !important;
+  color: #fff !important;
+}
+
+.evento-detail-card .bg-gray-600:hover,
+.evento-detail-card .bg-gray-700:hover {
+  background: #374151 !important;
+}
+
+.evento-btn {
+  background: #6b21a8;
+  color: #fff;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.evento-btn:hover,
+.evento-btn:focus {
+  background: #4a00e0;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(76,0,224,0.13);
+}
+
+.evento-btn-register {
+  background: #22c55e;
+  color: #fff;
+}
+.evento-btn-register:hover,
+.evento-btn-register:focus {
+  background: #16a34a;
+}
+
+.evento-btn-delete {
+  background: #e11d48;
+  color: #fff;
+}
+.evento-btn-delete:hover,
+.evento-btn-delete:focus {
+  background: #be123c;
+}
+
+.evento-btn-secondary {
+  background: #fff;
+  color: #6b21a8;
+  border: 1.5px solid #6b21a8;
+}
+.evento-btn-secondary:hover,
+.evento-btn-secondary:focus {
+  background: #f3e8ff;
+  color: #4a00e0;
 }

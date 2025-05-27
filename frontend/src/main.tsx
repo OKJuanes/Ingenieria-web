@@ -5,73 +5,137 @@ import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 
-// Importa las páginas
-import HomeAdmin from './pages/HomeAdmin';// Página para administradores
+// Importa las páginas principales
 import Login from './pages/Login';
-import HomeUsuario from './pages/HomeUsuario'; // Página para usuarios comunes
-import AdminHitos from './pages/AdminHitos';
-import Eventos from './pages/Eventos';
-import Profile from './pages/Profile';
 import Register from './pages/Register';
+import Profile from './pages/Profile';
+
+// Importa páginas de usuario
+import HomeUsuario from './pages/HomeUsuario';
+import MisHitos from './pages/MisHitos';
+
+// Importa páginas de administrador
+import HomeAdmin from './pages/HomeAdmin';
+import AdminHitos from './pages/AdminHitos';
+import CambiarRoles from './pages/CambiarRoles';
+
+// Importa páginas de eventos
+import Eventos from './pages/Eventos';
 import EventoView from './pages/EventoView';
 import NuevoEvento from './pages/NuevoEvento';
-import CambiarRoles from './pages/CambiarRoles';
-import MisHitos from './pages/MisHitos';
+import EditarEvento from './pages/EditarEvento';
+
+// Importa el componente de ruta protegida
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Configura la URL de la API
 export const API_URL = import.meta.env.VITE_API_URL;
 
 // Configura el enrutador
 const router = createBrowserRouter([
+  // Redirección raíz
   {
     path: '/',
     element: <Navigate to="/login" replace />,
   },
+
+  // Rutas públicas
   {
     path: '/login',
-    element: <Login />, // La ruta principal ahora es la página de Login
-  },
-  {
-    path: '/home-usuario',
-    element: <HomeUsuario />, // Página para usuarios comunes
-  },
-  {
-    path: '/home-admin',
-    element: <HomeAdmin />, // Página para administradores
-  },
-  {
-    path: '/admin/hitos', // <-- ¡NUEVA RUTA PARA GESTIÓN DE HITOS!
-    element: <AdminHitos />,
-  },
-  {
-    path: '/eventos',
-    element: <Eventos />,
-  },
-  {
-    path: '/eventos/:id',
-    element: <EventoView />,
-  },
-  {
-    path: '/eventos/nuevo-evento',
-    element: <NuevoEvento />,
-  },
-  {
-    path: '/perfil',
-    element: <Profile />,
+    element: <Login />,
   },
   {
     path: '/register',
     element: <Register />,
   },
+
+  // Perfil de usuario (requiere autenticación)
   {
-    path: '/admin/cambiar-roles',
-    element: <CambiarRoles />,
+    path: '/perfil',
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
+  },
+
+  // Rutas de usuario
+  {
+    path: '/home-usuario',
+    element: (
+      <ProtectedRoute>
+        <HomeUsuario />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/mis-hitos',
-    element: <MisHitos />,
+    element: (
+      <ProtectedRoute>
+        <MisHitos />
+      </ProtectedRoute>
+    ),
   },
-  
+
+  // Rutas de administrador
+  {
+    path: '/home-admin',
+    element: (
+      <ProtectedRoute>
+        <HomeAdmin />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/hitos',
+    element: (
+      <ProtectedRoute>
+        <AdminHitos />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/cambiar-roles',
+    element: (
+      <ProtectedRoute>
+        <CambiarRoles />
+      </ProtectedRoute>
+    ),
+  },
+
+  // Rutas de eventos (accesibles según permisos)
+  {
+    path: '/eventos',
+    element: (
+      <ProtectedRoute>
+        <Eventos />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/eventos/:id',
+    element: (
+      <ProtectedRoute>
+        <EventoView />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/eventos/nuevo-evento',
+    element: (
+      <ProtectedRoute>
+        <NuevoEvento />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/editar-evento/:id',
+    element: (
+      <ProtectedRoute>
+        <EditarEvento />
+      </ProtectedRoute>
+    ),
+  },
 ]);
 
 // Renderiza la aplicación

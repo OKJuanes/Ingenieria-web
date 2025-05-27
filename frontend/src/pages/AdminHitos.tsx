@@ -195,29 +195,21 @@ const AdminHitos: React.FC = () => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <span
-                        className={`relative inline-block px-3 py-1 font-semibold leading-tight ${
-                          hito.completado ? 'text-green-900' : 'text-red-900'
-                        }`}
+                        className={`hito-badge ${hito.completado ? 'hito-badge-completado' : 'hito-badge-pendiente'}`}
                       >
-                        <span
-                          aria-hidden
-                          className={`absolute inset-0 ${
-                            hito.completado ? 'bg-green-200' : 'bg-red-200'
-                          } opacity-50 rounded-full`}
-                        ></span>
-                        <span className="relative">{hito.completado ? 'Completado' : 'Pendiente'}</span>
+                        {hito.completado ? 'Completado' : 'Pendiente'}
                       </span>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <button
                         onClick={() => handleEdit(hito.id)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-xs mr-2"
+                        className="hito-btn"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => handleDelete(hito.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
+                        className="hito-btn hito-btn-delete"
                       >
                         Eliminar
                       </button>

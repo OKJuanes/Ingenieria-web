@@ -1,0 +1,49 @@
+/* CambiarRoles.css */
+.role-badge {
+  display: inline-block;
+  padding: 5px 16px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.role-badge-admin {
+  background: #ede9fe;
+  color: #6b21a8;
+  border: 1.5px solid #6b21a8;
+}
+.role-badge-user {
+  background: #d1fae5;
+  color: #047857;
+  border: 1.5px solid #047857;
+}
+
+.role-btn {
+  background: #6b21a8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 18px;
+  font-weight: 600;
+  font-size: 0.97rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+  cursor: pointer;
+  margin-right: 4px;
+}
+.role-btn:hover,
+.role-btn:focus {
+  background: #4a00e0;
+  color: #fff;
+}
+
+.role-btn-secondary {
+  background: #fff;
+  color: #6b21a8;
+  border: 1.5px solid #6b21a8;
+}
+.role-btn-secondary:hover,
+.role-btn-secondary:focus {
+  background: #f3e8ff;
+  color: #4a00e0;
+}

@@ -14,8 +14,6 @@ import { updateUserProfile, deleteUserAccount, getUserProfileData, fetchUserProf
 
 import { useNavigate } from 'react-router-dom';
 
-
-
 import '../assets/styles/Profile.css';
 
 
@@ -422,17 +420,35 @@ const Profile: React.FC = () => {
 
               </div>
 
-              <button
+              <div className="flex justify-end gap-3 mt-4">
 
-                type="submit"
+                <button
 
-                className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+                  type="button"
 
-              >
+                  onClick={() => setIsEditing(false)}
 
-                Guardar Cambios
+                  className="profile-btn profile-btn-secondary"
 
-              </button>
+                >
+
+                  Cancelar
+
+                </button>
+
+                <button
+
+                  type="submit"
+
+                  className="profile-btn"
+
+                >
+
+                  Guardar Cambios
+
+                </button>
+
+              </div>
 
             </form>
 
@@ -518,7 +534,7 @@ const Profile: React.FC = () => {
 
                 onClick={handleDeleteAccount}
 
-                className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+                className="profile-btn profile-btn-delete"
 
               >
 

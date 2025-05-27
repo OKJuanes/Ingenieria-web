@@ -238,17 +238,17 @@ const HitoForm: React.FC<HitoFormProps> = ({
         </div>
 
         {/* Botones de acción */}
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end gap-3 mt-6">
           <button 
             type="button" 
             onClick={onCancel}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+            className="hitoform-btn hitoform-btn-secondary"
           >
             Cancelar
           </button>
           <button 
             type="submit"
-            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+            className="hitoform-btn"
             disabled={loading}
           >
             {loading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear')}

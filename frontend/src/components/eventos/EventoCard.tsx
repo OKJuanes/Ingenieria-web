@@ -30,7 +30,7 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
       <div className="mt-4 flex flex-wrap justify-between items-center gap-2">
         <Link
           to={`/eventos/${evento.id}`}
-          
+          className="evento-btn"
         >
           Ver Detalles
         </Link>
@@ -39,7 +39,7 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
         {onRegisterClick && !isRegistered && (
           <button
             onClick={() => onRegisterClick(evento.id)}
-            
+            className="evento-btn"
           >
             Registrarse
           </button>
@@ -49,7 +49,7 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
         {onUnregisterClick && isRegistered && (
           <button
             onClick={() => onUnregisterClick(evento.id)}
-            
+            className="evento-btn evento-btn-secondary"
           >
             Desinscribirse
           </button>
@@ -58,8 +58,8 @@ const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnre
         {/* Botón de EDITAR (visible solo para administradores) */}
         {isAdmin && (
           <Link
-            to={`/editar-evento/${evento.id}`} // Enlace a la nueva ruta de edición
-            
+            to={`/editar-evento/${evento.id}`}
+            className="evento-btn evento-btn-edit"
           >
             Editar
           </Link>

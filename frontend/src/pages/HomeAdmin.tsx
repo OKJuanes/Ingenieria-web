@@ -30,10 +30,16 @@ const HomeAdmin: React.FC = () => {
       setErrorStats(null);
       try {
         const fetchedStats = await getEventStats();
-        setStats(fetchedStats);
+        console.log("Estadísticas cargadas:", fetchedStats);
+        
+        setStats({
+          eventosActivos: fetchedStats.eventosActivos || 0,
+          totalParticipantes: fetchedStats.totalParticipantes || 0,
+          proximoEvento: fetchedStats.proximoEvento || 'Sin eventos próximos',
+        });
       } catch (err: any) {
+        console.error("Error al cargar estadísticas:", err);
         setErrorStats(err.message || 'Error al cargar las estadísticas.');
-        console.error("Error fetching admin stats:", err);
       } finally {
         setLoadingStats(false);
       }
@@ -128,17 +134,37 @@ const HomeAdmin: React.FC = () => {
           <div className="stat-card">
             <div className="stat-icon">📅</div>
             <h3>Eventos Activos</h3>
-            <p className="stat-value">{stats.eventosActivos}</p>
+            {loadingStats ? (
+              <p className="stat-value loading">Cargando...</p>
+            ) : errorStats ? (
+              <p className="stat-value error">Error</p>
+            ) : (
+              <p className="stat-value">{stats.eventosActivos}</p>
+            )}
           </div>
+          
           <div className="stat-card">
             <div className="stat-icon">👥</div>
             <h3>Total Participantes</h3>
-            <p className="stat-value">{stats.totalParticipantes}</p>
+            {loadingStats ? (
+              <p className="stat-value loading">Cargando...</p>
+            ) : errorStats ? (
+              <p className="stat-value error">Error</p>
+            ) : (
+              <p className="stat-value">{stats.totalParticipantes}</p>
+            )}
           </div>
+          
           <div className="stat-card">
             <div className="stat-icon">🔜</div>
             <h3>Próximo Evento</h3>
-            <p className="stat-value">{stats.proximoEvento}</p>
+            {loadingStats ? (
+              <p className="stat-value loading">Cargando...</p>
+            ) : errorStats ? (
+              <p className="stat-value error">Error</p>
+            ) : (
+              <p className="stat-value">{stats.proximoEvento}</p>
+            )}
           </div>
         </div>
 

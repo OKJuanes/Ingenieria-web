@@ -119,9 +119,17 @@ public class EventoController {
         return response;
     }
 
+    /**
+     * Devuelve el próximo evento
+     * @return El próximo evento
+     */
     @GetMapping("/proximo")
-    public Evento getEventoMasProximo() {
-        return eventoService.getEventoMasProximo();
+    public ResponseEntity<Evento> getProximoEvento() {
+        Evento proximoEvento = eventoService.getEventoMasProximo();
+        if (proximoEvento == null) {
+            return ResponseEntity.ok().build(); // Devuelve 200 OK con cuerpo vacío si no hay evento próximo
+        }
+        return ResponseEntity.ok(proximoEvento);
     }
 
     @GetMapping("/{id}")
@@ -185,5 +193,25 @@ public class EventoController {
             // Devolver una lista vacía en caso de error, en lugar de null
             return ResponseEntity.ok(new ArrayList<>());
         }
+    }
+
+    /**
+     * Devuelve el número total de participantes en todos los eventos activos
+     * @return El número total de participantes
+     */
+    @GetMapping("/activos/total-participantes")
+    public ResponseEntity<Integer> getTotalParticipantesEventosActivos() {
+        Integer totalParticipantes = eventoService.getTotalParticipantesEventosActivos();
+        return ResponseEntity.ok(totalParticipantes);
+    }
+
+    /**
+     * Devuelve el número total de eventos activos
+     * @return El número total de eventos activos
+     */
+    @GetMapping("/activos/count")
+    public ResponseEntity<Integer> getCountEventosActivos() {
+        Integer countEventos = eventoService.getCountEventosActivos();
+        return ResponseEntity.ok(countEventos);
     }
 }

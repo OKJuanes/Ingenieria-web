@@ -121,23 +121,65 @@ const getAuthHeaders = () => {
 */
 
 export const getEventStats = async (): Promise<{ eventosActivos: number; totalParticipantes: number; proximoEvento: string }> => {
+  try {
+    // 1. Obtener eventos activos
+    let eventosActivos = 0;
+    try {
+      const countResponse = await fetch(`${API_URL}/api/v1/eventos/activos/count`, { 
+        headers: getAuthHeaders() 
+      });
+      
+      if (countResponse.ok) {
+        eventosActivos = await countResponse.json();
+      } else {
+        console.error('Error al obtener cantidad de eventos activos:', await countResponse.text());
+      }
+    } catch (error) {
+      console.error('Error en fetch eventos activos:', error);
+    }
+    
+    // 2. Obtener participantes
+    let totalParticipantes = 0;
+    try {
+      const totalParticipantesResponse = await fetch(`${API_URL}/api/v1/eventos/activos/total-participantes`, { 
+        headers: getAuthHeaders() 
+      });
+      
+      if (totalParticipantesResponse.ok) {
+        totalParticipantes = await totalParticipantesResponse.json();
+      } else {
+        console.error('Error al obtener participantes:', await totalParticipantesResponse.text());
+      }
+    } catch (error) {
+      console.error('Error en fetch participantes:', error);
+    }
+    
+    // 3. Obtener próximo evento
+    let proximoEvento = 'Sin eventos próximos';
+    try {
+      const proximoResponse = await fetch(`${API_URL}/api/v1/eventos/proximo`, { 
+        headers: getAuthHeaders() 
+      });
+      
+      if (proximoResponse.ok) {
+        const eventoData = await proximoResponse.json();
+        proximoEvento = eventoData?.nombre || 'Sin eventos próximos';
+      } else {
+        console.error('Error al obtener próximo evento:', await proximoResponse.text());
+      }
+    } catch (error) {
+      console.error('Error en fetch próximo evento:', error);
+    }
 
- const response = await fetch(`${API_URL}/api/events/stats`, {
-
-  headers: getAuthHeaders(),
-
- });
-
- if (!response.ok) {
-
-  const errorData = await response.json();
-
-  throw new Error(errorData.message || 'Error al cargar las estadísticas de eventos');
-
- }
-
- return response.json();
-
+    return {
+      eventosActivos,
+      totalParticipantes,
+      proximoEvento
+    };
+  } catch (error) {
+    console.error('Error general en getEventStats:', error);
+    throw new Error('Error al cargar las estadísticas');
+  }
 };
 
 

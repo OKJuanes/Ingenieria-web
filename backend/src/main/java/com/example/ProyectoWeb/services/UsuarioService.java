@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.ProyectoWeb.entity.Evento;
+import com.example.ProyectoWeb.entity.Role; // Añade esta importación
 import com.example.ProyectoWeb.entity.Usuario;
 import com.example.ProyectoWeb.entity.UsuarioInfo;
 import com.example.ProyectoWeb.repositories.IEventoRepository;
@@ -89,5 +90,32 @@ public class UsuarioService implements UserDetailsService {
         return "Usuario eliminado";
     }
 
+    /**
+     * Obtiene todos los usuarios registrados en el sistema
+     * @return Lista de todos los usuarios
+     */
+    public List<Usuario> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    /**
+     * Cambia el rol de un usuario
+     * @param userId ID del usuario
+     * @param nuevoRol Nombre del nuevo rol (debe coincidir con los valores del enum Role)
+     * @return Usuario con el rol actualizado
+     */
+    public Usuario cambiarRolUsuario(Long userId, String nuevoRol) {
+        Usuario usuario = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        try {
+            // Convertir String a enum Role
+            Role rol = Role.valueOf(nuevoRol.toUpperCase());
+            usuario.setRol(rol);
+            return userRepository.save(usuario);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Rol no válido: " + nuevoRol);
+        }
+    }
 }
 

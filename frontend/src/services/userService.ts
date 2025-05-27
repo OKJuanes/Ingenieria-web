@@ -1,89 +1,96 @@
 // src/services/userService.ts
 import { API_URL } from '../main';
-import { getToken } from './authService'; // Asegúrate de que getToken esté en authService.ts y exportado
+import { isAdmin, getUserData, getToken } from '../services/authService'; // Añadir getToken aquí
+import {jwtDecode} from 'jwt-decode';
 
-// Interfaz para la estructura de datos de un usuario
-// Asegúrate de que esto coincida con lo que tu backend devuelve para un usuario
+// Definir la interfaz User
 export interface User {
-  id: number; // O string, si tu backend usa UUIDs
+  id: number;
   username: string;
-  nombre?: string;
-  apellido?: string;
   correo: string;
-  role: 'admin' | 'usuario'; // Solo estos dos roles
-  // Añade cualquier otro campo que tu backend devuelva para un usuario (ej. fecha de registro, estado, etc.)
+  nombre: string;
+  apellido: string;
+  role: string;
 }
 
-// Función auxiliar para obtener los headers con el token de autenticación
-const getAuthHeaders = () => {
-  const token = getToken();
-  if (!token) {
-    // Aquí puedes redirigir al login o lanzar un error, dependiendo de tu manejo de errores global
-    throw new Error('No authentication token found. Please log in.');
-  }
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-  };
+// Mejora la función para verificar si el usuario tiene permisos de administrador
+export const verifyAdminPermissions = (): boolean => {
+  // Usar la función isAdmin importada de authService
+  return isAdmin();
 };
 
-/**
- * Obtiene la lista de todos los usuarios desde el backend.
- * Esta función requiere que el usuario autenticado tenga el rol de administrador.
- * @returns Una promesa que resuelve a un array de objetos User.
- */
+// Función para obtener todos los usuarios
 export const getAllUsers = async (): Promise<User[]> => {
+  const token = getToken(); // Usar getToken() en lugar de localStorage.getItem
+  if (!token) {
+    throw new Error('No hay sesión activa. Por favor inicia sesión nuevamente.');
+  }
+  
   try {
-    const response = await fetch(`${API_URL}/api/v1/users`, { // Esta es la URL esperada en tu backend
-      headers: getAuthHeaders(),
+    const response = await fetch(`${API_URL}/api/v1/usuario/todos`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      // Si el backend devuelve un 403 Forbidden, el errorData.message lo contendrá
-      throw new Error(errorData.message || 'Error al obtener los usuarios.');
+      if (response.status === 403) {
+        throw new Error('No tienes permisos suficientes para ver la lista de usuarios.');
+      }
+      
+      const errorText = await response.text();
+      throw new Error(`Error al obtener usuarios: ${errorText || response.statusText}`);
     }
 
-    const usersData = await response.json();
-    // Asegurarse de que el rol sea 'admin' o 'usuario' al mapear
-    return usersData.map((user: any) => ({
-      ...user,
-      role: user.role && (user.role.toLowerCase() === 'admin' ? 'admin' : 'usuario')
+    const data = await response.json();
+    
+    return data.map((user: any) => ({
+      id: user.id,
+      username: user.username,
+      correo: user.correo,
+      nombre: user.nombre,
+      apellido: user.apellido,
+      role: user.rol.toLowerCase()
     }));
-  } catch (error) {
-    console.error('Error in getAllUsers service:', error);
+  } catch (error: any) {
+    console.error("Error en getAllUsers:", error);
     throw error;
   }
 };
 
-/**
- * Actualiza el rol de un usuario específico en el backend.
- * Esta función requiere que el usuario autenticado tenga el rol de administrador.
- * @param userId El ID del usuario cuyo rol se va a actualizar.
- * @param newRole El nuevo rol a asignar ('admin' o 'usuario').
- * @returns Una promesa que resuelve al objeto User actualizado.
- */
-export const updateUserRole = async (userId: number, newRole: 'admin' | 'usuario'): Promise<User> => {
+// Función para actualizar el rol de un usuario
+export const updateUserRole = async (userId: number, newRole: string): Promise<any> => {
+  // Verificar permisos de administrador antes de hacer la llamada
+  if (!verifyAdminPermissions()) {
+    throw new Error('No tienes permisos para cambiar roles de usuarios.');
+  }
+
+  const token = getToken(); // Usar getToken() aquí también
+  
   try {
-    const response = await fetch(`${API_URL}/api/v1/users/${userId}/role`, { // Esta es la URL esperada en tu backend
+    const response = await fetch(`${API_URL}/api/v1/usuario/${userId}/cambiar-rol`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ role: newRole }), // El backend espera un objeto JSON con la propiedad 'role'
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ rol: newRole.toUpperCase() })
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || `Error al actualizar el rol del usuario ${userId}.`);
+      if (response.status === 403) {
+        throw new Error('No tienes permisos suficientes para cambiar roles');
+      }
+      
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      throw new Error(`Error al actualizar rol: ${errorText || response.statusText}`);
     }
 
-    const updatedUser = await response.json();
-    // Asegurarse de que el rol sea 'admin' o 'usuario' al retornar
-    return {
-      ...updatedUser,
-      role: updatedUser.role && (updatedUser.role.toLowerCase() === 'admin' ? 'admin' : 'usuario')
-    };
-  } catch (error) {
-    console.error('Error in updateUserRole service:', error);
+    return response.json();
+  } catch (error: any) {
+    console.error("Error en updateUserRole:", error);
     throw error;
   }
 };

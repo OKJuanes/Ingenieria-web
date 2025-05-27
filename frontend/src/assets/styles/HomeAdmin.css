@@ -55,6 +55,15 @@
   color: #333;
 }
 
+.stat-value.loading {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.stat-value.error {
+  color: #ef4444;
+}
+
 /* Action buttons */
 .action-buttons {
   display: grid;

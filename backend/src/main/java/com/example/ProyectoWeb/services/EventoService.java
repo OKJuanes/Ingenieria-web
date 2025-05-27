@@ -123,4 +123,21 @@ public class EventoService {
         Evento evento = getEventoById(eventoId);
         return evento.getParticipantes();
     }
+
+    /**
+     * Obtiene el número total de participantes en todos los eventos activos
+     * @return El número total de participantes
+     */
+    public Integer getTotalParticipantesEventosActivos() {
+        Integer total = eventoRepository.countTotalParticipantesEventosActivos();
+        return total != null ? total : 0;
+    }
+
+    /**
+     * Obtiene el número total de eventos activos
+     * @return El número total de eventos activos
+     */
+    public Integer getCountEventosActivos() {
+        return eventoRepository.findEventosActivos().size();
+    }
 }

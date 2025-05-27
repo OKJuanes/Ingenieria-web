@@ -69,4 +69,75 @@ public class UsuarioController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName(); // Obtener el username del usuario autenticado
         return usuarioService.deleteUser(usuarioService.getUserByUsername(username).getId());
     }
+
+    /**
+     * Obtiene todos los usuarios del sistema excepto el usuario actual
+     * Restringido solo a administradores
+     * @return Lista de todos los usuarios excepto el usuario actual
+     */
+    @GetMapping("/todos")
+    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write') or hasRole('admin') or hasRole('ADMIN')")
+    public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
+        // Obtener el nombre de usuario del usuario autenticado actual
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        // Obtener todos los usuarios
+        List<Usuario> usuarios = usuarioService.getAllUsers();
+        
+        // Filtrar para excluir al usuario actual
+        List<Usuario> filteredUsuarios = usuarios.stream()
+            .filter(usuario -> !usuario.getUsername().equals(currentUsername))
+            .toList();
+        
+        // Mapear los usuarios para excluir información sensible como contraseñas
+        List<Map<String, Object>> usuariosDTO = filteredUsuarios.stream().map(usuario -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", usuario.getId());
+            map.put("username", usuario.getUsername());
+            map.put("nombre", usuario.getNombre());
+            map.put("apellido", usuario.getApellido());
+            map.put("correo", usuario.getCorreo());
+            map.put("rol", usuario.getRol().toString());
+            return map;
+        }).toList();
+        
+        return ResponseEntity.ok(usuariosDTO);
+    }
+
+    /**
+     * Cambia el rol de un usuario específico
+     * Solo accesible para administradores
+     * @return Mensaje de confirmación
+     */
+    @PutMapping("/{id}/cambiar-rol")
+    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write') or hasRole('admin') or hasRole('ADMIN')")
+    public ResponseEntity<?> cambiarRolUsuario(
+            @PathVariable Long id, 
+            @RequestBody Map<String, String> rolRequest) {
+        
+        try {
+            String nuevoRol = rolRequest.get("rol");
+            if (nuevoRol == null) {
+                return ResponseEntity.badRequest().body(Map.of("message", "El rol es requerido"));
+            }
+            
+            Usuario usuario = usuarioService.getUserById(id);
+            if (usuario == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // Implementar la lógica para cambiar el rol
+            Usuario usuarioActualizado = usuarioService.cambiarRolUsuario(id, nuevoRol);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Rol actualizado con éxito");
+            response.put("id", usuarioActualizado.getId());
+            response.put("username", usuarioActualizado.getUsername());
+            response.put("role", usuarioActualizado.getRol().toString());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
 }

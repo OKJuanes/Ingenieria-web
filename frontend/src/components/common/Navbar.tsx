@@ -29,6 +29,7 @@ const Navbar: React.FC = () => {
                 <Link to="/home-admin" className="navbar-link">Panel Admin</Link>
                 <Link to="/eventos/nuevo-evento" className="navbar-link">Crear Evento</Link>
                 <Link to="/admin/cambiar-roles" className="navbar-link">Cambiar Roles</Link>
+                <Link to="/admin/anadir-invitado" className="navbar-link">Añadir Invitado</Link>
                 <Link to="/perfil" className="navbar-link">Perfil</Link>
                 <Link to="/eventos" className="navbar-link">Eventos</Link>
               </>

@@ -59,9 +59,9 @@ const MisHitos: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
       <Navbar />
       <div className="container mx-auto p-4">
-        <h2 className="text-3xl font-bold text-white mb-6">Mis Hitos Ganados</h2>
+        <h2 className="text-3xl font-bold text-black mb-6">Mis Hitos Ganados</h2>
         {hitos.length === 0 ? (
-          <p className="text-white text-lg">Aún no tienes hitos asignados como ganador.</p>
+          <p className="text-balck text-lg ">Aún no tienes hitos asignados como ganador.</p>
         ) : (
           <ul className="space-y-4">
             {hitos.map((hito) => (

@@ -48,11 +48,11 @@ const HistoricoEventos: React.FC = () => {
     const ahora = new Date();
     let resultado = [...eventos];
 
-    // Aplicar filtro por estado
+    // Aplicar filtro por estado - CORREGIDO
     if (filtro === 'pasados') {
-      resultado = resultado.filter(e => new Date(e.fecha) < ahora);
+      resultado = resultado.filter(e => parseFecha(e.fecha) < ahora);
     } else if (filtro === 'futuros') {
-      resultado = resultado.filter(e => new Date(e.fecha) >= ahora);
+      resultado = resultado.filter(e => parseFecha(e.fecha) >= ahora);
     }
 
     // Aplicar filtro por búsqueda
@@ -69,9 +69,16 @@ const HistoricoEventos: React.FC = () => {
     setFilteredEventos(resultado);
   }, [filtro, busqueda, eventos]);
 
-  // Función para verificar si un evento es pasado
+  // Añade esta función en la parte superior del componente
+  function parseFecha(fechaStr: string): Date {
+    // Si el formato es dd-mm-yyyy
+    const [dia, mes, anio] = fechaStr.split('-');
+    return new Date(Number(anio), Number(mes) - 1, Number(dia));
+  }
+
+  // También actualiza la función esPasado
   const esPasado = (fecha: string): boolean => {
-    return new Date(fecha) < new Date();
+    return parseFecha(fecha) < new Date();
   };
 
   return (
@@ -127,13 +134,12 @@ const HistoricoEventos: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participantes</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredEventos.map((evento) => (
-                    <tr key={evento.id} className={esPasado(evento.fecha) ? "bg-gray-50" : "hover:bg-gray-50"}>
+                    <tr key={evento.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{evento.nombre}</div>
                       </td>
@@ -148,15 +154,6 @@ const HistoricoEventos: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">{evento.cantidadParticipantes || 0}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          esPasado(evento.fecha) 
-                            ? "bg-gray-100 text-gray-800" 
-                            : "bg-green-100 text-green-800"
-                        }`}>
-                          {esPasado(evento.fecha) ? "Finalizado" : "Activo"}
-                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button

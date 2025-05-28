@@ -150,44 +150,54 @@ export const register = async (correo: string, nombre: string, apellido: string,
       body: JSON.stringify({ correo, nombre, apellido, username: usernameInput, password: passwordInput }),
     });
 
-    // Primero verificamos si la respuesta es exitosa
+    // Primero guardamos el cuerpo de la respuesta como texto
+    const responseText = await response.text();
+    
+    // Si la respuesta no es exitosa, manejamos el error
     if (!response.ok) {
-      // Intentamos leer el mensaje de error del backend
+      // Intentamos parsear como JSON si es posible
       let errorMessage = 'Error en el registro';
       
       try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorMessage;
+        // Solo intentamos parsear como JSON si hay contenido
+        if (responseText) {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.message || errorMessage;
+        }
       } catch (e) {
-        // Si no podemos parsear el JSON, usamos el texto de la respuesta
-        errorMessage = await response.text() || errorMessage;
+        // Si no es JSON válido, usamos el texto como mensaje de error
+        errorMessage = responseText || errorMessage;
       }
       
-      // Si el error contiene palabras clave relacionadas con duplicación
-      if (response.status === 400 || 
-          errorMessage.includes('ya existe') || 
-          errorMessage.includes('duplicate') ||
-          errorMessage.includes('already exists') ||
-          errorMessage.includes('duplicado')) {
-        throw new Error('El nombre de usuario o correo ya está en uso. Por favor, intenta con otro.');
+      // Detectar errores de usuario duplicado
+      if (responseText.includes('duplicate') || 
+          responseText.includes('already exists') || 
+          responseText.includes('ya existe') ||
+          response.status === 409) {
+        throw new Error('El nombre de usuario o correo ya está en uso');
       }
       
       throw new Error(errorMessage);
     }
 
-    // Solo parseamos como JSON si la respuesta fue exitosa
-    const data = await response.json();
-    
-    // Almacenar token si existe
-    if (data.token) {
-      localStorage.setItem('token', data.token);
+    // Si la respuesta es exitosa, intentamos parsearla como JSON
+    try {
+      const data = JSON.parse(responseText);
+      
+      // Almacenar token si existe
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return {
+        id: data.id,
+        username: data.username,
+        role: data.role || 'usuario'
+      };
+    } catch (e) {
+      // Si no podemos parsear la respuesta como JSON
+      throw new Error('Formato de respuesta inválido del servidor');
     }
-    
-    return {
-      id: data.id,
-      username: data.username,
-      role: data.role || 'usuario'
-    };
   } catch (error: any) {
     // Re-lanzar el error para que se maneje en el componente
     throw error;

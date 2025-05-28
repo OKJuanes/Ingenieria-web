@@ -44,8 +44,10 @@ function Register() {
             console.error("Error de registro:", error);
             
             // Manejo específico para usuarios duplicados
-            if (error.message.includes('ya está en uso')) {
-                setErrorMessage(error.message);
+            if (error.message.includes('ya está en uso') || 
+                error.message.includes('duplicate') || 
+                error.message.includes('already exists')) {
+                setErrorMessage('El nombre de usuario o correo ya está registrado. Por favor usa otro.');
             } else {
                 setErrorMessage(`Error al registrar: ${error.message}`);
             }

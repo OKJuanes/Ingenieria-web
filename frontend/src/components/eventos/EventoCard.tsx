@@ -14,53 +14,35 @@ interface EventoCardProps {
 
 const EventoCard: React.FC<EventoCardProps> = ({ evento, onRegisterClick, onUnregisterClick, isRegistered, isAdmin }) => {
   return (
-    <div className="evento-card bg-white rounded-lg shadow-md p-4 flex flex-col justify-between">
+    <div className="evento-card">
       <div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">{evento.nombre}</h3>
-        <p className="text-gray-600 mb-1">
-          <i className="fas fa-calendar-alt mr-2"></i>Fecha: {evento.fecha}
+        <h3 className="evento-card-title">{evento.nombre}</h3>
+        <p className="evento-card-info">
+          <i className="fas fa-calendar-alt mr-2"></i>Fecha: <span>{evento.fecha}</span>
         </p>
-        <p className="text-gray-600 mb-1">
-          <i className="fas fa-tag mr-2"></i>Tipo: {evento.tipo}
+        <p className="evento-card-info">
+          <i className="fas fa-tag mr-2"></i>Tipo: <span>{evento.tipo}</span>
         </p>
         {evento.descripcion && (
-          <p className="text-gray-700 text-sm mb-2">{evento.descripcion.substring(0, 100)}...</p>
+          <p className="evento-card-desc">{evento.descripcion.substring(0, 100)}...</p>
         )}
       </div>
-      <div className="mt-4 flex flex-wrap justify-between items-center gap-2">
-        <Link
-          to={`/eventos/${evento.id}`}
-          className="evento-btn"
-        >
+      <div className="evento-card-actions">
+        <Link to={`/eventos/${evento.id}`} className="evento-btn">
           Ver Detalles
         </Link>
-
-        {/* Botón de REGISTRARSE - solo se muestra si NO está registrado */}
         {onRegisterClick && !isRegistered && (
-          <button
-            onClick={() => onRegisterClick(evento.id)}
-            className="evento-btn"
-          >
+          <button onClick={() => onRegisterClick(evento.id)} className="evento-btn evento-btn-register">
             Registrarse
           </button>
         )}
-
-        {/* Botón de DESINSCRIBIRSE - solo se muestra si está registrado */}
         {onUnregisterClick && isRegistered && (
-          <button
-            onClick={() => onUnregisterClick(evento.id)}
-            className="evento-btn evento-btn-secondary"
-          >
+          <button onClick={() => onUnregisterClick(evento.id)} className="evento-btn evento-btn-secondary">
             Desinscribirse
           </button>
         )}
-
-        {/* Botón de EDITAR (visible solo para administradores) */}
         {isAdmin && (
-          <Link
-            to={`/editar-evento/${evento.id}`}
-            className="evento-btn evento-btn-edit"
-          >
+          <Link to={`/editar-evento/${evento.id}`} className="evento-btn evento-btn-edit">
             Editar
           </Link>
         )}

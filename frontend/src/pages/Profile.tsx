@@ -316,13 +316,13 @@ const Profile: React.FC = () => {
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 profile-main-container">
 
       <Navbar />
 
       <div className="container mx-auto p-4">
 
-        <h2 className="text-4xl font-bold text-white mb-6">Mi Perfil</h2>
+        <h2 className="profile-section-title">Mi Perfil</h2>
 
        
 

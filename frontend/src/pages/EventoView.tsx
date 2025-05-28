@@ -185,9 +185,9 @@ const EventoView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 eventos-main-container">
       <Navbar />
-      <div className="container mx-auto p-4 flex flex-col items-center">
+      <div className="container mx-auto p-4">
         <div className="evento-detail-card bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">{evento.nombre}</h2>
           <p className="text-gray-700 mb-2">

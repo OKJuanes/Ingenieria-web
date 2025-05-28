@@ -34,3 +34,81 @@
   background: #f3e8ff;
   color: #4a00e0;
 }
+
+.hito-form-wrapper {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+  padding: 36px 32px 28px 32px;
+  max-width: 540px;
+  margin: 0 auto 32px auto;
+  animation: fadeInUp 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+.hito-form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #6b21a8;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.hito-form-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 10px 18px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.hito-form-success {
+  background: #d1fae5;
+  color: #047857;
+  border-radius: 8px;
+  padding: 10px 18px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.hito-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hito-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hito-form-label {
+  font-weight: 600;
+  color: #6b21a8;
+  font-size: 1rem;
+}
+
+.hito-form-input {
+  border-radius: 10px;
+  padding: 12px 16px;
+  border: 1.5px solid #c4b5fd;
+  font-size: 1rem;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  background: #fafaff;
+}
+
+.hito-form-input:focus {
+  border-color: #6b21a8;
+  box-shadow: 0 0 0 2px #c4b5fd;
+  outline: none;
+}
+
+.hito-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 14px;
+}

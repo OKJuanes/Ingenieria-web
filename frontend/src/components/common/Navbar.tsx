@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAuthenticated, isAdmin, clearAuthData, getUserData } from '../../services/authService';
 import '../../assets/styles/Navbar.css';
@@ -9,6 +9,37 @@ const Navbar: React.FC = () => {
   const userIsAdmin = isAdmin();
   const userData = getUserData();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
+  const [avatarColor, setAvatarColor] = useState(
+    localStorage.getItem("avatarColor") || "#6b21a8"
+  );
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode ? 'true' : 'false');
+  }, [darkMode]);
+
+  // Escuchar cambios en localStorage para avatarColor
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "avatarColor") {
+        setAvatarColor(e.newValue || "#6b21a8");
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  // También actualiza el color si vuelves al perfil y cambias el color (misma pestaña)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const color = localStorage.getItem("avatarColor") || "#6b21a8";
+      setAvatarColor(color);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     clearAuthData();
@@ -67,7 +98,10 @@ const Navbar: React.FC = () => {
           
           {loggedIn && (
             <div className="navbar-user">
-              <div className="navbar-avatar">
+              <div
+                className="navbar-avatar"
+                style={{ background: avatarColor }}
+              >
                 {userData?.username.charAt(0).toUpperCase()}
               </div>
               <span className="navbar-username">Hola, {userData?.username}!</span>
@@ -77,6 +111,15 @@ const Navbar: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Dark mode toggle button */}
+        <button
+          className="navbar-darkmode-btn"
+          aria-label="Alternar modo oscuro"
+          onClick={() => setDarkMode(dm => !dm)}
+        >
+          {darkMode ? '🌙' : '☀️'}
+        </button>
       </div>
     </nav>
   );

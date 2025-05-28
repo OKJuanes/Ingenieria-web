@@ -1,25 +1,33 @@
 /* src/assets/styles/HomeUsuario.css */
+/* Fondo general */
 .home-usuario-container {
-    min-height: 100vh;
-    background: linear-gradient(to right, #8e2de2, #4a00e0);
-    padding: 20px;
-    padding-top: calc(var(--navbar-height) + 20px); /* Usar variable CSS + espacio extra */
-  }
-  
-  .home-usuario-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    color: white;
-  }
-  
-  .home-usuario-title {
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  /* Barra de búsqueda */
+  min-height: 100vh;
+  background: var(--color-bg, #8e2de2);
+  padding: 20px;
+  padding-top: calc(var(--navbar-height) + 20px);
+  transition: background 0.3s;
+}
+
+/* Contenido principal */
+.home-usuario-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--color-text, #22223b);
+}
+
+/* Título principal */
+.home-usuario-title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--color-primary, #6b21a8);
+}
+body.dark-mode .home-usuario-title {
+  color: var(--color-primary, #a78bfa);
+}
+
+/* Barra de búsqueda */
 .search-bar {
   margin-bottom: 20px;
 }
@@ -62,35 +70,56 @@
 }
 
 .filtro-etiquetas-botones button.active {
-  background-color: #6b21a8;
-  color: white;
+  background-color: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
 .filtro-etiquetas-botones button.inactive {
-  background-color: white;
-  color: #6b21a8;
+  background-color: var(--color-bg-card, #fff);
+  color: var(--color-primary, #6b21a8);
+  border: 1.5px solid var(--color-primary, #6b21a8);
 }
 
 .filtro-etiquetas-botones button.inactive:hover {
   background-color: #f3e8ff;
+  color: var(--color-secondary, #4a00e0);
   transform: translateY(-1px);
 }
+body.dark-mode .filtro-etiquetas-botones button.inactive {
+  background-color: var(--color-bg-card, #232339);
+  color: var(--color-primary, #a78bfa);
+  border: 1.5px solid var(--color-primary, #a78bfa);
+}
+body.dark-mode .filtro-etiquetas-botones button.inactive:hover {
+  background-color: #312e81;
+  color: var(--color-secondary, #a78bfa);
+}
 
-/* Lista de eventos */
+/* Contenedor de eventos disponibles */
 .lista-eventos {
-  background-color: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-card, #fff);
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 32px;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark-mode .lista-eventos {
+  background: var(--color-bg-card, #232339);
+  color: var(--color-text, #f3f4f6);
 }
 
+/* Título de eventos disponibles */
 .lista-eventos h3 {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: white;
+  font-weight: 700;
+  color: var(--color-primary, #6b21a8);
   margin-bottom: 20px;
+}
+body.dark-mode .lista-eventos h3 {
+  color: var(--color-primary, #a78bfa);
 }
 
 /* Grid de eventos */
@@ -102,41 +131,51 @@
 
 /* Tarjeta de evento */
 .evento-card {
-  background: white;
+  background: var(--color-bg-card, #fff);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
   height: 100%;
+  color: var(--color-text, #22223b);
+}
+body.dark-mode .evento-card {
+  background: var(--color-bg-card, #181825);
+  color: var(--color-text, #f3f4f6);
 }
 
-.evento-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
+/* Título de cada evento */
 .evento-card h4 {
-  color: #6b21a8;
+  color: var(--color-primary, #6b21a8);
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 10px;
 }
+body.dark-mode .evento-card h4 {
+  color: var(--color-primary, #a78bfa);
+}
 
+/* Contenedor de fecha */
 .evento-fecha {
-  background: #f3e8ff;
-  color: #6b21a8;
+  background: var(--color-bg-card, #f3e8ff);
+  color: var(--color-primary, #6b21a8);
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 0.9rem;
   display: inline-block;
   margin-bottom: 10px;
 }
+body.dark-mode .evento-fecha {
+  background: var(--color-bg, #232339);
+  color: var(--color-primary, #a78bfa);
+}
 
+/* Tipo de evento */
 .evento-tipo {
-  background: #6b21a8;
-  color: white;
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -144,27 +183,27 @@
   margin-bottom: 10px;
   margin-left: 10px;
 }
-
-.evento-patrocinador {
-  font-size: 0.875rem;
-  color: #4b5563;
-  margin-bottom: 8px;
+body.dark-mode .evento-tipo {
+  background: var(--color-primary, #a78bfa);
+  color: var(--color-bg-card, #232339);
 }
 
+/* Patrocinador y descripción */
+.evento-patrocinador,
 .evento-descripcion {
   font-size: 0.9rem;
-  color: #4b5563;
-  margin-bottom: 16px;
-  flex-grow: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: var(--color-text, #4b5563);
+  margin-bottom: 8px;
+}
+body.dark-mode .evento-patrocinador,
+body.dark-mode .evento-descripcion {
+  color: var(--color-text, #f3f4f6);
 }
 
+/* Botón de ver detalles */
 .evento-btn {
-  background: #6b21a8;
-  color: #fff;
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
   border: none;
   border-radius: 6px;
   padding: 10px 0;
@@ -176,9 +215,8 @@
   display: block;
   margin-top: auto;
 }
-
 .evento-btn:hover {
-  background: #4a00e0;
+  background: var(--color-secondary, #4a00e0);
   transform: translateY(-2px);
 }
 
@@ -196,6 +234,110 @@
 .mensaje-error {
   background-color: rgba(220, 38, 38, 0.2);
   color: #fecaca;
+}
+
+/* Estilos para el calendario de eventos */
+.calendario-eventos {
+  margin: 32px auto;
+  background: var(--color-bg-card, #fff);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 24px 24px 32px 24px;
+  transition: background 0.3s;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+body.dark-mode .calendario-eventos {
+  background: var(--color-bg-card, #232339);
+}
+
+/* Centrar el título */
+.calendario-eventos h3 {
+  text-align: center;
+  color: var(--color-primary, #6b21a8);
+  margin-bottom: 18px;
+}
+body.dark-mode .calendario-eventos h3 {
+  color: var(--color-primary, #a78bfa);
+}
+
+/* Calendario visual y adaptación de colores */
+.react-calendar {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  font-family: inherit;
+  color: var(--color-text, #22223b);
+}
+body.dark-mode .react-calendar {
+  color: var(--color-text, #f3f4f6);
+}
+
+/* Días con eventos */
+.react-calendar__tile.evento-dia {
+  background: var(--color-primary, #a78bfa) !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  font-weight: bold;
+}
+
+/* Día seleccionado */
+.react-calendar__tile--active {
+  background: var(--color-secondary, #4a00e0) !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+}
+
+/* Hover y focus */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background: #ede9fe !important;
+  color: var(--color-primary, #6b21a8) !important;
+}
+
+/* Encabezado y navegación */
+.react-calendar__navigation {
+  background: transparent;
+  margin-bottom: 8px;
+}
+.react-calendar__navigation button {
+  color: var(--color-primary, #6b21a8);
+  min-width: 36px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+body.dark-mode .react-calendar__navigation button {
+  color: var(--color-primary, #a78bfa);
+}
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  color: var(--color-secondary, #4a00e0);
+}
+
+/* Días de la semana */
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-primary, #6b21a8);
+}
+body.dark-mode .react-calendar__month-view__weekdays {
+  color: var(--color-primary, #a78bfa);
+}
+
+/* Días fuera del mes */
+.react-calendar__tile--now {
+  background: #f3e8ff !important;
+  color: var(--color-primary, #6b21a8) !important;
+}
+body.dark-mode .react-calendar__tile--now {
+  background: #312e81 !important;
+  color: var(--color-primary, #a78bfa) !important;
 }
 
 /* Media queries para responsividad */

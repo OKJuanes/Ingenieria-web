@@ -1,5 +1,9 @@
 .eventos-main-container {
-  padding-top: 100px; /* Ajusta según la altura real de tu navbar */
+  padding-top: 70px; /* Ajusta este valor según la altura real de tu navbar */
+  background: var(--color-bg, #f3f4f6);
+  color: var(--color-text, #22223b);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
 }
 
 .eventos-grid {

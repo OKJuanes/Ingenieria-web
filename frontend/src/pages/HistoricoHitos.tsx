@@ -5,6 +5,9 @@ import { getAllHitos, Hito, deleteHito } from '../services/hitoService';
 import { getEventos, Evento, getEventoById, getEventosHistorico } from '../services/eventoService';
 import { isAuthenticated, getUserData } from '../services/authService';
 import '../assets/styles/HomeAdmin.css';
+import '../assets/styles/Historico.css';
+import Spinner from '../components/common/Spinner';
+import { toast } from 'react-toastify';
 
 const HistoricoHitos: React.FC = () => {
   const navigate = useNavigate();
@@ -117,36 +120,33 @@ const HistoricoHitos: React.FC = () => {
         await deleteHito(hitoId);
         setHitos(prev => prev.filter(h => h.id !== hitoId));
         setFilteredHitos(prev => prev.filter(h => h.id !== hitoId));
-        alert('Hito eliminado exitosamente');
+        toast.success('Hito eliminado exitosamente');
       } catch (err: any) {
-        alert(`Error al eliminar el hito: ${err.message}`);
+        toast.error(`Error al eliminar el hito: ${err.message}`);
         console.error('Error deleting hito:', err);
       }
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="historico-main-container">
       <Navbar />
       <div className="container mx-auto p-4">
-        <h1 className="text-4xl font-bold text-white mb-6">Histórico de Hitos</h1>
+        <h1 className="historico-title">Histórico de Hitos</h1>
 
         {/* Filtros */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          <div className="flex-1">
+        <div className="historico-filtros">
+          <div style={{ flex: 1 }}>
             <input
               type="text"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar hitos..."
-              className="w-full p-2 border rounded shadow"
             />
           </div>
-
           <select 
             value={filtroEventoId}
             onChange={(e) => setFiltroEventoId(e.target.value)}
-            className="p-2 border rounded shadow bg-white"
           >
             <option value="todos">Todos los eventos</option>
             {eventos.map(evento => (
@@ -155,11 +155,9 @@ const HistoricoHitos: React.FC = () => {
               </option>
             ))}
           </select>
-
           <select 
             value={filtroCategoria}
             onChange={(e) => setFiltroCategoria(e.target.value)}
-            className="p-2 border rounded shadow bg-white"
           >
             <option value="todas">Todas las categorías</option>
             {categorias.map(categoria => (
@@ -173,83 +171,81 @@ const HistoricoHitos: React.FC = () => {
         {/* Tabla de hitos */}
         {loading ? (
           <div className="bg-white p-6 rounded-lg shadow-md flex justify-center">
-            <p className="text-gray-700">Cargando histórico de hitos...</p>
+            <Spinner />
           </div>
         ) : error ? (
-          <div className="bg-red-100 p-6 rounded-lg shadow-md">
+          <div className="bg-red-100 p-6 rounded-lg shadow-md fade-in">
             <p className="text-red-700">{error}</p>
           </div>
         ) : filteredHitos.length === 0 ? (
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md fade-in">
             <p className="text-gray-700">No se encontraron hitos que coincidan con los criterios.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evento</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Beneficiario</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+          <div className="historico-table-container fade-in">
+            <table className="historico-table">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evento</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Beneficiario</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredHitos.map((hito) => (
+                  <tr key={hito.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-gray-900">{hito.titulo}</div>
+                      <div className="text-xs text-gray-500">{hito.descripcion}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                        {hito.categoria}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {hito.eventoNombre || (hito.eventoId ? `Evento #${hito.eventoId}` : 'Sin evento')}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {hito.beneficiario?.username || 'N/A'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {formatFecha(hito.fechaRegistro)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => navigate(`/admin/hitos/edit/${hito.id}`)}
+                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(hito.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredHitos.map((hito) => (
-                    <tr key={hito.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{hito.titulo}</div>
-                        <div className="text-xs text-gray-500">{hito.descripcion}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                          {hito.categoria}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {hito.eventoNombre || (hito.eventoId ? `Evento #${hito.eventoId}` : 'Sin evento')}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {hito.beneficiario?.username || 'N/A'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
-                          {formatFecha(hito.fechaRegistro)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => navigate(`/admin/hitos/edit/${hito.id}`)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => handleDelete(hito.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 
         <div className="mt-6">
           <button
             onClick={() => navigate('/home-admin')}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            className="historico-btn"
           >
             Volver al Panel
           </button>

@@ -1,0 +1,108 @@
+.historico-main-container {
+  padding-top: 80px; /* Ajusta según la altura de tu navbar */
+  min-height: 100vh;
+  background: var(--color-bg, #f3f4f6);
+  color: var(--color-text, #22223b);
+}
+
+.historico-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--color-primary, #6b21a8);
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 8px rgba(80, 0, 120, 0.15);
+}
+
+.historico-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.historico-filtros input,
+.historico-filtros select {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  font-size: 1rem;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+}
+
+.historico-table-container {
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 24px rgba(80, 0, 120, 0.08);
+  overflow-x: auto;
+}
+
+.historico-table {
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.historico-table th,
+.historico-table td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.historico-table th {
+  background: var(--color-bg-card, #fff);
+  color: var(--color-primary, #6b21a8);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.3s, color 0.3s;
+}
+
+.historico-table td {
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Alternar color de filas para mejor contraste */
+.historico-table tr:nth-child(even) td {
+  background: var(--color-bg, #232339);
+}
+
+body.dark-mode .historico-table th,
+body.dark-mode .historico-table td {
+  background: var(--color-bg-card, #232339);
+  color: var(--color-text, #f3f4f6);
+}
+
+body.dark-mode .historico-table tr:nth-child(even) td {
+  background: var(--color-bg, #181825);
+}
+
+.historico-btn {
+  background: var(--color-primary, #6366f1);
+  color: var(--color-bg-card, #fff);
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+  border: none;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.historico-btn:hover {
+  background: var(--color-secondary, #4338ca);
+}
+
+.historico-btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.historico-btn-danger:hover {
+  background: #b91c1c;
+  color: #fff;
+}

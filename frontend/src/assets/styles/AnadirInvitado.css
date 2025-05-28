@@ -1,10 +1,10 @@
-css
 /* filepath: frontend/src/assets/styles/AnadirInvitado.css */
 
 /* Fondo general */
 .anadir-invitado-bg {
   min-height: 100vh;
-  background: #6b21a8;
+  background: var(--color-bg, #6b21a8);
+  transition: background 0.3s;
 }
 
 /* Contenedor principal */
@@ -18,7 +18,8 @@ css
 
 /* Formulario centrado, fondo blanco, sombra y bordes suaves */
 .anadir-invitado-form-wrapper {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(107,33,168,0.10);
   padding: 32px 32px 24px 32px;
@@ -52,8 +53,8 @@ css
 }
 
 .anadir-invitado-btn {
-  background: #6b21a8;
-  color: #fff;
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
   border: none;
   border-radius: 6px;
   padding: 10px 24px;
@@ -66,7 +67,7 @@ css
 
 .anadir-invitado-btn:hover,
 .anadir-invitado-btn:focus {
-  background: #4a00e0;
-  color: #fff;
+  background: var(--color-secondary, #4a00e0);
+  color: var(--color-bg-card, #fff);
   box-shadow: 0 4px 16px rgba(76,0,224,0.13);
 }

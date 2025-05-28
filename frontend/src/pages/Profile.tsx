@@ -1,6 +1,7 @@
 // src/pages/Profile.tsx
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { toast } from 'react-toastify';
 
 import Navbar from '../components/common/Navbar';
 
@@ -30,7 +31,13 @@ const Profile: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
 
- 
+  const [avatarColor, setAvatarColor] = useState(
+
+    localStorage.getItem("avatarColor") || "#6b21a8"
+
+  );
+
+
 
   // Estados para edición de perfil
 
@@ -208,11 +215,11 @@ const Profile: React.FC = () => {
 
       setIsEditing(false);
 
-      alert('Perfil actualizado con éxito');
+      toast.success('Perfil actualizado con éxito');
 
     } catch (err: any) {
 
-      alert(`Error al actualizar el perfil: ${err.message}`);
+      toast.error(`Error al actualizar el perfil: ${err.message}`);
 
     }
 
@@ -263,6 +270,18 @@ const Profile: React.FC = () => {
       alert(`Error al desinscribirte: ${err.message}`);
 
     }
+
+  };
+
+
+
+  // Función para manejar el cambio de color de avatar
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    setAvatarColor(e.target.value);
+
+    localStorage.setItem("avatarColor", e.target.value);
 
   };
 
@@ -323,6 +342,44 @@ const Profile: React.FC = () => {
       <div className="container mx-auto p-4">
 
         <h2 className="profile-section-title">Mi Perfil</h2>
+
+        <div className="flex items-center gap-4 mb-6">
+
+          <div
+
+            className="profile-avatar"
+
+            style={{ background: avatarColor }}
+
+            title="Avatar"
+
+          >
+
+            {userData?.username?.charAt(0).toUpperCase()}
+
+          </div>
+
+          <label className="flex items-center gap-2">
+
+            <span style={{ fontWeight: 500 }}>Color de avatar:</span>
+
+            <input
+
+              type="color"
+
+              value={avatarColor}
+
+              onChange={handleColorChange}
+
+              className="profile-avatar-color-input"
+
+              aria-label="Color de avatar"
+
+            />
+
+          </label>
+
+        </div>
 
        
 
@@ -551,7 +608,9 @@ const Profile: React.FC = () => {
 
         {/* Mis Eventos Registrados */}
 
-        <h3 className="text-3xl font-bold text-white mb-6">Mis Eventos Registrados</h3>
+        <h3 className="text-3xl font-bold profile-section-title mb-6">Mis Eventos Registrados</h3>
+
+        <p className="profile-secondary-text text-lg">Aún no te has registrado en ningún evento.</p>
 
         {userEventos.length === 0 ? (
 

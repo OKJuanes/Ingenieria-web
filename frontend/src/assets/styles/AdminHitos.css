@@ -1,21 +1,73 @@
 /* src/assets/styles/AdminHitos.css */
+/* Fondo general */
 .admin-hitos-bg {
   min-height: 100vh;
-  background: #6b21a8;
+  background: var(--color-bg, #6b21a8);
+  transition: background 0.3s;
 }
 
+/* Contenedor principal */
 .admin-hitos-container {
-  padding-top: 110px; /* Ajusta según la altura de tu navbar */
+  padding-top: 110px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Estilos para los botones de acción */
+/* Tabla de hitos */
+.admin-hitos-table-wrapper {
+  background: var(--color-bg-card, #fff);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 1100px;
+  overflow-x: auto;
+  margin: 0 auto;
+}
+
+.admin-hitos-table {
+  min-width: 800px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Encabezados y celdas de la tabla */
+.admin-hitos-table th,
+.admin-hitos-table td {
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+  transition: background 0.3s, color 0.3s;
+}
+
+.admin-hitos-table th {
+  background: var(--color-bg, #f3f4f6);
+  color: var(--color-primary, #6b21a8);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-hitos-table tr:nth-child(even) td {
+  background: var(--color-bg, #f3f4f6);
+}
+
+/* Modo oscuro para tabla */
+body.dark-mode .admin-hitos-table th,
+body.dark-mode .admin-hitos-table td {
+  background: var(--color-bg-card, #232339);
+  color: var(--color-text, #f3f4f6);
+}
+body.dark-mode .admin-hitos-table tr:nth-child(even) td {
+  background: var(--color-bg, #181825);
+}
+
+/* Botones */
 .hito-btn {
-  background: #6b21a8;
-  color: #fff;
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
   border: none;
   border-radius: 6px;
   padding: 7px 18px;
@@ -28,13 +80,13 @@
 }
 .hito-btn:hover,
 .hito-btn:focus {
-  background: #4a00e0;
-  color: #fff;
+  background: var(--color-secondary, #4a00e0);
+  color: var(--color-bg-card, #fff);
 }
 
-/* Estilos para el botón de eliminar */
+/* Botón eliminar */
 .hito-btn-delete {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   color: #e11d48;
   border: 1.5px solid #e11d48;
 }
@@ -64,28 +116,9 @@
   border: 1.5px solid #b91c1c;
 }
 
-/* Tabla de hitos */
-.admin-hitos-table-wrapper {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
-  padding: 32px 24px;
-  width: 100%;
-  max-width: 1100px;
-  overflow-x: auto;
-  margin: 0 auto;
-}
-
-.admin-hitos-table {
-  min-width: 800px;
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
 /* Estilos para la sección de participantes del evento */
 .participantes-evento-box {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(107,33,168,0.10);
   padding: 24px 32px;
@@ -93,14 +126,19 @@
   max-width: 540px;
   text-align: center;
   animation: fadeInUp 0.5s cubic-bezier(.4,0,.2,1);
+  color: var(--color-text, #22223b);
+  transition: background 0.3s, color 0.3s;
 }
 
 .participantes-evento-title {
   font-size: 1.35rem;
   font-weight: 700;
-  color: #6b21a8;
+  color: var(--color-primary, #6b21a8);
   margin-bottom: 14px;
   letter-spacing: 0.5px;
+}
+body.dark-mode .participantes-evento-title {
+  color: var(--color-primary, #a78bfa);
 }
 
 .participantes-evento-list {
@@ -111,7 +149,7 @@
 }
 
 .participante-item {
-  background: #f3e8ff;
+  background: var(--color-bg-card, #f3e8ff);
   border-radius: 8px;
   padding: 10px 16px;
   display: flex;
@@ -119,21 +157,26 @@
   gap: 10px;
   font-size: 1.08rem;
   box-shadow: 0 1px 4px rgba(107,33,168,0.06);
-  transition: background 0.18s;
+  color: var(--color-text, #22223b);
+  transition: background 0.18s, color 0.18s;
 }
 
 .participante-item:hover {
   background: #ede9fe;
 }
 
-.icon-person {
-  color: #6b21a8;
-  font-size: 1.4rem;
+body.dark-mode .participante-item {
+  background: var(--color-bg, #232339);
+  color: var(--color-text, #f3f4f6);
+}
+
+body.dark-mode .participante-item:hover {
+  background: #312e81;
 }
 
 /* Estilos para la sección de ganadores de hitos */
 .ganadores-hitos-box {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(107,33,168,0.10);
   padding: 24px 32px;

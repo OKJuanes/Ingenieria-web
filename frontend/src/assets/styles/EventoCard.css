@@ -139,3 +139,40 @@
   gap: 0.5rem;
   justify-content: flex-start;
 }
+
+
+.evento-card {
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+  padding: 18px 20px 20px 20px;
+  margin-bottom: 12px;
+  transition: background 0.3s, color 0.3s;
+}
+
+
+.evento-card-title {
+  color: var(--color-primary, #6b21a8);
+}
+
+.evento-btn {
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
+}
+.evento-btn:hover,
+.evento-btn:focus {
+  background: var(--color-secondary, #4a00e0);
+  color: var(--color-bg-card, #fff);
+}
+
+.evento-btn-secondary {
+  background: var(--color-bg-card, #fff);
+  color: var(--color-primary, #6b21a8);
+  border: 1.5px solid var(--color-primary, #6b21a8);
+}
+.evento-btn-secondary:hover,
+.evento-btn-secondary:focus {
+  background: #f3e8ff;
+  color: var(--color-secondary, #4a00e0);
+}

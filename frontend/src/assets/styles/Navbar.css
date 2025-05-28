@@ -1,4 +1,20 @@
 /* src/assets/styles/Navbar.css */
+.navbar, .navbar-main {
+  background: linear-gradient(90deg, #181825, #232339, #3b267a, #232339, #181825);
+  background-size: 400% 400%;
+  color: var(--color-navbar-text, #fff);
+  animation: wave 8s ease infinite;
+}
+
+.navbar-link, .navbar-button {
+  color: var(--color-navbar-text, #fff);
+}
+
+.navbar-link:hover, .navbar-link:focus {
+  background: rgba(255,255,255,0.13);
+  color: var(--color-primary, #6b21a8);
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -133,7 +149,7 @@
 
 .navbar-link:hover, .navbar-link:focus {
   background: rgba(255,255,255,0.13);
-  transform: translateY(-2px);
+  color: var(--color-primary, #6b21a8);
 }
 
 .navbar-user {
@@ -143,16 +159,19 @@
 }
 
 .navbar-avatar {
-  background: #fff;
-  color: #6b21a8;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  color: #fff;
+  font-size: 1.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 1.1rem;
+  margin-right: 10px;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+  background: #6b21a8; /* fallback */
+  transition: background 0.3s;
 }
 
 .logout-btn {
@@ -211,7 +230,9 @@
     width: 70%;
     max-width: 300px;
     height: 100vh;
-    background: linear-gradient(135deg, #6b21a8, #4a00e0);
+    background: linear-gradient(135deg, #181825, #232339, #3b267a, #232339, #181825);
+    background-size: 400% 400%;
+    animation: wave 8s ease infinite;
     flex-direction: column;
     padding: 80px 20px 40px;
     gap: 20px;
@@ -271,4 +292,14 @@
   .navbar-links {
     width: 85%;
   }
+}
+
+.navbar-darkmode-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  margin-left: 18px;
+  cursor: pointer;
+  color: var(--color-navbar-text);
+  transition: color 0.2s;
 }

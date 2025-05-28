@@ -3,6 +3,7 @@ import Navbar from '../components/common/Navbar';
 import { getEventos, Evento, addExternalGuest } from '../services/eventoService';
 import '../assets/styles/AnadirInvitado.css';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const initialInvitado = {
   nombre: '',
@@ -40,19 +41,16 @@ const AnadirInvitado: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Reiniciar estados
     setLoading(true);
     setError(null);
     setSuccess(null);
-    
-    // Validar que se ha seleccionado un evento
+
     if (!eventoSeleccionado) {
-      setError("Debes seleccionar un evento");
+      toast.error("Debes seleccionar un evento");
       setLoading(false);
       return;
     }
-    
+
     try {
       // Preparar los datos para el invitado externo
       const externalGuestData = {
@@ -66,14 +64,13 @@ const AnadirInvitado: React.FC = () => {
       // Llamar al servicio para añadir el invitado externo
       await addExternalGuest(eventoSeleccionado.id, externalGuestData);
       
-      // Mostrar mensaje de éxito
-      setSuccess(`Invitado externo ${invitado.nombre} ${invitado.apellido} añadido correctamente al evento "${eventoSeleccionado.nombre}"`);
+      toast.success("Invitado añadido exitosamente");
       
       // Resetear el formulario
       setInvitado(initialInvitado);
+      setEventoSeleccionado(null);
     } catch (err: any) {
-      console.error("Error al añadir invitado:", err);
-      setError(err.message || "Error al añadir el invitado");
+      toast.error(`Error al añadir invitado: ${err.message}`);
     } finally {
       setLoading(false);
     }

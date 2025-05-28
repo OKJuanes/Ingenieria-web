@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Para la navegación
 import EventoCard from '../components/eventos/EventoCard'; // Para mostrar eventos recientes
 import '../assets/styles/HomeAdmin.css'; // Tu archivo de estilos para HomeAdmin
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast } from 'react-toastify';
 
 function parseFecha(fechaStr: string): Date {
   // Si el formato es dd-mm-yyyy
@@ -109,32 +110,25 @@ const HomeAdmin: React.FC = () => {
   };
 
   const handleGenerateReport = async () => {
-    setLoadingRecent(true); // Activar el estado de carga
+    setLoadingRecent(true);
     try {
-      const csvData = await generateEventsReportCsv(); // Llama a la función del servicio
-      
-      // Crear un Blob con el contenido CSV
+      const csvData = await generateEventsReportCsv();
       const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-      
-      // Crear una URL para el Blob
       const url = URL.createObjectURL(blob);
-      
-      // Crear un elemento <a> temporal y simular un clic para descargar
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', 'reporte_eventos_y_participantes.csv'); // Nombre del archivo
-      link.style.visibility = 'hidden'; // Ocultar el enlace
+      link.setAttribute('download', 'reporte_eventos_y_participantes.csv');
+      link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link); // Limpiar el DOM
-      URL.revokeObjectURL(url); // Liberar el objeto URL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
-      alert('Reporte generado exitosamente.');
+      toast.success('Reporte generado exitosamente.');
     } catch (err: any) {
-      alert(`Error al generar el reporte: ${err.message || 'Error desconocido'}`);
-      console.error("Error generating report:", err);
+      toast.error(`Error al generar el reporte: ${err.message || 'Error desconocido'}`);
     } finally {
-      setLoadingRecent(false); // Desactivar el estado de carga
+      setLoadingRecent(false);
     }
   };
   const handleManageMilestones = () => {
@@ -341,16 +335,14 @@ const HomeAdmin: React.FC = () => {
                         <button
                           onClick={() => {
                             if (window.confirm(`¿Estás seguro de que quieres eliminar el evento "${evento.nombre}"?`)) {
-                              // Eliminar el evento y actualizar la lista
                               deleteEvento(evento.id)
                                 .then(() => {
-                                  // Eliminar el evento de la lista local
                                   setEventos(eventos.filter(e => e.id !== evento.id));
-                                  alert(`Evento "${evento.nombre}" eliminado exitosamente.`);
+                                  toast.success(`Evento "${evento.nombre}" eliminado exitosamente.`);
                                 })
                                 .catch(err => {
                                   console.error("Error eliminando evento:", err);
-                                  alert(`Error al eliminar el evento: ${err.message}`);
+                                  toast.error(`Error al eliminar el evento: ${err.message}`);
                                 });
                             }
                           }}

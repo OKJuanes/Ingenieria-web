@@ -1,5 +1,5 @@
 .hito-card {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   border-radius: 14px;
   box-shadow: 0 2px 16px rgba(107,33,168,0.10);
   padding: 24px 20px;
@@ -8,6 +8,7 @@
   animation: fadeInUp 0.6s cubic-bezier(.4,0,.2,1);
   transition: box-shadow 0.22s, transform 0.22s;
   will-change: box-shadow, transform;
+  color: var(--color-text, #22223b);
 }
 
 .hito-card:hover, .hito-card:focus-within {
@@ -34,7 +35,7 @@
 }
 
 .hito-title {
-  color: #6b21a8;
+  color: var(--color-primary, #6b21a8);
   font-size: 1.3rem;
   font-weight: 700;
   margin: 0;
@@ -84,17 +85,24 @@
   font-size: 1rem;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
+}
+.hito-btn:hover,
+.hito-btn:focus {
+  background: var(--color-secondary, #4a00e0);
+  color: var(--color-bg-card, #fff);
 }
 
 .hito-btn-edit {
-  background: #fff;
-  color: #6b21a8;
-  border: 1.5px solid #6b21a8;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-primary, #6b21a8);
+  border: 1.5px solid var(--color-primary, #6b21a8);
 }
-
-.hito-btn-edit:hover, .hito-btn-edit:focus {
+.hito-btn-edit:hover,
+.hito-btn-edit:focus {
   background: #f3e8ff;
-  color: #4a00e0;
+  color: var(--color-secondary, #4a00e0);
 }
 
 .hito-btn-delete {

@@ -1,13 +1,13 @@
 // src/pages/AdminHitos.tsx
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
-// Corregida la importación de getEventos desde eventoService
 import { Hito, getHitosByEventoId, deleteHito } from '../services/hitoService'; 
 import { Evento, getEventos, getEventoById } from '../services/eventoService'; // ¡Importación corregida!
 import { getParticipantesByEventoId } from '../services/eventoService';
 import type { ParticipanteEvento } from '../services/eventoService';
 import HitoForm from '../components/hitos/HitoForm';
 import '../assets/styles/AdminHitos.css';
+import { toast } from 'react-toastify';
 
 const AdminHitos: React.FC = () => {
   const [hitos, setHitos] = useState<Hito[]>([]);
@@ -32,13 +32,16 @@ const AdminHitos: React.FC = () => {
 
         try {
           const participantesData = await getParticipantesByEventoId(selectedEventoId as number);
-          console.log("Participantes cargados desde el servicio:", participantesData); // Log para depuración
           setParticipantes(participantesData);
         } catch (err) {
-          console.error(`Error al cargar participantes: ${err}`);
           setParticipantes([]);
         }
       } else {
+        // Traer todos los hitos de todos los eventos (solo frontend)
+        const allHitosArrays = await Promise.all(
+          allEvents.map(ev => getHitosByEventoId(ev.id))
+        );
+        fetchedHitos = allHitosArrays.flat();
         setParticipantes([]);
       }
 
@@ -64,10 +67,10 @@ const AdminHitos: React.FC = () => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este hito?')) {
       try {
         await deleteHito(hitoId);
-        fetchHitos(); // Recargar la lista después de eliminar
+        fetchHitos();
+        toast.success('Hito eliminado exitosamente');
       } catch (err: any) {
-        alert(`Error al eliminar hito: ${err.message}`);
-        console.error("Error deleting hito:", err);
+        toast.error(`Error al eliminar el hito: ${err.message}`);
       }
     }
   };

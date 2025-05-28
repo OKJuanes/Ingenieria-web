@@ -22,7 +22,7 @@ C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\
 C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\TipoEvento.java
 C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\Usuario.java
 C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\entity\UsuarioInfo.java
-C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\ParcialFashionEventApplication.java
+C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\IngenieriaWebEventApplication.java
 C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IEventoRepository.java
 C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IHitoRepository.java
 C:\Users\RYZEN 5\Desktop\INGENIERIAWEB\Ingenieria-web\backend\src\main\java\com\example\ProyectoWeb\repositories\IInvitadoExternoRepository.java

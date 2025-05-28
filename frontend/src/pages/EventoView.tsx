@@ -6,6 +6,7 @@ import { getEventoById, registerUserToEvent, unregisterUserFromEvent, Evento } f
 import { isAuthenticated, getUserData } from '../services/authService';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { toast } from 'react-toastify';
 import '../assets/styles/EventoView.css';
 
 // Extiende la definición de tipo de jsPDF para incluir autoTable
@@ -110,7 +111,7 @@ const EventoView: React.FC = () => {
       } : null);
 
     } catch (err: any) {
-      alert(`Error al desinscribirte: ${err.message}`);
+      toast.error(`Error al desinscribirte: ${err.message}`);
     }
   };
 

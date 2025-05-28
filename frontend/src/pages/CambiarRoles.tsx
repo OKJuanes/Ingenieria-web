@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllUsers, updateUserRole, User } from '../services/userService';
 import Navbar from '../components/common/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import "../assets/styles/CambiarRoles.css";
 const CambiarRoles: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -51,8 +52,9 @@ const CambiarRoles: React.FC = () => {
           ? { ...user, role: newRole }
           : user
       ));
+      toast.success('Rol actualizado correctamente');
     } catch (err: any) {
-      setError(err.message);
+      toast.error(`Error al cambiar el rol: ${err.message}`);
       console.error("Error changing role:", err);
     }
   };

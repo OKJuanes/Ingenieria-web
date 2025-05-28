@@ -3,13 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import { getEventos, Evento } from '../services/eventoService';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import '../assets/styles/HomeUsuario.css';
 
 const HomeUsuario: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState<string[]>([]);
+  const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState<string[]>(() => {
+    const saved = localStorage.getItem("eventosFiltros");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -38,6 +43,11 @@ const HomeUsuario: React.FC = () => {
     );
   };
 
+  // Cuando cambian los filtros:
+  useEffect(() => {
+    localStorage.setItem("eventosFiltros", JSON.stringify(etiquetasSeleccionadas));
+  }, [etiquetasSeleccionadas]);
+
   // Extraer tipos de eventos únicos para los filtros
   const tiposDeEvento = [...new Set(eventos.map(e => e.tipo))];
   
@@ -49,11 +59,30 @@ const HomeUsuario: React.FC = () => {
      evento.descripcion.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  // Fechas de eventos
+  const fechasEventos = eventos.map(e => {
+    const [day, month, year] = e.fecha.split('-');
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  });
+
+  const tileClassName = ({ date, view }: { date: Date, view: string }) => {
+    if (view === 'month') {
+      return fechasEventos.some(
+        d => d.getFullYear() === date.getFullYear() &&
+             d.getMonth() === date.getMonth() &&
+             d.getDate() === date.getDate()
+      )
+        ? 'evento-dia'
+        : null;
+    }
+  };
+
   return (
     <div className="home-usuario-container">
       <Navbar />
       <div className="home-usuario-content">
         <h2 className="home-usuario-title">Bienvenido</h2>
+
         
         {/* Barra de búsqueda */}
         <div className="search-bar">
@@ -109,6 +138,12 @@ const HomeUsuario: React.FC = () => {
           ) : (
             <p className="mensaje-sin-eventos">No hay eventos disponibles con los criterios seleccionados.</p>
           )}
+        </div>
+        
+        {/* Calendario de eventos */}
+        <div className="calendario-eventos mb-8">
+          <h3 className="text-xl font-bold mb-2">Calendario de Eventos</h3>
+          <Calendar tileClassName={tileClassName} />
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 .home-admin-container {
   padding-top: 80px;
   min-height: 100vh;
-  background-color: #f5f5fa;
+  background: var(--color-bg, #f3f4f6);
 }
 
 .home-admin-content {
@@ -14,7 +14,7 @@
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--color-text, #333);
 }
 
 /* Stats grid */
@@ -26,7 +26,8 @@
 }
 
 .stat-card {
-  background-color: white;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -91,28 +92,44 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Botón principal (Crear Evento) */
 .create-button {
-  background-color: #7e22ce; /* Purple color similar to the navbar */
+  background: var(--color-btn-secondary, #a78bfa);
+  color: var(--color-btn-secondary-text, #232339);
+  font-weight: bold;
+  font-size: 1.15rem;
+  border: none;
+  transition: background 0.2s, color 0.2s;
+}
+.create-button:hover,
+.create-button:focus {
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
 }
 
-.create-button:hover {
-  background-color: #6b21a8;
-}
-
+/* Botón secundario (Gestionar Hitos) */
 .manage-button {
-  background-color: #6b7280; /* Gray */
+  background: var(--color-btn-disabled, #e5e7eb);
+  color: var(--color-btn-disabled-text, #bdbdbd);
+  font-weight: bold;
+  font-size: 1.15rem;
+  border: none;
+  transition: background 0.2s, color 0.2s;
+}
+.manage-button:hover,
+.manage-button:focus {
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
 }
 
-.manage-button:hover {
-  background-color: #4b5563;
-}
-
-.report-button {
-  background-color: #6b7280; /* Gray */
-}
-
-.report-button:hover {
-  background-color: #4b5563;
+/* Botones deshabilitados */
+.action-button:disabled,
+.create-button:disabled,
+.manage-button:disabled {
+  background: var(--color-btn-disabled, #e5e7eb);
+  color: var(--color-btn-disabled-text, #bdbdbd);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 /* Media queries para diferentes tamaños de pantalla */
@@ -156,20 +173,33 @@
 
 /* Recent events section */
 .recent-events-section {
-  background-color: white;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px; /* Aumenta el espacio debajo de eventos recientes */
+  margin-bottom: 40px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #e5e7eb; /* Línea divisoria sutil */
+  border-bottom: 2px solid #e5e7eb;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Tarjeta individual de evento reciente */
+.evento-card, .recent-event-card {
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.07);
+  padding: 18px 20px 20px 20px;
+  margin-bottom: 12px;
+  transition: background 0.3s, color 0.3s;
 }
 
 .section-title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--color-text, #333);
 }
 
 .events-grid {
@@ -211,27 +241,27 @@
 }
 
 .view-btn {
-  background: #6b21a8;
-  color: #fff;
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
 }
 .view-btn:hover,
 .view-btn:focus {
-  background: #4a00e0;
+  background: var(--color-secondary, #4a00e0);
 }
 
 .edit-btn {
-  background: #fff;
-  color: #6b21a8;
-  border: 1.5px solid #6b21a8;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-primary, #6b21a8);
+  border: 1.5px solid var(--color-primary, #6b21a8);
 }
 .edit-btn:hover,
 .edit-btn:focus {
   background: #f3e8ff;
-  color: #4a00e0;
+  color: var(--color-secondary, #4a00e0);
 }
 
 .delete-btn {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   color: #e11d48;
   border: 1.5px solid #e11d48;
 }
@@ -241,13 +271,33 @@
   color: #b91c1c;
 }
 
+/* Botón Ver Histórico */
+.historico-button,
+.historico-hitos-button {
+  background: var(--color-primary, #6b21a8);
+  color: var(--color-bg-card, #fff);
+  font-weight: bold;
+  font-size: 1.15rem;
+  border: none;
+  transition: background 0.2s, color 0.2s;
+}
+.historico-button:hover,
+.historico-button:focus,
+.historico-hitos-button:hover,
+.historico-hitos-button:focus {
+  background: var(--color-secondary, #4a00e0);
+  color: var(--color-bg-card, #fff);
+}
+
 /* Events table section */
 .events-table-section {
-  margin-top: 40px; /* Más espacio arriba de la tabla de gestión */
-  background: #fff;
+  margin-top: 40px;
+  background: var(--color-bg-card, #fff);
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(107,33,168,0.07);
   padding: 24px;
+  color: var(--color-text, #22223b);
+  transition: background 0.3s, color 0.3s;
 }
 
 /* Filtros */
@@ -261,51 +311,59 @@
   border: 1.5px solid #c4b5fd;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.18s, box-shadow 0.18s;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+  transition: background 0.3s, color 0.3s, border-color 0.18s, box-shadow 0.18s;
 }
 .filter-input:focus, .filter-select:focus {
-  border-color: #6b21a8;
+  border-color: var(--color-primary, #6b21a8);
   box-shadow: 0 0 0 2px #c4b5fd;
 }
 
-/* Badges de estado */
-.badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.95em;
+/* Tabla de eventos */
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.events-table th,
+.events-table td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 1rem;
+  background: var(--color-bg-card, #fff);
+  color: var(--color-text, #22223b);
+  transition: background 0.3s, color 0.3s;
+}
+
+.events-table th {
+  background: var(--color-bg, #f3f4f6);
+  color: var(--color-primary, #6b21a8);
   font-weight: 600;
-  color: #fff;
-}
-.badge-activo {
-  background: #22c55e;
-}
-.badge-finalizado {
-  background: #e11d48;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Nuevo estilo para el botón histórico */
-.historico-button {
-  background: linear-gradient(135deg, #6b46c1 0%, #9f7aea 100%);
+.events-table tr:nth-child(even) td {
+  background: var(--color-bg, #f3f4f6);
 }
 
-.historico-button:hover {
-  background: linear-gradient(135deg, #553c9a 0%, #805ad5 100%);
+body.dark-mode .events-table th,
+body.dark-mode .events-table td {
+  background: var(--color-bg-card, #232339);
+  color: var(--color-text, #f3f4f6);
 }
 
-/* Nuevo estilo para el botón histórico de hitos */
-.historico-hitos-button {
-  background: linear-gradient(135deg, #4f46e5 0%, #818cf8 100%);
+body.dark-mode .events-table tr:nth-child(even) td {
+  background: var(--color-bg, #181825);
 }
 
-.historico-hitos-button:hover {
-  background: linear-gradient(135deg, #3730a3 0%, #6366f1 100%);
+/* Modo oscuro para tarjetas de eventos recientes */
+body.dark-mode .evento-card,
+body.dark-mode .recent-event-card {
+  background: var(--color-bg-card, #232339);
+  color: var(--color-text, #f3f4f6);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .stats-grid,
-  .action-buttons {
-    grid-template-columns: 1fr;
-  }
-}
+/* ...resto del código... */

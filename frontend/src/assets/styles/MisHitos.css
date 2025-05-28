@@ -1,11 +1,13 @@
 .mis-hitos-main-container {
   padding-top: 100px; /* Ajusta según la altura de tu navbar */
   min-height: 100vh;
+  background: var(--color-bg, #8e2de2);
+  transition: background 0.3s;
 }
 
 /* Tarjetas de hitos ganados */
 .mis-hito-card {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(107,33,168,0.10);
   padding: 2rem 1.5rem;
@@ -14,24 +16,64 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 220px;
-  transition: box-shadow 0.22s, transform 0.22s;
+  transition: box-shadow 0.22s, transform 0.22s, background 0.3s, color 0.3s;
+  color: var(--color-text, #22223b);
 }
 .mis-hito-card:hover, .mis-hito-card:focus-within {
   box-shadow: 0 8px 32px rgba(107,33,168,0.18);
   transform: translateY(-6px) scale(1.025);
 }
+body.dark-mode .mis-hito-card {
+  background: var(--color-bg-card, #232339);
+  color: var(--color-text, #f3f4f6);
+}
+
+/* Título de hito */
 .mis-hito-title {
-  color: #6b21a8;
+  color: var(--color-primary, #6b21a8);
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
+body.dark-mode .mis-hito-title {
+  color: var(--color-primary, #a78bfa);
+}
+
+/* Badge de categoría */
 .mis-hito-badge {
   background: #ede9fe;
-  color: #6b21a8;
+  color: var(--color-primary, #6b21a8);
   font-size: 0.9rem;
   border-radius: 999px;
   padding: 2px 14px;
   margin-left: 8px;
   font-weight: 600;
+}
+body.dark-mode .mis-hito-badge {
+  background: #312e81;
+  color: var(--color-primary, #a78bfa);
+}
+
+/* Descripción y textos secundarios */
+.mis-hito-card .text-gray-600,
+.mis-hito-card .text-gray-500 {
+  color: var(--color-text, #4b5563);
+  opacity: 0.85;
+}
+body.dark-mode .mis-hito-card .text-gray-600,
+body.dark-mode .mis-hito-card .text-gray-500 {
+  color: var(--color-text, #f3f4f6);
+  opacity: 1;
+}
+
+/* Título principal */
+.mis-hitos-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: var(--color-primary, #6b21a8);
+  margin-bottom: 2rem;
+  text-align: left;
+}
+body.dark-mode .mis-hitos-title {
+  color: var(--color-primary, #a78bfa);
 }

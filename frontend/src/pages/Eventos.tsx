@@ -5,7 +5,8 @@ import EventoCard from '../components/eventos/EventoCard';
 import { getEventos, registerUserToEvent, unregisterUserFromEvent, Evento, getRegisteredEventsForCurrentUser } from '../services/eventoService';
 import { getUserData, isAuthenticated } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
-import "../assets/styles/HitoForm.css";
+import "../assets/styles/Eventos.css"; // Asegúrate de importar el CSS de eventos
+import Spinner from '../components/common/Spinner';
 
 const Eventos: React.FC = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
@@ -88,15 +89,15 @@ const Eventos: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 flex items-center justify-center">
-        <p className="text-white text-2xl">Cargando eventos...</p>
+        <Spinner />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 flex items-center justify-center">
-        <p className="text-red-300 text-2xl">Error: {error}</p>
+      <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 flex items-center justify-center fade-in">
+        <p className="text-red-300 text-2xl">{error}</p>
       </div>
     );
   }
@@ -104,7 +105,7 @@ const Eventos: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 eventos-main-container">
       <Navbar />
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4 fade-in">
         <h2 className="text-4xl font-bold text-white mb-6">Eventos Disponibles</h2>
         {eventos.length === 0 ? (
           <p className="text-white text-lg">No hay eventos disponibles en este momento.</p>

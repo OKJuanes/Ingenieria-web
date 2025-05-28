@@ -4,7 +4,7 @@ import Navbar from '../components/common/Navbar';
 import { getEventosHistorico, Evento } from '../services/eventoService';
 import { isAuthenticated, getUserData } from '../services/authService';
 import '../assets/styles/HomeAdmin.css';
-
+import '../assets/styles/Historico.css';
 const HistoricoEventos: React.FC = () => {
   const navigate = useNavigate();
   const [eventos, setEventos] = useState<Evento[]>([]);
@@ -82,27 +82,24 @@ const HistoricoEventos: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="historico-main-container">
       <Navbar />
       <div className="container mx-auto p-4">
-        <h1 className="text-4xl font-bold text-white mb-6">Histórico de Eventos</h1>
+        <h1 className="historico-title">Histórico de Eventos</h1>
 
         {/* Filtros */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          <div className="flex-1">
+        <div className="historico-filtros">
+          <div style={{ flex: 1 }}>
             <input
               type="text"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar eventos..."
-              className="w-full p-2 border rounded shadow"
             />
           </div>
-
           <select 
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            className="p-2 border rounded shadow bg-white"
           >
             <option value="todos">Todos los eventos</option>
             <option value="pasados">Eventos pasados</option>
@@ -124,57 +121,55 @@ const HistoricoEventos: React.FC = () => {
             <p className="text-gray-700">No se encontraron eventos que coincidan con los criterios.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participantes</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+          <div className="historico-table-container">
+            <table className="historico-table">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participantes</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredEventos.map((evento) => (
+                  <tr key={evento.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{evento.nombre}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{evento.fecha}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{evento.tipo}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{evento.empresa || '-'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{evento.cantidadParticipantes || 0}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => navigate(`/eventos/${evento.id}`)}
+                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                      >
+                        Ver
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredEventos.map((evento) => (
-                    <tr key={evento.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{evento.nombre}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{evento.fecha}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{evento.tipo}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{evento.empresa || '-'}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{evento.cantidadParticipantes || 0}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => navigate(`/eventos/${evento.id}`)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Ver
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 
         <div className="mt-6">
           <button
             onClick={() => navigate('/home-admin')}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            className="historico-btn"
           >
             Volver al Panel
           </button>

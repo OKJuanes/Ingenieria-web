@@ -1,33 +1,49 @@
-# Use an official Maven image to build the project
+# Stage 1: Build the application
 FROM maven:3.8.6-openjdk-17 AS build
 
 WORKDIR /app
 
-COPY ./pom.xml /app
-COPY ./src /app/src
+# Copy pom.xml first for better layer caching
+COPY pom.xml .
 
-# CONSTRUIR NUESTRA APLICACION
-RUN ./mvn clean install -DskipTests
+# Download dependencies (will be cached if pom.xml doesn't change)
+RUN mvn dependency:go-offline -B
 
-# Use an official OpenJDK runtime image
-FROM openjdk:17-jdk-slim
+# Copy source code
+COPY src/ ./src/
 
-# Set the working directory
+# Package the application
+RUN mvn package -DskipTests
+
+# Stage 2: Run the application
+FROM eclipse-temurin:17-jre-alpine
+
+# Create a non-root user to run our application
+RUN addgroup --system spring && adduser --system spring --ingroup spring
+
 WORKDIR /app
 
-# Copy the built JAR file from the build stage
+# Copy the built artifact from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
+# Create a directory for the .env file with correct permissions
+RUN mkdir -p /app/config && \
+    chown -R spring:spring /app
+
 # Copy the .env file
-COPY ../.env /app/.env
+COPY .env /app/config/.env
+
+# Set ownership
+RUN chown -R spring:spring /app
+
+# Use the non-root user
+USER spring
 
 # Expose the port the app runs on
-EXPOSE 8081
+EXPOSE 8080
 
-# Set the environment variables from the .env file
-ENV CONNECTION_URL=${CONNECTION_URL}
-ENV USER=${USER}
-ENV PASSWORD=${PASSWORD}
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the application with environment variables
+CMD ["java", \
+     "-jar", \
+     "app.jar", \
+     "--spring.config.additional-location=file:/app/config/.env"]

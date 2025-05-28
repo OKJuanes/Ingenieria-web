@@ -3,7 +3,7 @@
     min-height: 100vh;
     background: linear-gradient(to right, #8e2de2, #4a00e0);
     padding: 20px;
-    padding-top: 84px; /* Margen superior para evitar superposición con la Navbar */
+    padding-top: calc(var(--navbar-height) + 20px); /* Usar variable CSS + espacio extra */
   }
   
   .home-usuario-content {
@@ -202,7 +202,7 @@
 @media (max-width: 900px) { /* Ajustado para coincidir con breakpoint de navbar */
   .home-usuario-container {
     padding: 15px;
-    padding-top: 84px; /* Mayor espacio para la navbar en modo responsive */
+    padding-top: calc(var(--navbar-height-mobile) + 20px);
   }
   
   .eventos-grid {

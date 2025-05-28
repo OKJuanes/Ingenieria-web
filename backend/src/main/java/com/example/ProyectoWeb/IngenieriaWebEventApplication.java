@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.github.cdimascio.dotenv.Dotenv;
 
 @SpringBootApplication
-public class ParcialFashionEventApplication {
+public class IngenieriaWebEventApplication {
 
 	public static void main(String[] args) {
 		Dotenv dotenv = Dotenv.configure().load();
@@ -14,7 +14,7 @@ public class ParcialFashionEventApplication {
 		System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
 		System.setProperty("FRONT_URL", dotenv.get("FRONT_URL"));
 
-		SpringApplication.run(ParcialFashionEventApplication.class, args);
+		SpringApplication.run(IngenieriaWebEventApplication.class, args);
 	}
 
 }

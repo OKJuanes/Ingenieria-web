@@ -84,7 +84,8 @@
   left: 0;
   z-index: 1000;
   animation: wave 8s ease infinite;
-  min-height: 64px;
+  height: var(--navbar-height);
+  min-height: var(--navbar-height);
 }
 
 @keyframes wave {
@@ -103,6 +104,7 @@
   padding: 0 16px;
   height: 64px;
   position: relative;
+  height: 100%;
 }
 
 .navbar-logo-img {
@@ -252,6 +254,11 @@
 
   .navbar-hamburger.active span:nth-child(3) {
     transform: rotate(-45deg);
+  }
+
+  .navbar-main {
+    height: var(--navbar-height-mobile);
+    min-height: var(--navbar-height-mobile);
   }
 }
 

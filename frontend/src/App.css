@@ -1,7 +1,18 @@
 /* src/App.css */
-body {
+:root {
+    --navbar-height: 64px;
+    --navbar-height-mobile: 64px; /* Puedes ajustar esto si la altura cambia en móvil */
+  }
+  
+  body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
-    padding-top: 80px; /* Ajusta según la altura real de tu navbar */
+    padding-top: var(--navbar-height); /* Usar variable CSS */
+  }
+  
+  @media (max-width: 900px) {
+    body {
+      padding-top: var(--navbar-height-mobile);
+    }
   }
   
   /* Animación de fondo */

@@ -35,23 +35,19 @@ const AdminHitos: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      // Primero cargamos los eventos
+      // Primero cargar SIEMPRE los eventos y esperar a que se complete
+      console.log("Cargando eventos...");
       const eventosData = await fetchEventos();
+      setEventos(eventosData); // Asegurar que el estado se actualice
       
-      // Luego cargamos los hitos
+      // Luego cargar los hitos
       console.log("Cargando hitos...");
       const fetchedHitos = await getAllHitos();
       console.log(`Hitos cargados: ${fetchedHitos.length}`);
       setHitos(fetchedHitos);
-      
-      // Asegurar que los eventos estén disponibles para mostrar nombres
-      if (eventosData.length === 0 && eventos.length === 0) {
-        console.log("Re-intentando cargar eventos...");
-        await fetchEventos();
-      }
     } catch (err: any) {
-      setError(err.message || 'Error al cargar los hitos.');
-      console.error("Error fetching hitos:", err);
+      setError(err.message || 'Error al cargar los datos.');
+      console.error("Error en fetchHitos:", err);
     } finally {
       setLoading(false);
     }

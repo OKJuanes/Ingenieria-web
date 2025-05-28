@@ -174,23 +174,23 @@ const HitoForm: React.FC<HitoFormProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 max-w-lg mx-auto">
-      <h3 className="text-xl font-semibold mb-4">{isEditing ? 'Editar Hito' : 'Crear Hito'}</h3>
+    <div className="hito-form-wrapper">
+      <h3 className="hito-form-title">{isEditing ? 'Editar Hito' : 'Crear Hito'}</h3>
 
-      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
-      {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{success}</div>}
-      {loading && <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">Cargando...</div>}
+      {error && <div className="hito-form-error">{error}</div>}
+      {success && <div className="hito-form-success">{success}</div>}
+      {loading && <div className="hito-form-success">Cargando...</div>}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="hito-form">
         {/* Evento Asociado */}
-        <div className="mb-4">
-          <label htmlFor="eventoId" className="block text-gray-700 font-semibold mb-1">Evento Asociado:</label>
+        <div className="hito-form-group">
+          <label htmlFor="eventoId" className="hito-form-label">Evento Asociado:</label>
           <select
             id="eventoId"
             name="eventoId"
             value={hitoData.eventoId || ''}
             onChange={handleChange}
-            className="w-full border rounded p-2"
+            className="hito-form-input"
             disabled={!!eventoIdParent || isEditing}
             required
           >
@@ -202,42 +202,42 @@ const HitoForm: React.FC<HitoFormProps> = ({
         </div>
 
         {/* Título del Hito */}
-        <div className="mb-4">
-          <label htmlFor="titulo" className="block text-gray-700 font-semibold mb-1">Título del Hito:</label>
+        <div className="hito-form-group">
+          <label htmlFor="titulo" className="hito-form-label">Título del Hito:</label>
           <input
             type="text"
             id="titulo"
             name="titulo"
             value={hitoData.titulo || ''}
             onChange={handleChange}
-            className="w-full border rounded p-2"
+            className="hito-form-input"
             required
           />
         </div>
 
         {/* Descripción */}
-        <div className="mb-4">
-          <label htmlFor="descripcion" className="block text-gray-700 font-semibold mb-1">Descripción:</label>
+        <div className="hito-form-group">
+          <label htmlFor="descripcion" className="hito-form-label">Descripción:</label>
           <textarea
             id="descripcion"
             name="descripcion"
             value={hitoData.descripcion || ''}
             onChange={handleChange}
-            className="w-full border rounded p-2"
+            className="hito-form-input"
             rows={4}
             required
           />
         </div>
 
         {/* Categoría */}
-        <div className="mb-4">
-          <label htmlFor="categoria" className="block text-gray-700 font-semibold mb-1">Categoría:</label>
+        <div className="hito-form-group">
+          <label htmlFor="categoria" className="hito-form-label">Categoría:</label>
           <select
             id="categoria"
             name="categoria"
             value={hitoData.categoria || ''}
             onChange={handleChange}
-            className="w-full border rounded p-2"
+            className="hito-form-input"
             required
           >
             <option value="">Selecciona una categoría</option>
@@ -248,14 +248,14 @@ const HitoForm: React.FC<HitoFormProps> = ({
         </div>
 
         {/* Usuario Ganador */}
-        <div className="mb-4">
-          <label htmlFor="usuarioGanadorId" className="block text-gray-700 font-semibold mb-1">Usuario Ganador:</label>
+        <div className="hito-form-group">
+          <label htmlFor="usuarioGanadorId" className="hito-form-label">Usuario Ganador:</label>
           <select
             id="usuarioGanadorId"
             name="usuarioGanadorId"
             value={usuarioGanadorId}
             onChange={(e) => setUsuarioGanadorId(e.target.value ? Number(e.target.value) : '')}
-            className="w-full border rounded p-2"
+            className="hito-form-input"
             required
           >
             <option value="">Selecciona un usuario</option>
@@ -265,7 +265,6 @@ const HitoForm: React.FC<HitoFormProps> = ({
               </option>
             ))}
           </select>
-
           {hitoData.eventoId && participantes.length === 0 && (
             <p className="text-yellow-600 text-sm mt-1">
               No hay participantes registrados para este evento.
@@ -274,7 +273,7 @@ const HitoForm: React.FC<HitoFormProps> = ({
         </div>
 
         {/* Botones de acción */}
-        <div className="flex justify-end gap-3 mt-6">
+        <div className="hito-form-actions">
           <button 
             type="button" 
             onClick={onCancel}

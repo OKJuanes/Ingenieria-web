@@ -1,0 +1,21 @@
+.eventos-main-container {
+  padding-top: 100px; /* Ajusta según la altura real de tu navbar */
+}
+
+.eventos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .eventos-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1200px) {
+  .eventos-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}

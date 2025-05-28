@@ -130,13 +130,15 @@ const AdminHitos: React.FC = () => {
 
         {/* Lista de participantes si hay un evento seleccionado */}
         {selectedEventoId !== 'all' && participantes.length > 0 && (
-          <div className="mb-6 bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-lg font-semibold mb-2">Participantes del evento</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="participantes-evento-box">
+            <div className="participantes-evento-title">Participantes del evento</div>
+            <div className="participantes-evento-list">
               {participantes.map((participante) => (
-                <div key={participante.id} className="bg-purple-50 rounded-md p-2 flex items-center">
-                  <span className="material-icons text-purple-600 mr-2">person</span>
-                  {participante.username} ({participante.nombre} {participante.apellido})
+                <div key={participante.id} className="participante-item">
+                  <span className="material-icons icon-person">person</span>
+                  <span>
+                    <strong>{participante.username}</strong> <span className="text-gray-500">({participante.nombre} {participante.apellido})</span>
+                  </span>
                 </div>
               ))}
             </div>

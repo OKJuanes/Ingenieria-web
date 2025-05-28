@@ -66,7 +66,7 @@ const MisHitos: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 mis-hitos-main-container">
       <Navbar />
       <div className="container mx-auto p-4">
         <h2 className="text-3xl font-bold text-white mb-6">Mis Hitos Ganados</h2>
@@ -92,29 +92,22 @@ const MisHitos: React.FC = () => {
         {!loading && !error && hitos.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {hitos.map((hito) => (
-              <div key={hito.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="p-5">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-xl font-bold text-purple-800">{hito.titulo}</h3>
-                    <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
-                      {hito.categoria}
-                    </span>
-                  </div>
-                  
-                  <p className="text-gray-600 mt-2">{hito.descripcion}</p>
-                  
-                  <div className="mt-4 pt-2 border-t border-gray-100">
-                    <p className="text-sm text-gray-500">
-                      <span className="font-medium">Fecha:</span>{' '}
-                      {formatDate(hito.fechaRegistro)}
-                    </p>
-                    
-                    <p className="text-sm text-gray-500">
-                      <span className="font-medium">Evento:</span>{' '}
-                      {hito.eventoNombre ||
-                       (hito.eventoId ? `Evento #${hito.eventoId}` : 'Evento no especificado')}
-                    </p>
-                  </div>
+              <div key={hito.id} className="mis-hito-card">
+                <div className="flex justify-between items-start">
+                  <h3 className="mis-hito-title">{hito.titulo}</h3>
+                  <span className="mis-hito-badge">{hito.categoria}</span>
+                </div>
+                <p className="text-gray-600 mt-2">{hito.descripcion}</p>
+                <div className="mt-4 pt-2 border-t border-gray-100">
+                  <p className="text-sm text-gray-500">
+                    <span className="font-medium">Fecha:</span>{' '}
+                    {formatDate(hito.fechaRegistro)}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    <span className="font-medium">Evento:</span>{' '}
+                    {hito.eventoNombre ||
+                     (hito.eventoId ? `Evento #${hito.eventoId}` : 'Evento no especificado')}
+                  </p>
                 </div>
               </div>
             ))}

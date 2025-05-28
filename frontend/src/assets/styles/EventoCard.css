@@ -94,3 +94,48 @@
   background: #dcfce7;
   color: #15803d;
 }
+
+.evento-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+  padding: 2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px;
+  transition: box-shadow 0.22s, transform 0.22s;
+  will-change: box-shadow, transform;
+}
+.evento-card:hover, .evento-card:focus-within {
+  box-shadow: 0 8px 32px rgba(107,33,168,0.18);
+  transform: translateY(-6px) scale(1.025);
+}
+
+.evento-card-title {
+  color: #6b21a8;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.evento-card-info {
+  color: #4a00e0;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.evento-card-desc {
+  color: #444;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.evento-card-actions {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}

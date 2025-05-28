@@ -102,14 +102,14 @@ const Eventos: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600 eventos-main-container">
       <Navbar />
       <div className="container mx-auto p-4">
         <h2 className="text-4xl font-bold text-white mb-6">Eventos Disponibles</h2>
         {eventos.length === 0 ? (
           <p className="text-white text-lg">No hay eventos disponibles en este momento.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="eventos-grid">
             {eventos.map((evento) => (
               <EventoCard 
                 key={evento.id} 

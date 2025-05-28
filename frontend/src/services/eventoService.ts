@@ -60,6 +60,8 @@ export interface Evento {
 
  cantidadParticipantes?: number;
 
+ 
+
 }
 
 

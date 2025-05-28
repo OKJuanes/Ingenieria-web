@@ -15,17 +15,40 @@ const AdminHitos: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingHitoId, setEditingHitoId] = useState<number | undefined>(undefined);
 
+  // Ahora separamos las funciones de carga para mejor control
+  const fetchEventos = async () => {
+    try {
+      console.log("Cargando eventos...");
+      const allEvents = await getEventos();
+      console.log(`Eventos cargados: ${allEvents.length}`);
+      setEventos(allEvents);
+      return allEvents;
+    } catch (err: any) {
+      console.error("Error al cargar eventos:", err);
+      toast.error("Error al cargar eventos");
+      setError(err.message || 'Error al cargar eventos');
+      return [];
+    }
+  };
+
   const fetchHitos = async () => {
     setLoading(true);
     setError(null);
     try {
-      // Cargar todos los eventos (necesarios para el formulario de hitos)
-      const allEvents = await getEventos();
-      setEventos(allEvents);
-
-      // Cargar todos los hitos directamente
+      // Primero cargamos los eventos
+      const eventosData = await fetchEventos();
+      
+      // Luego cargamos los hitos
+      console.log("Cargando hitos...");
       const fetchedHitos = await getAllHitos();
+      console.log(`Hitos cargados: ${fetchedHitos.length}`);
       setHitos(fetchedHitos);
+      
+      // Asegurar que los eventos estén disponibles para mostrar nombres
+      if (eventosData.length === 0 && eventos.length === 0) {
+        console.log("Re-intentando cargar eventos...");
+        await fetchEventos();
+      }
     } catch (err: any) {
       setError(err.message || 'Error al cargar los hitos.');
       console.error("Error fetching hitos:", err);
@@ -34,8 +57,15 @@ const AdminHitos: React.FC = () => {
     }
   };
 
+  // Cargar datos al montar el componente
   useEffect(() => {
+    console.log("Componente AdminHitos montado - Cargando datos iniciales");
     fetchHitos();
+    
+    // Función de limpieza para useEffect
+    return () => {
+      console.log("Componente AdminHitos desmontado");
+    };
   }, []);
 
   const handleEdit = (hitoId: number) => {
@@ -59,6 +89,7 @@ const AdminHitos: React.FC = () => {
     setShowForm(false);
     setEditingHitoId(undefined);
     fetchHitos(); // Recargar la lista de hitos
+    toast.success('Hito guardado exitosamente');
   };
 
   const handleCancelForm = () => {
@@ -84,6 +115,13 @@ const AdminHitos: React.FC = () => {
           >
             Crear Nuevo Hito
           </button>
+          {/* Añadimos un botón para recargar datos */}
+          <button
+            onClick={fetchHitos}
+            className="hitoform-btn px-8 py-3 text-lg ml-4"
+          >
+            Actualizar lista
+          </button>
         </div>
 
         {showForm && (
@@ -91,6 +129,7 @@ const AdminHitos: React.FC = () => {
             <HitoForm
               hitoId={editingHitoId}
               participantesEvento={[]}
+              eventos={eventos} // Pasar los eventos cargados al formulario
               onSave={handleSaveHito}
               onCancel={handleCancelForm}
             />
@@ -98,7 +137,7 @@ const AdminHitos: React.FC = () => {
         )}
 
         {loading ? (
-          <p className="text-white text-center">Cargando hitos...</p>
+          <p className="text-white text-center">Cargando datos...</p>
         ) : error ? (
           <p className="text-red-300 text-center">Error: {error}</p>
         ) : hitos.length === 0 ? (

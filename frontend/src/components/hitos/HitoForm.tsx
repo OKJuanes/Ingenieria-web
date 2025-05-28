@@ -10,6 +10,8 @@ export interface HitoFormProps {
   participantesEvento: ParticipanteEvento[];
   onSave: () => void;
   onCancel: () => void;
+  eventos: Evento[];
+
 }
 
 const HitoForm: React.FC<HitoFormProps> = ({ 

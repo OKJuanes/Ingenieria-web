@@ -15,22 +15,40 @@ function Register() {
 
     const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => { // Usar React.FormEvent
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrorMessage(''); // Limpiar mensajes de error previos
-        setSuccessMessage(''); // Limpiar mensajes de éxito previos
-
-        try {
-            const userData = await register(correo, nombre, apellido, username, password); // Llamar a la función de registro
-            setSuccessMessage(`¡Registro exitoso para ${userData.username}!`);
-            
-            console.log("Registro exitoso:", userData);
+        setErrorMessage('');
+        setSuccessMessage('');
         
-            navigate('/login'); 
-
+        // Validaciones básicas
+        if (!correo || !nombre || !apellido || !username || !password) {
+            setErrorMessage('Todos los campos son obligatorios');
+            return;
+        }
+        
+        // Validación de correo electrónico
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(correo)) {
+            setErrorMessage('Por favor, ingresa un correo electrónico válido');
+            return;
+        }
+        
+        try {
+            const userData = await register(correo, nombre, apellido, username, password);
+            setSuccessMessage(`¡Registro exitoso para ${userData.username}!`);    
+            console.log("Registro exitoso:", userData);
+            
+            // Redirigir después de 1.5 segundos para que el usuario vea el mensaje de éxito
+            setTimeout(() => navigate('/login'), 1500);
         } catch (error: any) {
-            setErrorMessage(error.message || 'Error en el registro. Por favor, intenta de nuevo.');
-            console.error('Error de registro:', error);
+            console.error("Error de registro:", error);
+            
+            // Manejo específico para usuarios duplicados
+            if (error.message.includes('ya está en uso')) {
+                setErrorMessage(error.message);
+            } else {
+                setErrorMessage(`Error al registrar: ${error.message}`);
+            }
         }
     };
 
@@ -100,7 +118,11 @@ function Register() {
                         </div>
                     </form>
 
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
+                    {errorMessage && (
+                      <div className="error-message p-3 my-2 bg-red-100 text-red-700 rounded-md">
+                        {errorMessage}
+                      </div>
+                    )}
                     {successMessage && <p className="success-message">{successMessage}</p>}
                 </div>
             </div>

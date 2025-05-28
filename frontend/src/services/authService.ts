@@ -141,52 +141,65 @@ export const login = async (usernameInput: string, passwordInput: string): Promi
  * @throws Error Si el registro falla (ej. usuario/correo ya existe).
  */
 export const register = async (correo: string, nombre: string, apellido: string, usernameInput: string, passwordInput: string): Promise<UserData> => {
-  const response = await fetch(`${API_URL}/auth/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ correo, nombre, apellido, username: usernameInput, password: passwordInput }),
-  });
+  try {
+    const response = await fetch(`${API_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ correo, nombre, apellido, username: usernameInput, password: passwordInput }),
+    });
 
-  // Lee el cuerpo de la respuesta UNA SOLA VEZ
-  const data = await response.json();
+    // Primero verificamos si la respuesta es exitosa
+    if (!response.ok) {
+      // Intentamos leer el mensaje de error del backend
+      let errorMessage = 'Error en el registro';
+      
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (e) {
+        // Si no podemos parsear el JSON, usamos el texto de la respuesta
+        errorMessage = await response.text() || errorMessage;
+      }
+      
+      // Si el error contiene palabras clave relacionadas con duplicación
+      if (response.status === 400 || 
+          errorMessage.includes('ya existe') || 
+          errorMessage.includes('duplicate') ||
+          errorMessage.includes('already exists') ||
+          errorMessage.includes('duplicado')) {
+        throw new Error('El nombre de usuario o correo ya está en uso. Por favor, intenta con otro.');
+      }
+      
+      throw new Error(errorMessage);
+    }
 
-  // Verifica si la respuesta es exitosa
-  if (!response.ok) {
-    throw new Error(data.message || 'Error en el registro');
+    // Solo parseamos como JSON si la respuesta fue exitosa
+    const data = await response.json();
+    
+    // Almacenar token si existe
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+    }
+    
+    return {
+      id: data.id,
+      username: data.username,
+      role: data.role || 'usuario'
+    };
+  } catch (error: any) {
+    // Re-lanzar el error para que se maneje en el componente
+    throw error;
   }
-
-  // Extrae el token del objeto data ya parseado
-  const { token } = data;
-  if (!token) {
-    throw new Error('Backend did not return token on registration.');
-  }
-
-  // Decodifica el token para extraer los datos
-  const decoded = jwtDecode<JwtPayload>(token);
-  
-  // Extrae los datos del token
-  const id = decoded.id?.toString() || '';
-  const role = (decoded.role as 'admin' | 'usuario') || 'usuario';
-  const username = decoded.sub || usernameInput;
-
-  // Almacena el token y los datos en localStorage
-  setAuthData(token, { id, username, role: role as any });
-  
-  // Retorna los datos del usuario
-  return { id, username, role: role as any };
 };
 
-// Devuelve los headers de autorización usando el token almacenado
-const getAuthHeaders = (): Record<string, string> => {
-  const token = getToken();
-  return token
-    ? { Authorization: `Bearer ${token}` }
-    : {};
-};
-
-// Añade esta función para actualizar el perfil
+/**
+ * Realiza una solicitud de actualización del perfil del usuario.
+ * @param userData Los datos actualizados del usuario.
+ * @returns Promise<UserData> Los datos del usuario actualizado.
+ * @throws Error Si la actualización falla.
+ */
 export const updateUserProfile = async (userData: any): Promise<UserData> => {
   const response = await fetch(`${API_URL}/api/v1/usuarios/perfil`, {
     method: 'PUT',
@@ -208,6 +221,14 @@ export const updateUserProfile = async (userData: any): Promise<UserData> => {
   localStorage.setItem('userData', JSON.stringify(updatedUser));
   
   return updatedUser;
+};
+
+// Devuelve los headers de autorización usando el token almacenado
+const getAuthHeaders = (): Record<string, string> => {
+  const token = getToken();
+  return token
+    ? { Authorization: `Bearer ${token}` }
+    : {};
 };
 
 // Añade esta función adicional

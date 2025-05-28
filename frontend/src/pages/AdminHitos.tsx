@@ -97,9 +97,23 @@ const AdminHitos: React.FC = () => {
     setEditingHitoId(undefined);
   };
 
-  const getEventName = (eventoId: number) => {
-    const event = eventos.find(e => e.id === eventoId);
-    return event ? event.nombre : 'Evento Desconocido';
+  const getEventName = (eventoId: number | null | undefined) => {
+    if (!eventoId) return 'Sin evento asociado';
+    
+    console.log(`Buscando evento con ID: ${eventoId}`);
+    console.log(`Eventos disponibles: ${eventos.length}`);
+
+    // Convertir a número para asegurar consistencia
+    const eventIdNum = Number(eventoId);
+    const event = eventos.find(e => e.id === eventIdNum);
+    
+    if (event) {
+      console.log(`Evento encontrado: ${event.nombre}`);
+      return event.nombre;
+    } else {
+      console.log(`No se encontró evento con ID: ${eventIdNum}`);
+      return 'Evento Desconocido';
+    }
   };
 
   return (

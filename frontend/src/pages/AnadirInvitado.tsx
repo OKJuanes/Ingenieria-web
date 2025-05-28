@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
 import { getEventos, Evento, addExternalGuest } from '../services/eventoService';
 import '../assets/styles/AnadirInvitado.css';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const initialInvitado = {
@@ -21,8 +20,6 @@ const AnadirInvitado: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchEventos = async () => {
       const data = await getEventos();

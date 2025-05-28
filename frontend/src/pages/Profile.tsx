@@ -7,7 +7,7 @@ import Navbar from '../components/common/Navbar';
 
 import EventoCard from '../components/eventos/EventoCard';
 
-import { getUserData, isAuthenticated } from '../services/authService';
+import {isAuthenticated } from '../services/authService';
 
 import { getRegisteredEventsForCurrentUser, Evento, unregisterUserFromEvent } from '../services/eventoService';
 

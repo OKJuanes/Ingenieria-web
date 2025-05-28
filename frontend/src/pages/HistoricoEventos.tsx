@@ -75,12 +75,6 @@ const HistoricoEventos: React.FC = () => {
     const [dia, mes, anio] = fechaStr.split('-');
     return new Date(Number(anio), Number(mes) - 1, Number(dia));
   }
-
-  // También actualiza la función esPasado
-  const esPasado = (fecha: string): boolean => {
-    return parseFecha(fecha) < new Date();
-  };
-
   return (
     <div className="historico-main-container">
       <Navbar />

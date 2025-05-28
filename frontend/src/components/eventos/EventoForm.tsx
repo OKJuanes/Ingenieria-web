@@ -24,7 +24,7 @@ const EventoForm: React.FC<EventoFormProps> = ({ evento, onSave, onCancel }) => 
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
+    const { name, value} = e.target;
 
     // Manejo especial para números y arrays de strings
     if (name === 'cantidadParticipantes') {

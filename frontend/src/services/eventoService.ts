@@ -4,8 +4,6 @@ import { API_URL } from '../main';
 
 import { getToken } from './authService';
 
-import {jwtDecode} from 'jwt-decode';
-
 
 
 // Funciones de formato de fecha
@@ -192,7 +190,7 @@ export const getEventStats = async (): Promise<{ eventosActivos: number; totalPa
 
 export const getRecentEvents = async (limit: number = 3): Promise<Evento[]> => {
 
- const response = await fetch(`${API_URL}/api/v1/eventos/activos3`, {
+ const response = await fetch(`${API_URL}/api/v1/eventos/activos3?limit=${limit}`, {
 
   headers: getAuthHeaders(),
 
@@ -294,14 +292,8 @@ export const createEvent = async (newEvent: Omit<Evento, 'id'>): Promise<Evento>
 
  try {
 
-  if (token) {
-
-   const decoded = jwtDecode(token);
-
-  } else {
-
+  if (!token) {
    console.warn("No token found for decoding.");
-
   }
 
  } catch (e) {

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { API_URL } from '../main.tsx';
 // Eliminamos la importación de Navbar
 import '../assets/styles/Register.css'; // Importa el archivo CSS para los estilos
 import { register } from '../services/authService'; // Importar la función register del servicio

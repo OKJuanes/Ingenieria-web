@@ -1,7 +1,6 @@
 // src/services/userService.ts
 import { API_URL } from '../main';
-import { isAdmin, getUserData, getToken } from '../services/authService'; // Añadir getToken aquí
-import {jwtDecode} from 'jwt-decode';
+import { isAdmin, getToken } from '../services/authService'; // Añadir getToken aquí
 
 // Definir la interfaz User
 export interface User {

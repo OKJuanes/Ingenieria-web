@@ -59,15 +59,6 @@ const NuevoEvento: React.FC = () => {
     }));
   };
 
-  const handleArrayChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: keyof Evento) => {
-    const { value } = e.target;
-    const items = value.split(',').map(item => item.trim()).filter(item => item !== '');
-    setEventoData(prevData => ({
-      ...prevData,
-      [field]: items,
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

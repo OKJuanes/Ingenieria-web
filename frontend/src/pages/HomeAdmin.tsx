@@ -5,7 +5,6 @@ import {
   getEventStats, 
   getRecentEvents, 
   Evento, 
-  generateEventsReportCsv, 
   getEventos, 
   deleteEvento 
 } from '../services/eventoService';
@@ -38,7 +37,6 @@ const HomeAdmin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterTipo, setFilterTipo] = useState('');
-  const [filterFecha, setFilterFecha] = useState('');
   const [filterEstado, setFilterEstado] = useState('');
 
   // Efecto para cargar las estadísticas
@@ -107,29 +105,6 @@ const HomeAdmin: React.FC = () => {
   // Manejadores de los botones de acción
   const handleCreateEvent = () => {
     navigate('/eventos/nuevo-evento'); // Redirige a la ruta para crear un nuevo evento
-  };
-
-  const handleGenerateReport = async () => {
-    setLoadingRecent(true);
-    try {
-      const csvData = await generateEventsReportCsv();
-      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', 'reporte_eventos_y_participantes.csv');
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      toast.success('Reporte generado exitosamente.');
-    } catch (err: any) {
-      toast.error(`Error al generar el reporte: ${err.message || 'Error desconocido'}`);
-    } finally {
-      setLoadingRecent(false);
-    }
   };
   const handleManageMilestones = () => {
     navigate('/admin/hitos'); // Redirige a la nueva página de gestión de hitos

@@ -1,7 +1,7 @@
 // src/components/hitos/HitoForm.tsx
 import React, { useState, useEffect } from 'react';
 import { Hito, createHito, getHitoById, updateHito } from '../../services/hitoService';
-import { getEventos, getEventosHistorico, Evento, getParticipantesByEventoId, ParticipanteEvento } from '../../services/eventoService';
+import {  getEventosHistorico, Evento, getParticipantesByEventoId, ParticipanteEvento } from '../../services/eventoService';
 import '../../assets/styles/HitoForm.css';
 
 export interface HitoFormProps {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import { getAllHitos, Hito, deleteHito } from '../services/hitoService';
-import { getEventos, Evento, getEventoById, getEventosHistorico } from '../services/eventoService';
+import { Evento, getEventosHistorico } from '../services/eventoService';
 import { isAuthenticated, getUserData } from '../services/authService';
 import '../assets/styles/HomeAdmin.css';
 import '../assets/styles/Historico.css';

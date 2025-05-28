@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
 import { Hito, getHitosByEventoId, deleteHito } from '../services/hitoService'; 
-import { Evento, getEventos, getEventoById } from '../services/eventoService'; // ¡Importación corregida!
+import { Evento, getEventos } from '../services/eventoService'; // ¡Importación corregida!
 import { getParticipantesByEventoId } from '../services/eventoService';
 import type { ParticipanteEvento } from '../services/eventoService';
 import HitoForm from '../components/hitos/HitoForm';

@@ -113,16 +113,16 @@ const NuevoEvento: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="nuevo-evento-bg">
       <Navbar />
-      <div className="container mx-auto p-4">
-        <h2 className="text-4xl font-bold text-white mb-6">{isEditing ? 'Editar Evento' : 'Crear Nuevo Evento'}</h2>
+      <div className="nuevo-evento-container">
+        
 
         {error && <div className="bg-red-200 text-red-800 p-3 rounded mb-4">{error}</div>}
         {success && <div className="bg-green-200 text-green-800 p-3 rounded mb-4">{success}</div>}
 
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-          <div className="mb-4">
+        <form onSubmit={handleSubmit} className="form-container">
+          <div className="form-group">
             <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">Nombre del Evento:</label>
             <input
               type="text"
@@ -135,7 +135,7 @@ const NuevoEvento: React.FC = () => {
             />
           </div>
 
-          <div className="mb-4">
+          <div className="form-group">
             <label htmlFor="tipo" className="block text-gray-700 text-sm font-bold mb-2">Tipo de Evento:</label>
             <select
               id="tipo"
@@ -154,7 +154,7 @@ const NuevoEvento: React.FC = () => {
             </select>
           </div>
 
-          <div className="mb-4">
+          <div className="form-group">
             <label htmlFor="fecha" className="block text-gray-700 text-sm font-bold mb-2">Fecha:</label>
             <input
               type="date"
@@ -167,7 +167,7 @@ const NuevoEvento: React.FC = () => {
             />
           </div>
 
-          <div className="mb-4">
+          <div className="form-group">
             <label htmlFor="descripcion" className="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
             <textarea
               id="descripcion"
@@ -180,7 +180,7 @@ const NuevoEvento: React.FC = () => {
             ></textarea>
           </div>
 
-          <div className="mb-4">
+          <div className="form-group">
             <label htmlFor="empresa" className="block text-gray-700 text-sm font-bold mb-2">Empresa Patrocinadora:</label>
             <input
               type="text"
@@ -224,7 +224,7 @@ const NuevoEvento: React.FC = () => {
                   alert("No hay token guardado");
                 }
               }}
-              className="text-sm text-gray-600 mb-2"
+              className="verificar-permisos-btn"
             >
               Verificar permisos
             </button>

@@ -174,7 +174,7 @@ const HitoForm: React.FC<HitoFormProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-6 max-w-lg mx-auto">
       <h3 className="text-xl font-semibold mb-4">{isEditing ? 'Editar Hito' : 'Crear Hito'}</h3>
 
       {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}

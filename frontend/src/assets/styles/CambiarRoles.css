@@ -47,3 +47,38 @@
   background: #f3e8ff;
   color: #4a00e0;
 }
+
+/* Fondo general */
+.cambiar-roles-bg {
+  min-height: 100vh;
+  background: #6b21a8;
+}
+
+/* Contenedor principal */
+.cambiar-roles-container {
+  padding-top: 110px; /* Ajusta según la altura de tu navbar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Tabla centrada y responsiva */
+.cambiar-roles-table-wrapper {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 950px;
+  overflow-x: auto;
+  margin: 0 auto;
+}
+
+/* Ajusta la tabla para que no se desborde */
+.cambiar-roles-table {
+  min-width: 800px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}

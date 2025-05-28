@@ -58,34 +58,32 @@ const CambiarRoles: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="cambiar-roles-bg">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 pt-20">
-        <h2 className="text-3xl font-bold text-white mb-8">Cambiar Roles de Usuarios</h2>
-        
+      <div className="cambiar-roles-container">
+        <h2 className="text-3xl font-bold text-white mb-8 mt-2">Cambiar Roles de Usuarios</h2>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
-        
         {loading ? (
           <div className="text-center py-10">
             <p className="text-white text-lg">Cargando usuarios...</p>
           </div>
         ) : !error ? (
-          <div className="bg-white bg-opacity-90 shadow-md rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-violet-700">
+          <div className="cambiar-roles-table-wrapper">
+            <table className="cambiar-roles-table">
+              <thead>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Usuario</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Correo</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nombre</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Rol Actual</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Acción</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-violet-900 uppercase tracking-wider">Usuario</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-violet-900 uppercase tracking-wider">Correo</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-violet-900 uppercase tracking-wider">Nombre</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-violet-900 uppercase tracking-wider">Rol Actual</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-violet-900 uppercase tracking-wider">Acción</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody>
                 {users.map(user => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap">{user.username}</td>

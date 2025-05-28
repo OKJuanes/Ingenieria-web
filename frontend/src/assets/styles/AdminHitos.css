@@ -1,9 +1,18 @@
 /* src/assets/styles/AdminHitos.css */
-.admin-hitos-container {
-    /* Puedes añadir estilos específicos para el contenedor de la página si lo necesitas */
-    padding-top: 80px; /* Para dejar espacio a la Navbar fija */
-    min-height: 100vh; /* Asegura que ocupe al menos toda la altura de la ventana */
+.admin-hitos-bg {
+  min-height: 100vh;
+  background: #6b21a8;
 }
+
+.admin-hitos-container {
+  padding-top: 110px; /* Ajusta según la altura de tu navbar */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilos para los botones de acción */
 .hito-btn {
   background: #6b21a8;
   color: #fff;
@@ -23,6 +32,7 @@
   color: #fff;
 }
 
+/* Estilos para el botón de eliminar */
 .hito-btn-delete {
   background: #fff;
   color: #e11d48;
@@ -34,6 +44,7 @@
   color: #b91c1c;
 }
 
+/* Estilos para las insignias de estado */
 .hito-badge {
   display: inline-block;
   padding: 5px 16px;
@@ -51,4 +62,65 @@
   background: #fee2e2;
   color: #b91c1c;
   border: 1.5px solid #b91c1c;
+}
+
+/* Tabla de hitos */
+.admin-hitos-table-wrapper {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 1100px;
+  overflow-x: auto;
+  margin: 0 auto;
+}
+
+.admin-hitos-table {
+  min-width: 800px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Estilos para la sección de participantes del evento */
+.participantes-evento-box {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+  padding: 24px 32px;
+  margin: 24px auto 32px auto;
+  max-width: 420px;
+  text-align: center;
+}
+
+.participantes-evento-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #6b21a8;
+  margin-bottom: 10px;
+}
+
+.participantes-evento-list {
+  color: #444;
+  font-size: 1.08rem;
+  margin: 0;
+}
+
+/* Estilos para la sección de ganadores de hitos */
+.ganadores-hitos-box {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(107,33,168,0.10);
+  padding: 24px 32px;
+  margin: 40px auto 0 auto;
+  max-width: 540px;
+  text-align: center;
+}
+
+.ganadores-hitos-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #22c55e;
+  margin-bottom: 10px;
 }

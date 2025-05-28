@@ -114,6 +114,9 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px; /* Aumenta el espacio debajo de eventos recientes */
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e7eb; /* Línea divisoria sutil */
 }
 
 .section-title {
@@ -190,6 +193,49 @@
 .delete-btn:focus {
   background: #fee2e2;
   color: #b91c1c;
+}
+
+/* Events table section */
+.events-table-section {
+  margin-top: 40px; /* Más espacio arriba de la tabla de gestión */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(107,33,168,0.07);
+  padding: 24px;
+}
+
+/* Filtros */
+.event-filters {
+  margin-bottom: 24px;
+  gap: 16px;
+}
+.filter-input, .filter-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1.5px solid #c4b5fd;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.filter-input:focus, .filter-select:focus {
+  border-color: #6b21a8;
+  box-shadow: 0 0 0 2px #c4b5fd;
+}
+
+/* Badges de estado */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: #fff;
+}
+.badge-activo {
+  background: #22c55e;
+}
+.badge-finalizado {
+  background: #e11d48;
 }
 
 /* Responsive adjustments */

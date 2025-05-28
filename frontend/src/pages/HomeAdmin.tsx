@@ -7,6 +7,12 @@ import EventoCard from '../components/eventos/EventoCard'; // Para mostrar event
 import '../assets/styles/HomeAdmin.css'; // Tu archivo de estilos para HomeAdmin
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+function parseFecha(fechaStr: string): Date {
+  // Si el formato es dd-mm-yyyy
+  const [dia, mes, anio] = fechaStr.split('-');
+  return new Date(Number(anio), Number(mes) - 1, Number(dia));
+}
+
 const HomeAdmin: React.FC = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
@@ -22,6 +28,10 @@ const HomeAdmin: React.FC = () => {
   const [errorStats, setErrorStats] = useState<string | null>(null);
   const [errorRecent, setErrorRecent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterTipo, setFilterTipo] = useState('');
+  const [filterFecha, setFilterFecha] = useState('');
+  const [filterEstado, setFilterEstado] = useState('');
 
   // Efecto para cargar las estadísticas
   useEffect(() => {
@@ -123,6 +133,27 @@ const HomeAdmin: React.FC = () => {
   const handleManageMilestones = () => {
     navigate('/admin/hitos'); // Redirige a la nueva página de gestión de hitos
   };
+  // Filtrado de eventos para la tabla de gestión
+  const eventosFiltrados = eventos.filter(evento => {
+    const matchNombre = evento.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchTipo = filterTipo ? evento.tipo === filterTipo : true;
+
+    // Usa el parser para comparar fechas correctamente
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+    const fechaEvento = parseFecha(evento.fecha);
+    fechaEvento.setHours(0, 0, 0, 0);
+
+    let matchEstado = true;
+    if (filterEstado === 'ACTIVO') {
+      matchEstado = fechaEvento >= hoy;
+    } else if (filterEstado === 'FINALIZADO') {
+      matchEstado = fechaEvento < hoy;
+    }
+
+    return matchNombre && matchTipo && matchEstado;
+  });
+
   // Reemplaza la sección de contenido principal
   return (
     <div className="home-admin-container">
@@ -213,11 +244,42 @@ const HomeAdmin: React.FC = () => {
         {/* Nueva sección: Tabla de gestión de eventos */}
         <div className="events-table-section">
           <h3 className="section-title">📋 Gestión de Eventos</h3>
+          {/* Filtros y buscador */}
+          <div className="event-filters mb-6 flex flex-wrap gap-4 items-center">
+            <input
+              type="text"
+              placeholder="Buscar por nombre..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="filter-input"
+            />
+            <select
+              value={filterTipo}
+              onChange={e => setFilterTipo(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">Todos los tipos</option>
+              <option value="BOOTCAMP">Bootcamp</option>
+              <option value="HACKATON">Hackatón</option>
+              <option value="CHARLA">Charla</option>
+              <option value="CONCURSO">Concurso</option>
+              <option value="OTROS">Otros</option>
+            </select>
+            <select
+              value={filterEstado}
+              onChange={e => setFilterEstado(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">Todos los estados</option>
+              <option value="ACTIVO">Activo</option>
+              <option value="FINALIZADO">Finalizado</option>
+            </select>
+          </div>
           {loading ? (
             <p className="loading-text">Cargando eventos...</p>
           ) : error ? (
             <p className="error-text">Error al cargar eventos: {error}</p>
-          ) : eventos.length === 0 ? (
+          ) : eventosFiltrados.length === 0 ? (
             <p className="empty-text">No hay eventos para mostrar.</p>
           ) : (
             <div className="table-container">
@@ -228,20 +290,16 @@ const HomeAdmin: React.FC = () => {
                     <th>Nombre</th>
                     <th>Fecha</th>
                     <th>Tipo</th>
-                    <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {eventos.map((evento) => (
+                  {eventosFiltrados.map((evento) => (
                     <tr key={evento.id}>
                       {/* <td>{evento.id}</td> */} {/* Elimina o comenta esta línea */}
                       <td>{evento.nombre}</td>
                       <td>{evento.fecha}</td>
                       <td>{evento.tipo}</td>
-                      <td>
-                        {/* Aquí puedes mostrar el estado si lo tienes */}
-                      </td>
                       <td className="actions-cell">
                         <Link 
                           to={`/eventos/${evento.id}`} 

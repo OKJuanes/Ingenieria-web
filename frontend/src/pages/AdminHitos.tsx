@@ -89,17 +89,17 @@ const AdminHitos: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
+    <div className="admin-hitos-bg">
       <Navbar />
-      <div className="container mx-auto p-4">
+      <div className="admin-hitos-container">
         <h2 className="text-4xl font-bold text-white mb-6">Gestión de Hitos</h2>
 
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex gap-4 mb-6 justify-center">
           <button
             onClick={() => { setShowForm(true); setEditingHitoId(undefined); }}
-            className="bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-4 rounded transition duration-300"
+            className="hitoform-btn"
           >
-            <i className="fas fa-plus"></i> Crear Nuevo Hito
+            Crear Nuevo Hito
           </button>
 
           <select
@@ -143,6 +143,8 @@ const AdminHitos: React.FC = () => {
           </div>
         )}
 
+      
+
         {loading ? (
           <p className="text-white text-center">Cargando hitos...</p>
         ) : error ? (
@@ -150,8 +152,8 @@ const AdminHitos: React.FC = () => {
         ) : hitos.length === 0 ? (
           <p className="text-white text-lg">No hay hitos para mostrar {selectedEventoId !== 'all' ? `para este evento.` : `.`}</p>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <table className="min-w-full leading-normal">
+          <div className="admin-hitos-table-wrapper">
+            <table className="admin-hitos-table">
               <thead>
                 <tr>
                   <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -209,6 +211,7 @@ const AdminHitos: React.FC = () => {
               </tbody>
             </table>
           </div>
+        
         )}
       </div>
     </div>

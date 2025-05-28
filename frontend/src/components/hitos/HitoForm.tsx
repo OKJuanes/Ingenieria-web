@@ -1,7 +1,7 @@
 // src/components/hitos/HitoForm.tsx
 import React, { useState, useEffect } from 'react';
 import { Hito, createHito, getHitoById, updateHito } from '../../services/hitoService';
-import { Evento, getEventos, getParticipantesByEventoId, ParticipanteEvento } from '../../services/eventoService';
+import { getEventos, getEventosHistorico, Evento, getParticipantesByEventoId, ParticipanteEvento } from '../../services/eventoService';
 import '../../assets/styles/HitoForm.css';
 
 export interface HitoFormProps {
@@ -71,8 +71,10 @@ const HitoForm: React.FC<HitoFormProps> = ({
   useEffect(() => {
     const fetchEventos = async () => {
       try {
-        const fetchedEventos = await getEventos();
+        // Reemplazar getEventos por getEventosHistorico para obtener TODOS los eventos
+        const fetchedEventos = await getEventosHistorico();
         setEventos(fetchedEventos);
+        console.log("Eventos cargados para selector:", fetchedEventos.length);
 
         // Si no estamos editando y no hay evento preseleccionado, seleccionar el primero
         if (!isEditing && !eventoIdParent && fetchedEventos.length > 0) {

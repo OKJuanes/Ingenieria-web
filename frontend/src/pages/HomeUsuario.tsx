@@ -10,6 +10,7 @@ const HomeUsuario: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchEventos = async () => {
@@ -40,9 +41,12 @@ const HomeUsuario: React.FC = () => {
   // Extraer tipos de eventos únicos para los filtros
   const tiposDeEvento = [...new Set(eventos.map(e => e.tipo))];
   
-  // Filtrar eventos según etiquetas seleccionadas
+  // Filtrar eventos según etiquetas y búsqueda
   const eventosFiltrados = eventos.filter(evento =>
-    etiquetasSeleccionadas.length === 0 || etiquetasSeleccionadas.includes(evento.tipo)
+    (etiquetasSeleccionadas.length === 0 || etiquetasSeleccionadas.includes(evento.tipo)) &&
+    (searchTerm === '' || 
+     evento.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     evento.descripcion.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -50,6 +54,17 @@ const HomeUsuario: React.FC = () => {
       <Navbar />
       <div className="home-usuario-content">
         <h2 className="home-usuario-title">Bienvenido</h2>
+        
+        {/* Barra de búsqueda */}
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Buscar eventos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
         
         {/* Filtro por tipos */}
         <div className="filtro-etiquetas">
@@ -75,22 +90,24 @@ const HomeUsuario: React.FC = () => {
           ) : error ? (
             <p className="mensaje-error">Error: {error}</p>
           ) : eventosFiltrados.length > 0 ? (
-            <ul>
+            <div className="eventos-grid">
               {eventosFiltrados.map((evento) => (
-                <li key={evento.id} className="evento-item">
+                <div key={evento.id} className="evento-card">
                   <h4>{evento.nombre}</h4>
-                  <p><strong>Fecha:</strong> {evento.fecha}</p>
-                  <p><strong>Tipo:</strong> {evento.tipo}</p>
-                  <p><strong>Patrocinador:</strong> {evento.empresa || 'No especificado'}</p>
-                  <p><strong>Descripción:</strong> {evento.descripcion}</p>
-                  <Link to={`/eventos/${evento.id}`} className="evento-btn btn-ver-detalle">
+                  <div className="evento-fecha">{evento.fecha}</div>
+                  <div className="evento-tipo">{evento.tipo}</div>
+                  <p className="evento-patrocinador">
+                    <strong>Patrocinador:</strong> {evento.empresa || 'No especificado'}
+                  </p>
+                  <p className="evento-descripcion">{evento.descripcion}</p>
+                  <Link to={`/eventos/${evento.id}`} className="evento-btn">
                     Ver detalles
                   </Link>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
-            <p className="mensaje-sin-eventos">No hay eventos disponibles.</p>
+            <p className="mensaje-sin-eventos">No hay eventos disponibles con los criterios seleccionados.</p>
           )}
         </div>
       </div>

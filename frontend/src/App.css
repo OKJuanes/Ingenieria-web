@@ -16,3 +16,19 @@ body {
     background-size: 600% 600%;
     animation: gradientBackground 10s ease infinite;
   }
+
+  /* Ajuste general para mejorar responsividad */
+* {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Asegurarse de que los contenedores principales tienen overflow controlado */
+body, #root {
+  overflow-x: hidden;
+}

@@ -67,21 +67,28 @@
 /* Action buttons */
 .action-buttons {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
+  grid-template-columns: 1fr; /* Por defecto 1 columna en móviles pequeños */
+  grid-gap: 16px;
+  margin-bottom: 32px;
+  max-width: 100%;
 }
 
 .action-button {
-  padding: 15px;
+  padding: 15px 10px;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: clamp(0.9rem, 3vw, 1.1rem); /* Texto responsive */
   font-weight: bold;
   color: white;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   text-align: center;
+  width: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .create-button {
@@ -106,6 +113,45 @@
 
 .report-button:hover {
   background-color: #4b5563;
+}
+
+/* Media queries para diferentes tamaños de pantalla */
+@media (min-width: 480px) {
+  .action-button {
+    padding: 15px;
+    min-height: 70px;
+  }
+}
+
+@media (min-width: 576px) {
+  .action-buttons {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets y mayor */
+    grid-template-rows: auto auto;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .action-button {
+    min-height: 80px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .action-buttons {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Para pantallas muy pequeñas, asegurar texto legible */
+@media (max-width: 360px) {
+  .action-button {
+    font-size: 0.9rem;
+    padding: 12px 8px;
+  }
 }
 
 /* Recent events section */

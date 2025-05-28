@@ -20,7 +20,7 @@ public class InvitadoExterno {
     @Column(nullable = false)
     private String correo;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String telefono;
 
     @Column(nullable = true)

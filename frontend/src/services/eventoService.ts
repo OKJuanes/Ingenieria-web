@@ -645,21 +645,36 @@ export const deleteEvento = async (id: number): Promise<void> => {
   }
 };
 
-// Agregar esta nueva función
+
 
 /**
+
  * Obtiene el histórico completo de todos los eventos
+
  * @returns Promise con un array de objetos Evento
+
  */
+
 export const getEventosHistorico = async (): Promise<Evento[]> => {
+
   const response = await fetch(`${API_URL}/api/v1/eventos/historico`, {
+
     headers: getAuthHeaders(),
+
   });
 
+
+
   if (!response.ok) {
+
     const errorData = await response.json();
+
     throw new Error(errorData.message || 'Error al cargar el histórico de eventos');
+
   }
 
+
+
   return response.json();
+
 };

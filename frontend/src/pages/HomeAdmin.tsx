@@ -228,12 +228,7 @@ const HomeAdmin: React.FC = () => {
           >
             Gestionar Hitos
           </button>
-          <button 
-            onClick={handleGenerateReport} 
-            className="action-button report-button"
-          >
-            Generar Reporte
-          </button>
+          {/* Eliminamos el botón de Generar Reporte */}
           {/* Nuevo botón para el histórico */}
           <button 
             onClick={handleViewHistorico} 

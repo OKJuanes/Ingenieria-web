@@ -1,6 +1,7 @@
 // src/services/hitoService.ts
 import { API_URL } from '../main';
 import { getToken } from './authService';
+import { getEventoById } from './eventoService'; // Asegúrate de importar getEventoById
 
 // Interfaz Hito actualizada para mantener compatibilidad con todas las páginas
 export interface Hito {
@@ -186,7 +187,53 @@ export const getAllHitos = async (): Promise<Hito[]> => {
     throw new Error(errorData.message || 'Error al obtener los hitos');
   }
 
-  return response.json();
+  const hitos = await response.json();
+  console.log("Hitos raw desde getAllHitos:", hitos); // Para depurar
+  
+  return Promise.all(hitos.map(async (hito: any) => {
+    // Primero intentar obtener el nombre del evento desde las propiedades existentes
+    let nombreEvento = 
+      hito.eventoNombre || 
+      (hito.evento ? hito.evento.nombre : '') ||
+      (hito.eventoRelacionado ? hito.eventoRelacionado.nombre : '');
+      
+    // Si no tenemos nombre pero tenemos ID, intentar obtener del API
+    if (!nombreEvento && hito.eventoId) {
+      try {
+        const evento = await getEventoById(hito.eventoId);
+        if (evento) {
+          nombreEvento = evento.nombre;
+        } else {
+          nombreEvento = `Evento #${hito.eventoId}`;
+        }
+      } catch (err) {
+        console.error(`Error al obtener nombre del evento ${hito.eventoId}:`, err);
+        nombreEvento = `Evento #${hito.eventoId}`;
+      }
+    } else if (!nombreEvento && hito.eventoRelacionado && hito.eventoRelacionado.id) {
+      // Si tenemos el ID a través de la relación
+      try {
+        const evento = await getEventoById(hito.eventoRelacionado.id);
+        if (evento) {
+          nombreEvento = evento.nombre;
+        }
+      } catch (err) {
+        console.error(`Error al obtener nombre del evento ${hito.eventoRelacionado.id}:`, err);
+      }
+    }
+    
+    // Extraer el ID del evento de donde sea posible
+    const eventoId = hito.eventoId || 
+                    (hito.evento ? hito.evento.id : undefined) ||
+                    (hito.eventoRelacionado ? hito.eventoRelacionado.id : undefined);
+    
+    return {
+      ...hito,
+      eventoNombre: nombreEvento || 'Sin evento',
+      eventoId: eventoId,
+      fechaRegistro: formatDateForFrontend(hito.fechaRegistro || '')
+    };
+  }));
 };
 
 /**
@@ -212,11 +259,16 @@ export const getMisHitosGanados = async (): Promise<Hito[]> => {
     // Si tenemos el eventoId pero no el nombre, intentar obtenerlo
     if (hito.eventoId && (!hito.eventoNombre && !hito.evento?.nombre)) {
       try {
-        // Aquí podrías hacer una llamada adicional para obtener el nombre del evento
-        // por ejemplo: const evento = await getEventoById(hito.eventoId);
-        // y luego usar evento.nombre
+        // IMPLEMENTACIÓN REAL: Obtener el evento por su ID
+        const evento = await getEventoById(hito.eventoId);
+        if (evento) {
+          hito.eventoNombre = evento.nombre;
+        } else {
+          hito.eventoNombre = `Evento #${hito.eventoId}`;
+        }
       } catch (err) {
         console.error(`Error al obtener nombre del evento ${hito.eventoId}:`, err);
+        hito.eventoNombre = `Evento #${hito.eventoId}`;
       }
     }
     
@@ -225,7 +277,8 @@ export const getMisHitosGanados = async (): Promise<Hito[]> => {
       fechaRegistro: formatDateForFrontend(hito.fechaRegistro || ''),
       eventoNombre: hito.eventoNombre || 
                     (hito.evento ? hito.evento.nombre : '') || 
-                    (hito.eventoRelacionado ? hito.eventoRelacionado.nombre : '')
+                    (hito.eventoRelacionado ? hito.eventoRelacionado.nombre : '') ||
+                    (hito.eventoId ? `Evento #${hito.eventoId}` : 'Sin evento')
     };
   }));
 };

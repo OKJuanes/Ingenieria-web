@@ -20,6 +20,7 @@ import AdminHitos from './pages/AdminHitos';
 import CambiarRoles from './pages/CambiarRoles';
 import AnadirInvitado from './pages/AnadirInvitado';
 import HistoricoEventos from './pages/HistoricoEventos';
+import HistoricoHitos from './pages/HistoricoHitos';
 
 // Importa páginas de eventos
 import Eventos from './pages/Eventos';
@@ -117,6 +118,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <HistoricoEventos />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/historico-hitos',
+    element: (
+      <ProtectedRoute>
+        <HistoricoHitos />
       </ProtectedRoute>
     ),
   },

@@ -144,6 +144,10 @@ const HomeAdmin: React.FC = () => {
   const handleViewHistorico = () => {
     navigate('/admin/historico-eventos');
   };
+  // Añadir esta función para manejar la navegación al histórico de hitos
+  const handleViewHistoricoHitos = () => {
+    navigate('/admin/historico-hitos');
+  };
 
   // Filtrado de eventos para la tabla de gestión
   const eventosFiltrados = eventos.filter(evento => {
@@ -236,6 +240,13 @@ const HomeAdmin: React.FC = () => {
             className="action-button historico-button"
           >
             Ver Histórico
+          </button>
+          {/* Botón para el histórico de hitos */}
+          <button 
+            onClick={handleViewHistoricoHitos} 
+            className="action-button historico-hitos-button"
+          >
+            Ver Histórico Hitos
           </button>
         </div>
 

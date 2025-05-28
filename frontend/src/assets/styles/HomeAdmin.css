@@ -192,6 +192,15 @@
   color: #b91c1c;
 }
 
+/* Nuevo estilo para el botón histórico */
+.historico-button {
+  background: linear-gradient(135deg, #6b46c1 0%, #9f7aea 100%);
+}
+
+.historico-button:hover {
+  background: linear-gradient(135deg, #553c9a 0%, #805ad5 100%);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .stats-grid,

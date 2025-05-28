@@ -130,6 +130,11 @@ const HomeAdmin: React.FC = () => {
   const handleManageMilestones = () => {
     navigate('/admin/hitos'); // Redirige a la nueva página de gestión de hitos
   };
+  // Añadir esta función para manejar la navegación al histórico
+  const handleViewHistorico = () => {
+    navigate('/admin/historico-eventos');
+  };
+
   // Reemplaza la sección de contenido principal
   return (
     <div className="home-admin-container">
@@ -193,6 +198,13 @@ const HomeAdmin: React.FC = () => {
             className="action-button report-button"
           >
             Generar Reporte
+          </button>
+          {/* Nuevo botón para el histórico */}
+          <button 
+            onClick={handleViewHistorico} 
+            className="action-button historico-button"
+          >
+            Ver Histórico
           </button>
         </div>
 

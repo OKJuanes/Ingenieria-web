@@ -276,4 +276,14 @@ public class EventoController {
             this.empresa = empresa;
         }
     }
+
+    /**
+     * Devuelve todos los eventos, incluyendo los pasados
+     * @return Lista completa de eventos
+     */
+    @GetMapping("/historico")
+    @PreAuthorize("hasAnyAuthority('admin:read') or hasRole('ADMIN')")
+    public List<Evento> getEventosHistorico() {
+        return eventoService.getAllEventos();  // Asumiendo que este método ya existe
+    }
 }

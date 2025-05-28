@@ -214,7 +214,7 @@ const NuevoEvento: React.FC = () => {
                   try {
                     // Importa jwtDecode o ajusta según tu implementación
                     const decoded = jwtDecode<{ role?: string; authorities?: string }>(token);
-                    console.log("Token decodificado:", decoded);
+
                     alert(`Rol: ${decoded.role}\nPermisos: ${decoded.authorities || 'No disponible'}`);
                   } catch (e) {
                     console.error("Error decodificando token:", e);

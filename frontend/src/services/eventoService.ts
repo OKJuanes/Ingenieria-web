@@ -96,10 +96,6 @@ const getAuthHeaders = () => {
 
  const token = getToken();
 
- console.log("Token recuperado:", token); // Para debug
-
-
-
  return {
 
   'Content-Type': 'application/json',
@@ -301,8 +297,6 @@ export const createEvent = async (newEvent: Omit<Evento, 'id'>): Promise<Evento>
   if (token) {
 
    const decoded = jwtDecode(token);
-
-   console.log("Token decoded:", decoded);
 
   } else {
 

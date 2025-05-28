@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/common/Navbar';
 import { Hito, deleteHito, getAllHitos } from '../services/hitoService'; 
-import { Evento, getEventos } from '../services/eventoService';
+import { Evento, getEventosHistorico } from '../services/eventoService';
 import HitoForm from '../components/hitos/HitoForm';
 import '../assets/styles/AdminHitos.css';
 import { toast } from 'react-toastify';
@@ -18,8 +18,9 @@ const AdminHitos: React.FC = () => {
   // Ahora separamos las funciones de carga para mejor control
   const fetchEventos = async () => {
     try {
-      console.log("Cargando eventos...");
-      const allEvents = await getEventos();
+      console.log("Cargando TODOS los eventos...");
+      // Cambiar getEventos por getEventosHistorico para obtener tanto activos como históricos
+      const allEvents = await getEventosHistorico();
       console.log(`Eventos cargados: ${allEvents.length}`);
       setEventos(allEvents);
       return allEvents;
@@ -93,22 +94,31 @@ const AdminHitos: React.FC = () => {
     setEditingHitoId(undefined);
   };
 
+  // Modificar la función getEventName para manejar correctamente los IDs
   const getEventName = (eventoId: number | null | undefined) => {
     if (!eventoId) return 'Sin evento asociado';
     
-    console.log(`Buscando evento con ID: ${eventoId}`);
+    // Debug para ver qué valores estamos comparando
+    console.log(`Buscando evento con ID: ${eventoId} (${typeof eventoId})`);
     console.log(`Eventos disponibles: ${eventos.length}`);
+    if (eventos.length > 0) {
+      console.log(`IDs de eventos cargados:`, eventos.map(e => `${e.id} (${typeof e.id})`));
+    }
 
-    // Convertir a número para asegurar consistencia
-    const eventIdNum = Number(eventoId);
-    const event = eventos.find(e => e.id === eventIdNum);
+    // Intentar encontrar por ID numérico exacto
+    let event = eventos.find(e => e.id === Number(eventoId));
+    
+    // Si no se encuentra, intentar una comparación más flexible por string
+    if (!event) {
+      event = eventos.find(e => String(e.id) === String(eventoId));
+    }
     
     if (event) {
-      console.log(`Evento encontrado: ${event.nombre}`);
+      console.log(`Evento encontrado: ${event.nombre} (ID: ${event.id})`);
       return event.nombre;
     } else {
-      console.log(`No se encontró evento con ID: ${eventIdNum}`);
-      return 'Evento Desconocido';
+      console.log(`No se encontró evento con ID: ${eventoId}`);
+      return `Evento ID:${eventoId}`;  // Mostrar el ID para ayudar a depurar
     }
   };
 

@@ -19,6 +19,7 @@ import HomeAdmin from './pages/HomeAdmin';
 import AdminHitos from './pages/AdminHitos';
 import CambiarRoles from './pages/CambiarRoles';
 import AnadirInvitado from './pages/AnadirInvitado';
+import HistoricoEventos from './pages/HistoricoEventos';
 
 // Importa páginas de eventos
 import Eventos from './pages/Eventos';
@@ -108,6 +109,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <AnadirInvitado />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/historico-eventos',
+    element: (
+      <ProtectedRoute>
+        <HistoricoEventos />
       </ProtectedRoute>
     ),
   },

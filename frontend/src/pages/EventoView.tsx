@@ -4,7 +4,16 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import { getEventoById, registerUserToEvent, unregisterUserFromEvent, Evento } from '../services/eventoService';
 import { isAuthenticated, getUserData } from '../services/authService';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import '../assets/styles/EventoView.css';
+
+// Extiende la definición de tipo de jsPDF para incluir autoTable
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: typeof autoTable;
+  }
+}
 
 const EventoView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -103,6 +112,52 @@ const EventoView: React.FC = () => {
     } catch (err: any) {
       alert(`Error al desinscribirte: ${err.message}`);
     }
+  };
+
+  const generatePDF = () => {
+    if (!evento) return;
+
+    const doc = new jsPDF();
+
+    // Título del documento
+    doc.setFontSize(18);
+    doc.text(`Detalles del Evento: ${evento.nombre}`, 10, 10);
+
+    // Información general del evento
+    doc.setFontSize(12);
+    doc.text(`Nombre: ${evento.nombre}`, 10, 20);
+    doc.text(`Tipo: ${evento.tipo}`, 10, 30);
+    doc.text(`Fecha: ${evento.fecha}`, 10, 40);
+    doc.text(`Empresa: ${evento.empresa}`, 10, 50);
+
+    // Ajustar la descripción para que no se desborde
+    const descripcionY = 60;
+    const descripcionWidth = 190; // Ancho máximo del texto
+    const descripcionLines = doc.splitTextToSize(`Descripción: ${evento.descripcion}`, descripcionWidth);
+    doc.text(descripcionLines, 10, descripcionY);
+
+    // Participantes
+    if (evento.participantes && evento.participantes.length > 0) {
+      const startY = descripcionY + descripcionLines.length * 6 + 10;
+      doc.text('Participantes:', 10, startY);
+
+      const participantesData = evento.participantes.map((username, index) => [
+        index + 1,
+        username
+      ]);
+
+      // Usa la función importada directamente, pasando doc como primer argumento
+      autoTable(doc, {
+        head: [['#', 'Usuario']],
+        body: participantesData,
+        startY: startY + 5,
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [41, 128, 185] },
+      });
+    }
+
+    // Guardar el PDF
+    doc.save(`Evento_${evento.nombre}.pdf`);
   };
 
   if (loading) {
@@ -215,6 +270,12 @@ const EventoView: React.FC = () => {
               className="evento-btn evento-btn-secondary mt-4"
             >
               Volver a Eventos
+            </button>
+            <button
+              onClick={generatePDF}
+              className="evento-btn evento-btn-secondary mr-2"
+            >
+              Descargar PDF
             </button>
           </div>
         </div>

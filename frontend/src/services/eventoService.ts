@@ -377,27 +377,28 @@ export const createEvent = async (newEvent: Omit<Evento, 'id'>): Promise<Evento>
 */
 
 export const updateEvent = async (updatedEvent: Evento): Promise<Evento> => {
+  // Extraer solo los campos permitidos para la actualización
+  const eventToUpdate = {
+    id: updatedEvent.id,
+    nombre: updatedEvent.nombre,
+    descripcion: updatedEvent.descripcion,
+    tipo: updatedEvent.tipo,
+    fecha: formatDateForBackend(updatedEvent.fecha), // Formatear la fecha correctamente
+    empresa: updatedEvent.empresa
+  };
 
- const response = await fetch(`${API_URL}/api/events/${updatedEvent.id}`, {
+  const response = await fetch(`${API_URL}/api/v1/eventos/${updatedEvent.id}/modificar-evento`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(eventToUpdate),
+  });
 
-  method: 'PUT',
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: 'Error al actualizar el evento' }));
+    throw new Error(errorData.message || `Error al actualizar el evento con ID ${updatedEvent.id}`);
+  }
 
-  headers: getAuthHeaders(),
-
-  body: JSON.stringify(updatedEvent),
-
- });
-
- if (!response.ok) {
-
-  const errorData = await response.json();
-
-  throw new Error(errorData.message || `Error al actualizar el evento con ID ${updatedEvent.id}`);
-
- }
-
- return response.json();
-
+  return response.json();
 };
 
 
@@ -612,4 +613,53 @@ export const addExternalGuest = async (eventoId: number, invitadoData: {
 
   return response.json();
 
+};
+
+
+
+/**
+
+ * Elimina un evento existente.
+
+ * @param id El ID del evento a eliminar.
+
+ * @returns Promise<void>
+
+ */
+
+export const deleteEvento = async (id: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/api/v1/eventos/${id}/eliminar-evento`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    // Intentamos obtener el mensaje de error del cuerpo de la respuesta
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Error al eliminar el evento con ID ${id}`);
+    } catch (jsonError) {
+      // Si no podemos parsear el JSON, usamos el statusText
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+};
+
+// Agregar esta nueva función
+
+/**
+ * Obtiene el histórico completo de todos los eventos
+ * @returns Promise con un array de objetos Evento
+ */
+export const getEventosHistorico = async (): Promise<Evento[]> => {
+  const response = await fetch(`${API_URL}/api/v1/eventos/historico`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al cargar el histórico de eventos');
+  }
+
+  return response.json();
 };

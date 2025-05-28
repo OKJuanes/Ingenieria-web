@@ -59,7 +59,7 @@ public class EventoController {
 
     // Eliminar un evento
     @DeleteMapping("/{id}/eliminar-evento")
-    @PreAuthorize("hasAnyAuthority('admin:delete', 'organizador:delete')")
+    @PreAuthorize("hasAnyAuthority('admin:write', 'organizador:write') or hasRole('admin') or hasRole('ADMIN')")
     public String deleteEvento(@PathVariable Long id) {
         return eventoService.deleteEvento(id);
     }
@@ -275,5 +275,15 @@ public class EventoController {
         public void setEmpresa(String empresa) {
             this.empresa = empresa;
         }
+    }
+
+    /**
+     * Devuelve todos los eventos, incluyendo los pasados
+     * @return Lista completa de eventos
+     */
+    @GetMapping("/historico")
+    @PreAuthorize("hasAnyAuthority('admin:read') or hasRole('ADMIN')")
+    public List<Evento> getEventosHistorico() {
+        return eventoService.getAllEventos();  // Asumiendo que este método ya existe
     }
 }
